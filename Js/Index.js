@@ -4,14 +4,19 @@ import {
   createUserWithEmailAndPassword, 
   onAuthStateChanged, 
   signOut 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"; // se usar versão modular
+import { 
+  signInWithEmailAndPassword as loginEmail, 
+  createUserWithEmailAndPassword as createEmail, 
+  onAuthStateChanged as onAuth, 
+  signOut as logout 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { 
-  doc, setDoc, getDoc, addDoc, collection, query, where, onSnapshot 
+  doc, setDoc, addDoc, collection, getDocs, query, where, onSnapshot 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 let isSignUp = false;
 
-// Elementos DOM
 const authSection = document.getElementById("auth-section");
 const dashboardSection = document.getElementById("dashboard-section");
 const authTitle = document.getElementById("auth-title");
@@ -43,18 +48,15 @@ if (btnSubmit) {
     const nameInput = document.getElementById("auth-name").value.trim();
 
     if (!emailInput || !passwordInput) {
-      alert("Por favor, preencha o e-mail e a senha.");
+      alert("Por favor, preencha e-mail e senha.");
       return;
     }
 
     try {
       if (isSignUp) {
-        if (!nameInput) {
-          alert("Por favor, preencha o seu nome completo.");
-          return;
-        }
+        if (!nameInput) return alert("Preencha seu nome completo.");
         
-        const res = await createUserWithEmailAndPassword(auth, emailInput, passwordInput);
+        const res = await createEmail(auth, emailInput, passwordInput);
         
         await setDoc(doc(db, "users", res.user.uid), {
           uid: res.user.uid,
@@ -62,49 +64,42 @@ if (btnSubmit) {
           email: emailInput,
           balance: 0.00,
           yieldTotal: 0.00,
-          isAdmin: false,
-          createdAt: new Date().toISOString()
+          createdAt: new Date().getTime()
         });
 
         await addDoc(collection(db, "transactions"), {
           userId: res.user.uid,
           type: "notificacao",
-          description: "Bem-vindo à plataforma La Plata! Conta criada com sucesso.",
+          description: "Conta criada com sucesso na La Plata!",
           amount: 0.00,
           status: "concluido",
-          createdAt: new Date().toISOString()
+          createdAt: new Date().getTime()
         });
 
         alert("Conta criada com sucesso!");
       } else {
-        await signInWithEmailAndPassword(auth, emailInput, passwordInput);
+        await loginEmail(auth, emailInput, passwordInput);
       }
     } catch (error) {
-      console.error(error);
-      alert("Erro na autenticação: " + error.message);
+      alert("Erro: " + error.message);
     }
   });
 }
 
-// Gestão de Sessão Persistente e Estável
-onAuthStateChanged(auth, (user) => {
-  const list = document.getElementById("transactions-list");
-
+// MANTÉM SESSÃO ATIVA E CARREGA DADOS DE FORMA DIRETA
+onAuth(auth, (user) => {
   if (user) {
     if (authSection) authSection.classList.add("hidden");
     if (dashboardSection) dashboardSection.classList.remove("hidden");
     
-    const emailElem = document.getElementById("profile-email");
-    const uidElem = document.getElementById("profile-uid");
-    if (emailElem) emailElem.value = user.email || "";
-    if (uidElem) uidElem.value = user.uid || "";
+    document.getElementById("profile-email").value = user.email || "";
+    document.getElementById("profile-uid").value = user.uid || "";
 
     loadUserData(user.uid);
     loadTransactions(user.uid);
   } else {
     if (authSection) authSection.classList.remove("hidden");
     if (dashboardSection) dashboardSection.classList.add("hidden");
-    if (list) list.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #94a3b8;">Faça login para ver o histórico.</td></tr>`;
   }
 });
 
@@ -112,95 +107,79 @@ function loadUserData(uid) {
   onSnapshot(doc(db, "users", uid), (snapshot) => {
     if (snapshot.exists()) {
       const data = snapshot.data();
-      
-      const userNameElem = document.getElementById("user-name");
-      const userBalanceElem = document.getElementById("user-balance");
-      const userYieldElem = document.getElementById("user-yield");
-      const profileNameElem = document.getElementById("profile-name");
-
-      if (userNameElem) userNameElem.innerText = data.name || "Investidor";
-      if (userBalanceElem) userBalanceElem.innerText = `$ ${(data.balance || 0).toFixed(2)}`;
-      if (userYieldElem) userYieldElem.innerText = `$ ${(data.yieldTotal || 0).toFixed(2)}`;
-      if (profileNameElem) profileNameElem.value = data.name || "";
+      document.getElementById("user-name").innerText = data.name || "Investidor";
+      document.getElementById("user-balance").innerText = `$ ${(data.balance || 0).toFixed(2)}`;
+      document.getElementById("user-yield").innerText = `$ ${(data.yieldTotal || 0).toFixed(2)}`;
+      document.getElementById("profile-name").value = data.name || "";
     }
   });
 }
 
 window.buyInvestment = async (amount) => {
   const user = auth.currentUser;
-  if (!user) return alert("Utilizador não autenticado.");
+  if (!user) return alert("Você precisa estar logado.");
 
-  const confirmBuy = confirm(`Deseja adquirir o plano de investimento no valor de $${amount}?`);
-  if (!confirmBuy) return;
+  if (!confirm(`Confirmar investimento de $${amount}?`)) return;
 
   try {
     await addDoc(collection(db, "transactions"), {
       userId: user.uid,
       type: "produto_adquirido",
-      description: `Aquisição de Plano de Investimento ($${amount})`,
+      description: `Investimento Plano ($${amount})`,
       amount: amount,
       status: "ativo",
-      createdAt: new Date().toISOString()
+      createdAt: new Date().getTime()
     });
 
-    alert(`Parabéns! Investimento de $${amount} adquirido com sucesso.`);
+    alert("Investimento realizado com sucesso!");
   } catch (error) {
-    alert("Erro ao processar investimento: " + error.message);
+    alert("Erro na compra: " + error.message);
   }
 };
 
+// BUSCA SIMPLIFICADA SEM EXIGIR ÍNDICE COMPLEXO
 function loadTransactions(uid) {
-  if (!uid) return;
-  
-  const transactionsRef = collection(db, "transactions");
-  const q = query(transactionsRef, where("userId", "==", uid));
-  
-  onSnapshot(q, (snapshot) => {
-    const list = document.getElementById("transactions-list");
-    if (!list) return;
+  const list = document.getElementById("transactions-list");
+  if (!list) return;
 
+  const q = query(collection(db, "transactions"), where("userId", "==", uid));
+
+  onSnapshot(q, (snapshot) => {
     list.innerHTML = "";
 
     if (snapshot.empty) {
-      list.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #94a3b8;">Nenhum registo encontrado no histórico.</td></tr>`;
+      list.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #94a3b8;">Nenhum registro no histórico.</td></tr>`;
       return;
     }
-    
-    const docsData = [];
+
+    let items = [];
     snapshot.forEach((docSnap) => {
-      docsData.push({ id: docSnap.id, ...docSnap.data() });
+      items.push(docSnap.data());
     });
 
-    docsData.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+    // Ordena localmente por data (mais recente primeiro)
+    items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
-    docsData.forEach((t) => {
-      let dateFormatted = "Data recente";
-      if (t.createdAt) {
-        dateFormatted = new Date(t.createdAt).toLocaleString("pt-BR");
-      }
-      
-      let badgeClass = "badge-approved";
-      if (t.status === 'pendente') badgeClass = "badge-pending";
-      if (t.status === 'rejeitado') badgeClass = "badge-rejected";
-
-      let typeFormatted = t.type ? t.type.replace('_', ' ').toUpperCase() : "INVESTIMENTO";
+    items.forEach((t) => {
+      const dataFormatada = t.createdAt ? new Date(t.createdAt).toLocaleString("pt-BR") : "Data recente";
+      let statusClass = t.status === 'pendente' ? 'badge-pending' : (t.status === 'rejeitado' ? 'badge-rejected' : 'badge-approved');
 
       list.innerHTML += `
         <tr>
-          <td>${dateFormatted}</td>
-          <td><strong>${typeFormatted}</strong></td>
+          <td>${dataFormatada}</td>
+          <td><strong>${(t.type || 'INVESTIMENTO').toUpperCase()}</strong></td>
           <td>${t.description || '-'}</td>
           <td>$ ${(t.amount || 0).toFixed(2)}</td>
-          <td class="${badgeClass}">${(t.status || 'concluido').toUpperCase()}</td>
+          <td class="${statusClass}">${(t.status || 'concluido').toUpperCase()}</td>
         </tr>
       `;
     });
-  }, (error) => {
-    console.error("Erro ao carregar histórico:", error);
+  }, (err) => {
+    console.error("Erro Firestore:", err);
   });
 }
 
 const btnLogout = document.getElementById("btn-logout");
 if (btnLogout) {
-  btnLogout.addEventListener("click", () => signOut(auth));
-          }
+  btnLogout.addEventListener("click", () => logout(auth));
+}
