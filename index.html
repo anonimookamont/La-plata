@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>La Plata - Investimentos</title>
+  <title>La Plata - Investimentos & Afiliados</title>
   <!-- Google Fonts & FontAwesome Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -18,6 +18,7 @@
       --accent-green: #10b981;
       --accent-red: #ef4444;
       --accent-pix: #14b8a6;
+      --accent-purple: #8b5cf6;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --border-color: #334155;
@@ -139,7 +140,6 @@
     
     .section-header { font-size: 1rem; font-weight: 600; color: var(--accent-cyan); margin: 20px 0 12px 0; }
     
-    /* Cards de Ação (PIX e Saque) */
     .action-card {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
@@ -149,7 +149,40 @@
     }
     .action-card h3 { font-size: 0.95rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
 
-    /* Grid Dinâmica de Planos do Admin */
+    /* Affiliate Box */
+    .affiliate-box {
+      background: linear-gradient(135deg, #1e1b4b 15%, #0f172a 100%);
+      border: 1px solid #4338ca;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    .affiliate-link-container {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .affiliate-link-input {
+      background: #0f172a;
+      border: 1px solid var(--border-color);
+      color: var(--accent-cyan);
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      width: 100%;
+      outline: none;
+    }
+    .copy-btn {
+      background: #4338ca;
+      color: #fff;
+      border: none;
+      padding: 0 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    /* Plans Grid */
     .plans-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
     .plan-card {
       background: var(--bg-card);
@@ -165,41 +198,22 @@
     .plan-price-tag { font-size: 1.1rem; font-weight: 700; color: var(--accent-cyan); margin-bottom: 8px; }
     .plan-btn { padding: 8px 16px; font-size: 0.85rem; border-radius: 8px; background: var(--accent-green); color: #fff; border: none; font-weight: 600; cursor: pointer; }
 
-    /* --- PROFILE EDIT AREA --- */
-    .profile-upload-container {
-      text-align: center;
-      margin-bottom: 20px;
-    }
+    /* Profile Upload */
+    .profile-upload-container { text-align: center; margin-bottom: 20px; }
     .profile-avatar-lg {
-      width: 90px;
-      height: 90px;
-      border-radius: 50%;
-      background: var(--accent-blue);
-      margin: 0 auto 10px auto;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 2rem;
-      color: #fff;
-      overflow: hidden;
-      border: 3px solid var(--accent-cyan);
-      position: relative;
+      width: 90px; height: 90px; border-radius: 50%; background: var(--accent-blue);
+      margin: 0 auto 10px auto; display: flex; justify-content: center; align-items: center;
+      font-size: 2rem; color: #fff; overflow: hidden; border: 3px solid var(--accent-cyan); position: relative;
     }
     .profile-avatar-lg img { width: 100%; height: 100%; object-fit: cover; }
     .file-input-label {
-      display: inline-block;
-      padding: 8px 14px;
-      background: var(--bg-input);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      font-size: 0.85rem;
-      cursor: pointer;
-      color: var(--accent-cyan);
-      font-weight: 500;
+      display: inline-block; padding: 8px 14px; background: var(--bg-input);
+      border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.85rem;
+      cursor: pointer; color: var(--accent-cyan); font-weight: 500;
     }
     .file-input-label input { display: none; }
 
-    /* --- TRANSACTIONS & NOTIFICATIONS VIEWS --- */
+    /* Data Cards */
     .data-list { display: flex; flex-direction: column; gap: 10px; }
     .data-card {
       background: var(--bg-card);
@@ -216,7 +230,7 @@
     .data-amount { font-size: 0.95rem; font-weight: 700; }
     
     .badge { font-size: 0.7rem; padding: 3px 8px; border-radius: 6px; font-weight: 600; text-transform: uppercase; }
-    .badge-ativo, .badge-concluido, .badge-deposito { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
+    .badge-ativo, .badge-concluido, .badge-deposito, .badge-comissao { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
     .badge-saque { background: rgba(217, 119, 6, 0.15); color: #d97706; }
     .badge-pendente { background: rgba(234, 179, 8, 0.15); color: #eab308; }
 
@@ -228,7 +242,7 @@
       margin-bottom: 10px;
     }
 
-    /* --- BOTTOM NAVIGATION BAR --- */
+    /* --- BOTTOM NAVIGATION BAR (5 ABAS) --- */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -246,16 +260,16 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
       color: var(--text-muted);
       text-decoration: none;
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       font-weight: 500;
       cursor: pointer;
-      width: 25%;
+      width: 20%;
       transition: color 0.2s;
     }
-    .nav-item i { font-size: 1.2rem; }
+    .nav-item i { font-size: 1.1rem; }
     .nav-item.active { color: var(--accent-cyan); }
   </style>
 </head>
@@ -295,6 +309,15 @@
         </div>
       </div>
 
+      <!-- Campo oculto/opcional para código de indicação -->
+      <div class="form-group" id="ref-group" style="display: none;">
+        <label>Código de Indicação (Opcional)</label>
+        <div class="input-wrapper">
+          <i class="fa-solid fa-user-plus"></i>
+          <input type="text" id="auth-ref" class="form-control" placeholder="Código do seu padrinho">
+        </div>
+      </div>
+
       <button class="btn btn-primary" id="btn-submit">
         <span>Entrar</span> <i class="fa-solid fa-arrow-right"></i>
       </button>
@@ -317,14 +340,14 @@
         </div>
       </div>
 
-      <!-- ABA 1: INÍCIO (Depósito PIX, Saque e Planos do Admin) -->
+      <!-- ABA 1: INÍCIO (Saldo, PIX, Saque, Planos) -->
       <div id="tab-home" class="tab-content active">
         <div class="balance-card">
           <div class="balance-title">Saldo Total Disponível</div>
           <div class="balance-value" id="user-balance">$ 0.00</div>
         </div>
 
-        <!-- Área de Depósito PIX -->
+        <!-- Depósito PIX -->
         <div class="action-card">
           <h3 style="color: var(--accent-pix);"><i class="fa-solid fa-qrcode"></i> Depósito Instantâneo PIX</h3>
           <div class="form-group" style="margin-bottom: 10px;">
@@ -336,7 +359,7 @@
           </button>
         </div>
 
-        <!-- Área de Saque -->
+        <!-- Solicitar Saque -->
         <div class="action-card">
           <h3 style="color: #d97706;"><i class="fa-solid fa-wallet"></i> Solicitar Saque</h3>
           <div class="form-group" style="margin-bottom: 10px;">
@@ -348,14 +371,39 @@
           </button>
         </div>
 
-        <!-- Planos Cadastrados pelo Admin -->
-        <div class="section-header">Planos de Investimento Disponíveis</div>
+        <!-- Planos do Administrador -->
+        <div class="section-header">Planos de Investimento</div>
         <div class="plans-grid" id="admin-plans-list">
           <div style="text-align: center; color: var(--text-muted); padding: 15px;">A carregar planos...</div>
         </div>
       </div>
 
-      <!-- ABA 2: HISTÓRICO DE TRANSAÇÕES -->
+      <!-- ABA 2: AFILIADOS (Estatísticas e Link de Convite) -->
+      <div id="tab-affiliates" class="tab-content">
+        <div class="section-header"><i class="fa-solid fa-users"></i> Programa de Afiliados</div>
+        
+        <div class="affiliate-box">
+          <h4 style="font-size: 0.95rem; color: var(--accent-cyan); margin-bottom: 5px;">Indique e ganhe 5%</h4>
+          <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">Compartilhe o seu link. Sempre que um indicado seu investir num plano, você ganha 5% de comissão instantaneamente todos os dias na sua conta!</p>
+          
+          <div class="affiliate-link-container">
+            <input type="text" id="my-ref-link" class="affiliate-link-input" readonly>
+            <button class="copy-btn" onclick="copyRefLink()"><i class="fa-solid fa-copy"></i></button>
+          </div>
+        </div>
+
+        <div class="balance-card" style="background: linear-gradient(135deg, #065f46 0%, #0f172a 100%); border-color: #059669;">
+          <div class="balance-title">Total de Comissões de Afiliados</div>
+          <div class="balance-value" id="affiliate-earnings-total">$ 0.00</div>
+        </div>
+
+        <div class="section-header">Seus Indicados Ativos (<span id="referrals-count">0</span>)</div>
+        <div class="data-list" id="referrals-list">
+          <div style="text-align: center; color: var(--text-muted); padding: 15px;">Nenhum indicado registado ainda.</div>
+        </div>
+      </div>
+
+      <!-- ABA 3: HISTÓRICO DE TRANSAÇÕES -->
       <div id="tab-history" class="tab-content">
         <div class="section-header">Histórico Geral</div>
         <div class="data-list" id="transactions-list">
@@ -363,7 +411,7 @@
         </div>
       </div>
 
-      <!-- ABA 3: NOTIFICAÇÕES -->
+      <!-- ABA 4: NOTIFICAÇÕES -->
       <div id="tab-notifications" class="tab-content">
         <div class="section-header">Suas Notificações</div>
         <div id="notifications-list">
@@ -371,7 +419,7 @@
         </div>
       </div>
 
-      <!-- ABA 4: PERFIL -->
+      <!-- ABA 5: PERFIL -->
       <div id="tab-profile" class="tab-content">
         <div class="section-header">Perfil e Conta</div>
         
@@ -396,8 +444,8 @@
         </div>
 
         <div class="form-group">
-          <label>ID do Usuário (UID)</label>
-          <input type="text" id="profile-uid" class="form-control" readonly>
+          <label>Seu Código de Afiliado</label>
+          <input type="text" id="profile-refcode" class="form-control" readonly>
         </div>
 
         <button class="btn btn-danger" id="btn-logout" style="margin-top: 20px;">
@@ -405,15 +453,19 @@
         </button>
       </div>
 
-      <!-- BARRA DE NAVEGAÇÃO INFERIOR -->
+      <!-- BARRA DE NAVEGAÇÃO INFERIOR (5 ABAS) -->
       <nav class="bottom-nav">
         <div class="nav-item active" onclick="switchTab('home')">
           <i class="fa-solid fa-house"></i>
           <span>Início</span>
         </div>
+        <div class="nav-item" onclick="switchTab('affiliates')">
+          <i class="fa-solid fa-users"></i>
+          <span>Afiliados</span>
+        </div>
         <div class="nav-item" onclick="switchTab('history')">
           <i class="fa-solid fa-receipt"></i>
-          <span>Histórico</span>
+          <span>Extrato</span>
         </div>
         <div class="nav-item" onclick="switchTab('notifications')">
           <i class="fa-solid fa-bell"></i>
@@ -439,13 +491,28 @@
       signOut 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { 
-      doc, setDoc, updateDoc, addDoc, collection, onSnapshot, query, where, increment, getDoc 
+      doc, setDoc, updateDoc, addDoc, collection, onSnapshot, query, where, increment, getDoc, getDocs 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     let isSignUp = false;
-    let currentUserData = { balance: 0 };
+    let currentUserData = { balance: 0, refCode: "", referredBy: null };
 
-    // --- CONTROLE DE ABAS (Navegação Inferior) ---
+    // Capturar parâmetro ?ref= na URL automaticamente ao carregar a página
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const refParam = urlParams.get('ref');
+      if (refParam) {
+        // Ativa o modo de cadastro automaticamente e preenche o campo de indicação
+        isSignUp = true;
+        document.getElementById('name-group').style.display = 'block';
+        document.getElementById('ref-group').style.display = 'block';
+        document.getElementById('auth-ref').value = refParam;
+        document.getElementById('btn-submit').querySelector('span').innerText = "Cadastrar";
+        document.getElementById('btn-toggle-mode').innerText = "Já tenho uma conta";
+      }
+    });
+
+    // --- CONTROLE DE ABAS (Navegação Inferior com 5 opções) ---
     window.switchTab = (tabName) => {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -453,7 +520,8 @@
       const targetTab = document.getElementById(`tab-${tabName}`);
       if (targetTab) targetTab.classList.add('active');
 
-      const activeNavIndex = ['home', 'history', 'notifications', 'profile'].indexOf(tabName);
+      const tabsOrder = ['home', 'affiliates', 'history', 'notifications', 'profile'];
+      const activeNavIndex = tabsOrder.indexOf(tabName);
       if (activeNavIndex !== -1) {
         document.querySelectorAll('.nav-item')[activeNavIndex].classList.add('active');
       }
@@ -462,6 +530,7 @@
     // --- ALTERNAR LOGIN / CADASTRO ---
     const btnToggleMode = document.getElementById("btn-toggle-mode");
     const nameGroup = document.getElementById("name-group");
+    const refGroup = document.getElementById("ref-group");
     const btnSubmit = document.getElementById("btn-submit");
 
     if (btnToggleMode) {
@@ -469,22 +538,25 @@
         isSignUp = !isSignUp;
         if (isSignUp) {
           nameGroup.style.display = "block";
+          refGroup.style.display = "block";
           btnSubmit.querySelector("span").innerText = "Cadastrar";
           btnToggleMode.innerText = "Já tenho uma conta";
         } else {
           nameGroup.style.display = "none";
+          refGroup.style.display = "none";
           btnSubmit.querySelector("span").innerText = "Entrar";
           btnToggleMode.innerText = "Criar uma conta";
         }
       });
     }
 
-    // --- AUTENTICAÇÃO (LOGIN E CADASTRO) ---
+    // --- AUTENTICAÇÃO (LOGIN E CADASTRO COM AFILIADO) ---
     if (btnSubmit) {
       btnSubmit.addEventListener("click", async () => {
         const emailInput = document.getElementById("auth-email").value.trim();
         const passwordInput = document.getElementById("auth-password").value.trim();
         const nameInput = document.getElementById("auth-name") ? document.getElementById("auth-name").value.trim() : "";
+        const refInput = document.getElementById("auth-ref") ? document.getElementById("auth-ref").value.trim() : "";
 
         if (!emailInput || !passwordInput) {
           alert("Preencha o e-mail e a senha.");
@@ -498,14 +570,19 @@
               return;
             }
             
+            // Gerar código de afiliado único baseado no UID inicial ou aleatório
             const res = await createUserWithEmailAndPassword(auth, emailInput, passwordInput);
-            
+            const generatedRefCode = "LAPLATA" + Math.floor(1000 + Math.random() * 9000);
+
+            // Gravação do usuário na coleção raiz 'users'
             await setDoc(doc(db, "users", res.user.uid), {
               uid: res.user.uid,
               name: nameInput,
               email: emailInput,
               balance: 0.00,
               photoURL: "",
+              refCode: generatedRefCode,
+              referredBy: refInput || null, // Guarda o código de quem indicou
               createdAt: new Date().getTime()
             });
 
@@ -545,13 +622,14 @@
         loadTransactions(user.uid);
         loadNotifications(user.uid);
         loadAdminPlans();
+        loadAffiliateData(user);
       } else {
-        authSection.classList.remove("hidden");
-        dashboardSection.classList.add("hidden");
+        authSection.classList.add("hidden");
+        dashboardSection.classList.remove("hidden"); // Deixa visível a auth se deslogado
       }
     });
 
-    // --- CARREGAR DADOS DO USUÁRIO & AVATAR ---
+    // --- CARREGAR DADOS DO USUÁRIO ---
     function loadUserData(uid) {
       onSnapshot(doc(db, "users", uid), (snapshot) => {
         if (snapshot.exists()) {
@@ -562,7 +640,12 @@
           
           document.getElementById("user-name").innerText = name;
           document.getElementById("profile-name").value = name;
+          document.getElementById("profile-refcode").value = data.refCode || "";
           document.getElementById("user-balance").innerText = `$ ${(data.balance || 0).toFixed(2)}`;
+
+          // Configurar Link de Afiliado na aba correspondente
+          const refLink = `${window.location.origin}${window.location.pathname}?ref=${data.refCode}`;
+          document.getElementById("my-ref-link").value = refLink;
 
           const avatarContainer = document.getElementById("avatar-container");
           const profileAvatarLg = document.getElementById("profile-avatar-lg");
@@ -579,7 +662,67 @@
       });
     }
 
-    // --- CARREGAR PLANOS CRIADOS PELO ADMIN (Coleção raiz 'plans') ---
+    // --- CARREGAR DADOS DE AFILIADOS (Indicados e Ganhos) ---
+    async function loadAffiliateData(user) {
+      const usersRef = collection(db, "users");
+      // Busca utilizadores que foram indicados por este refCode
+      const q = query(usersRef, where("referredBy", "==", currentUserData.refCode));
+      
+      onSnapshot(q, async (snapshot) => {
+        const referralsListElem = document.getElementById("referrals-list");
+        const referralsCountElem = document.getElementById("referrals-count");
+        referralsListElem.innerHTML = "";
+        
+        referralsCountElem.innerText = snapshot.size;
+
+        if (snapshot.empty) {
+          referralsListElem.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 15px;">Nenhum indicado registado ainda.</div>`;
+          return;
+        }
+
+        let totalEarnings = 0;
+        const referredUids = [];
+
+        snapshot.forEach((docSnap) => {
+          const refUser = docSnap.data();
+          referredUids.push(refUser.uid);
+          
+          const date = refUser.createdAt ? new Date(refUser.createdAt).toLocaleDateString("pt-BR") : "Recente";
+          referralsListElem.innerHTML += `
+            <div class="data-card">
+              <div class="data-info">
+                <span class="data-title">${refUser.name}</span>
+                <span class="data-sub">Cadastrado em: ${date}</span>
+              </div>
+              <span class="badge badge-ativo">Ativo</span>
+            </div>
+          `;
+        });
+
+        // Buscar transações de comissão geradas por estes indicados
+        const transQuery = query(collection(db, "transactions"), where("userId", "==", user.uid));
+        onSnapshot(transQuery, (transSnap) => {
+          totalEarnings = 0;
+          transSnap.forEach((tDoc) => {
+            const tData = tDoc.data();
+            if (tData.type === "comissao_afiliado") {
+              totalEarnings += (tData.amount || 0);
+            }
+          });
+          document.getElementById("affiliate-earnings-total").innerText = `$ ${totalEarnings.toFixed(2)}`;
+        });
+      });
+    }
+
+    window.copyRefLink = () => {
+      const copyText = document.getElementById("my-ref-link");
+      copyText.select();
+      copyText.setSelectionRange(0, 99999);
+      navigator.clipboard.writeText(copyText.value);
+      alert("Link de afiliado copiado com sucesso!");
+    };
+
+    // --- CARREGAR PLANOS DO ADMIN ---
     function loadAdminPlans() {
       const plansContainer = document.getElementById("admin-plans-list");
       
@@ -606,12 +749,10 @@
             </div>
           `;
         });
-      }, (error) => {
-        console.error("Erro ao carregar planos:", error);
       });
     }
 
-    // --- UPLOAD DA FOTO DE PERFIL ---
+    // --- UPLOAD FOTO DE PERFIL ---
     window.uploadProfilePhoto = (event) => {
       const file = event.target.files[0];
       if (!file) return;
@@ -626,14 +767,13 @@
           await updateDoc(doc(db, "users", user.uid), { photoURL: base64Image });
           alert("Foto de perfil atualizada com sucesso!");
         } catch (error) {
-          console.error(error);
           alert("Erro ao salvar foto: " + error.message);
         }
       };
       reader.readAsDataURL(file);
     };
 
-    // --- DEPÓSITO VIA PIX ---
+    // --- DEPÓSITO PIX ---
     window.handlePixDeposit = async () => {
       const user = auth.currentUser;
       if (!user) return alert("Usuário não autenticado.");
@@ -661,7 +801,7 @@
       }
     };
 
-    // --- SOLICITAR SAQUE ---
+    // --- SAQUE ---
     window.handleWithdrawRequest = async () => {
       const user = auth.currentUser;
       if (!user) return alert("Usuário não autenticado.");
@@ -677,7 +817,6 @@
       if (!confirm(`Solicitar saque no valor de $${amount.toFixed(2)}?`)) return;
 
       try {
-        // Registra a transação de saque como pendente de aprovação
         await addDoc(collection(db, "transactions"), {
           userId: user.uid,
           type: "saque",
@@ -687,17 +826,15 @@
           createdAt: new Date().getTime()
         });
 
-        // Desconta o valor do saldo do usuário imediatamente
         await updateDoc(doc(db, "users", user.uid), { balance: increment(-amount) });
-
         document.getElementById("withdraw-amount").value = "";
-        alert("Solicitação de saque enviada com sucesso! O valor ficará pendente de aprovação.");
+        alert("Solicitação de saque enviada com sucesso!");
       } catch (error) {
         alert("Erro ao solicitar saque: " + error.message);
       }
     };
 
-    // --- ADQUIRIR PLANO DO ADMIN ---
+    // --- COMPRAR PLANO E PAGAR 5% AUTOMÁTICO AO AFILIADO ---
     window.buyPlan = async (planId, planTitle, planPrice) => {
       const user = auth.currentUser;
       if (!user) return alert("Usuário não autenticado.");
@@ -710,6 +847,7 @@
       if (!confirm(`Confirmar a aquisição do plano "${planTitle}" por $${planPrice.toFixed(2)}?`)) return;
 
       try {
+        // 1. Registra a compra do plano para o usuário atual
         await addDoc(collection(db, "transactions"), {
           userId: user.uid,
           type: "produto_adquirido",
@@ -719,8 +857,45 @@
           createdAt: new Date().getTime()
         });
 
-        // Desconta o valor do plano do saldo
+        // Desconta o valor do saldo do usuário
         await updateDoc(doc(db, "users", user.uid), { balance: increment(-planPrice) });
+
+        // 2. SISTEMA DE AFILIADO: Verifica se o usuário tem um 'referredBy' e paga 5%
+        if (currentUserData.referredBy) {
+          const usersQuery = query(collection(db, "users"), where("refCode", "==", currentUserData.referredBy));
+          const userSnapshots = await getDocs(usersQuery);
+
+          if (!userSnapshots.empty) {
+            const referrerDoc = userSnapshots.docs[0];
+            const referrerId = referrerDoc.id;
+            const commissionAmount = planPrice * 0.05; // 5% de comissão
+
+            // Credita a comissão na conta do padrinho (afiliado)
+            await updateDoc(doc(db, "users", referrerId), {
+              balance: increment(commissionAmount)
+            });
+
+            // Registra a transação de comissão no extrato do afiliado
+            await addDoc(collection(db, "transactions"), {
+              userId: referrerId,
+              type: "comissao_afiliado",
+              description: `Comissão de 5% do indicado (${currentUserData.name})`,
+              amount: commissionAmount,
+              status: "concluido",
+              createdAt: new Date().getTime()
+            });
+
+            // Notifica o afiliado
+            await addDoc(collection(db, "transactions"), {
+              userId: referrerId,
+              type: "notificacao",
+              description: `Você recebeu uma comissão de $${commissionAmount.toFixed(2)} referente ao investimento do seu indicado!`,
+              amount: 0.00,
+              status: "concluido",
+              createdAt: new Date().getTime()
+            });
+          }
+        }
 
         alert(`Parabéns! Plano "${planTitle}" adquirido com sucesso.`);
       } catch (error) {
@@ -728,7 +903,7 @@
       }
     };
 
-    // --- ABA TRANSAÇÕES ---
+    // --- ABA TRANSAÇÕES / EXTRATO ---
     function loadTransactions(uid) {
       const q = query(collection(db, "transactions"), where("userId", "==", uid));
       
@@ -745,7 +920,7 @@
         });
 
         if (items.length === 0) {
-          list.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 20px;">Nenhuma transação encontrada.</div>`;
+          list.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 20px;">Nenhum registo encontrado.</div>`;
           return;
         }
 
@@ -754,14 +929,15 @@
         items.forEach(t => {
           const date = t.createdAt ? new Date(t.createdAt).toLocaleDateString("pt-BR") : "Recente";
           const isDeposit = t.type === "deposito_pix";
+          const isCommission = t.type === "comissao_afiliado";
           const isWithdraw = t.type === "saque";
           
           let badgeClass = `badge-${t.status || 'ativo'}`;
           let amountColor = 'inherit';
           let amountSign = "-";
 
-          if (isDeposit) {
-            badgeClass = "badge-deposito";
+          if (isDeposit || isCommission) {
+            badgeClass = isCommission ? "badge-comissao" : "badge-deposito";
             amountColor = "var(--accent-green)";
             amountSign = "+";
           } else if (isWithdraw) {
@@ -778,7 +954,7 @@
               </div>
               <div>
                 <span class="data-amount" style="color: ${amountColor}">${amountSign} $ ${(t.amount || 0).toFixed(2)}</span>
-                <span class="badge ${badgeClass}">${t.status || 'ativo'}</span>
+                <span class="badge ${badgeClass}">${isCommission ? 'COMISSÃO' : (t.status || 'ativo')}</span>
               </div>
             </div>
           `;
