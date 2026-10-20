@@ -182,21 +182,34 @@
       font-weight: 600;
     }
 
-    /* Plans Grid */
-    .plans-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    /* Plans Grid com Detalhes de Ciclo */
+    .plans-grid { display: flex; flex-direction: column; gap: 14px; }
     .plan-card {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 16px;
+      border-radius: 14px;
+      padding: 18px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
+      gap: 12px;
     }
-    .plan-info h4 { font-size: 1rem; font-weight: 600; color: var(--text-main); margin-bottom: 4px; }
-    .plan-info p { font-size: 0.8rem; color: var(--text-muted); }
-    .plan-price-tag { font-size: 1.1rem; font-weight: 700; color: var(--accent-cyan); margin-bottom: 8px; }
-    .plan-btn { padding: 8px 16px; font-size: 0.85rem; border-radius: 8px; background: var(--accent-green); color: #fff; border: none; font-weight: 600; cursor: pointer; }
+    .plan-header { display: flex; justify-content: space-between; align-items: center; }
+    .plan-title { font-size: 1.1rem; font-weight: 700; color: var(--text-main); }
+    .plan-duration { font-size: 0.75rem; background: rgba(56, 189, 248, 0.15); color: var(--accent-cyan); padding: 4px 10px; border-radius: 20px; font-weight: 600; }
+    
+    .plan-metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      background: var(--bg-input);
+      padding: 12px;
+      border-radius: 10px;
+    }
+    .metric-item { display: flex; flex-direction: column; gap: 2px; }
+    .metric-label { font-size: 0.75rem; color: var(--text-muted); }
+    .metric-value { font-size: 0.95rem; font-weight: 700; }
+
+    .plan-btn { padding: 12px; font-size: 0.95rem; border-radius: 10px; background: var(--accent-green); color: #fff; border: none; font-weight: 700; cursor: pointer; text-align: center; }
 
     /* Profile Upload */
     .profile-upload-container { text-align: center; margin-bottom: 20px; }
@@ -230,7 +243,8 @@
     .data-amount { font-size: 0.95rem; font-weight: 700; }
     
     .badge { font-size: 0.7rem; padding: 3px 8px; border-radius: 6px; font-weight: 600; text-transform: uppercase; }
-    .badge-ativo, .badge-concluido, .badge-deposito, .badge-comissao { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
+    .badge-ativo { background: rgba(56, 189, 248, 0.15); color: var(--accent-cyan); }
+    .badge-concluido, .badge-deposito, .badge-comissao { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
     .badge-saque { background: rgba(217, 119, 6, 0.15); color: #d97706; }
     .badge-pendente { background: rgba(234, 179, 8, 0.15); color: #eab308; }
 
@@ -242,7 +256,7 @@
       margin-bottom: 10px;
     }
 
-    /* --- BOTTOM NAVIGATION BAR (5 ABAS) --- */
+    /* --- BOTTOM NAVIGATION BAR --- */
     .bottom-nav {
       position: fixed;
       bottom: 0;
@@ -309,7 +323,6 @@
         </div>
       </div>
 
-      <!-- Campo oculto/opcional para código de indicação -->
       <div class="form-group" id="ref-group" style="display: none;">
         <label>Código de Indicação (Opcional)</label>
         <div class="input-wrapper">
@@ -324,7 +337,7 @@
       <button class="btn btn-secondary" id="btn-toggle-mode">Criar uma conta</button>
     </div>
 
-    <!-- 2. PAINEL PRINCIPAL COM NAVEGAÇÃO -->
+    <!-- 2. PAINEL PRINCIPAL -->
     <div id="dashboard-section" class="hidden">
       
       <!-- Top Header -->
@@ -340,7 +353,7 @@
         </div>
       </div>
 
-      <!-- ABA 1: INÍCIO (Saldo, PIX, Saque, Planos) -->
+      <!-- ABA 1: INÍCIO -->
       <div id="tab-home" class="tab-content active">
         <div class="balance-card">
           <div class="balance-title">Saldo Total Disponível</div>
@@ -371,20 +384,20 @@
           </button>
         </div>
 
-        <!-- Planos do Administrador -->
-        <div class="section-header">Planos de Investimento</div>
+        <!-- Planos com Ciclo de Rendimento -->
+        <div class="section-header">Planos de Investimento por Prazo</div>
         <div class="plans-grid" id="admin-plans-list">
           <div style="text-align: center; color: var(--text-muted); padding: 15px;">A carregar planos...</div>
         </div>
       </div>
 
-      <!-- ABA 2: AFILIADOS (Estatísticas e Link de Convite) -->
+      <!-- ABA 2: AFILIADOS -->
       <div id="tab-affiliates" class="tab-content">
         <div class="section-header"><i class="fa-solid fa-users"></i> Programa de Afiliados</div>
         
         <div class="affiliate-box">
           <h4 style="font-size: 0.95rem; color: var(--accent-cyan); margin-bottom: 5px;">Indique e ganhe 5%</h4>
-          <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">Compartilhe o seu link. Sempre que um indicado seu investir num plano, você ganha 5% de comissão instantaneamente todos os dias na sua conta!</p>
+          <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">Sempre que um plano de um indicado seu for finalizado com sucesso, você ganha 5% de comissão instantaneamente na sua conta!</p>
           
           <div class="affiliate-link-container">
             <input type="text" id="my-ref-link" class="affiliate-link-input" readonly>
@@ -393,7 +406,7 @@
         </div>
 
         <div class="balance-card" style="background: linear-gradient(135deg, #065f46 0%, #0f172a 100%); border-color: #059669;">
-          <div class="balance-title">Total de Comissões de Afiliados</div>
+          <div class="balance-title">Total de Comissões Acumuladas</div>
           <div class="balance-value" id="affiliate-earnings-total">$ 0.00</div>
         </div>
 
@@ -453,7 +466,7 @@
         </button>
       </div>
 
-      <!-- BARRA DE NAVEGAÇÃO INFERIOR (5 ABAS) -->
+      <!-- BARRA DE NAVEGAÇÃO INFERIOR -->
       <nav class="bottom-nav">
         <div class="nav-item active" onclick="switchTab('home')">
           <i class="fa-solid fa-house"></i>
@@ -491,18 +504,16 @@
       signOut 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { 
-      doc, setDoc, updateDoc, addDoc, collection, onSnapshot, query, where, increment, getDoc, getDocs 
+      doc, setDoc, updateDoc, addDoc, collection, onSnapshot, query, where, increment, getDocs 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     let isSignUp = false;
     let currentUserData = { balance: 0, refCode: "", referredBy: null };
 
-    // Capturar parâmetro ?ref= na URL automaticamente ao carregar a página
     window.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
       const refParam = urlParams.get('ref');
       if (refParam) {
-        // Ativa o modo de cadastro automaticamente e preenche o campo de indicação
         isSignUp = true;
         document.getElementById('name-group').style.display = 'block';
         document.getElementById('ref-group').style.display = 'block';
@@ -512,7 +523,6 @@
       }
     });
 
-    // --- CONTROLE DE ABAS (Navegação Inferior com 5 opções) ---
     window.switchTab = (tabName) => {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -527,7 +537,6 @@
       }
     };
 
-    // --- ALTERNAR LOGIN / CADASTRO ---
     const btnToggleMode = document.getElementById("btn-toggle-mode");
     const nameGroup = document.getElementById("name-group");
     const refGroup = document.getElementById("ref-group");
@@ -550,7 +559,6 @@
       });
     }
 
-    // --- AUTENTICAÇÃO (LOGIN E CADASTRO COM AFILIADO) ---
     if (btnSubmit) {
       btnSubmit.addEventListener("click", async () => {
         const emailInput = document.getElementById("auth-email").value.trim();
@@ -570,11 +578,9 @@
               return;
             }
             
-            // Gerar código de afiliado único baseado no UID inicial ou aleatório
             const res = await createUserWithEmailAndPassword(auth, emailInput, passwordInput);
             const generatedRefCode = "LAPLATA" + Math.floor(1000 + Math.random() * 9000);
 
-            // Gravação do usuário na coleção raiz 'users'
             await setDoc(doc(db, "users", res.user.uid), {
               uid: res.user.uid,
               name: nameInput,
@@ -582,7 +588,7 @@
               balance: 0.00,
               photoURL: "",
               refCode: generatedRefCode,
-              referredBy: refInput || null, // Guarda o código de quem indicou
+              referredBy: refInput || null,
               createdAt: new Date().getTime()
             });
 
@@ -600,13 +606,11 @@
             await signInWithEmailAndPassword(auth, emailInput, passwordInput);
           }
         } catch (error) {
-          console.error(error);
           alert("Erro de autenticação: " + error.message);
         }
       });
     }
 
-    // --- SESSÃO DO USUÁRIO & CARREGAMENTO EM TEMPO REAL ---
     onAuthStateChanged(auth, (user) => {
       const authSection = document.getElementById("auth-section");
       const dashboardSection = document.getElementById("dashboard-section");
@@ -623,13 +627,13 @@
         loadNotifications(user.uid);
         loadAdminPlans();
         loadAffiliateData(user);
+        checkAndCompleteInvestments(user.uid); // Verifica e finaliza planos vencidos
       } else {
-        authSection.classList.add("hidden");
-        dashboardSection.classList.remove("hidden"); // Deixa visível a auth se deslogado
+        authSection.classList.remove("hidden");
+        dashboardSection.classList.add("hidden");
       }
     });
 
-    // --- CARREGAR DADOS DO USUÁRIO ---
     function loadUserData(uid) {
       onSnapshot(doc(db, "users", uid), (snapshot) => {
         if (snapshot.exists()) {
@@ -643,7 +647,6 @@
           document.getElementById("profile-refcode").value = data.refCode || "";
           document.getElementById("user-balance").innerText = `$ ${(data.balance || 0).toFixed(2)}`;
 
-          // Configurar Link de Afiliado na aba correspondente
           const refLink = `${window.location.origin}${window.location.pathname}?ref=${data.refCode}`;
           document.getElementById("my-ref-link").value = refLink;
 
@@ -662,10 +665,8 @@
       });
     }
 
-    // --- CARREGAR DADOS DE AFILIADOS (Indicados e Ganhos) ---
     async function loadAffiliateData(user) {
       const usersRef = collection(db, "users");
-      // Busca utilizadores que foram indicados por este refCode
       const q = query(usersRef, where("referredBy", "==", currentUserData.refCode));
       
       onSnapshot(q, async (snapshot) => {
@@ -680,13 +681,8 @@
           return;
         }
 
-        let totalEarnings = 0;
-        const referredUids = [];
-
         snapshot.forEach((docSnap) => {
           const refUser = docSnap.data();
-          referredUids.push(refUser.uid);
-          
           const date = refUser.createdAt ? new Date(refUser.createdAt).toLocaleDateString("pt-BR") : "Recente";
           referralsListElem.innerHTML += `
             <div class="data-card">
@@ -699,10 +695,9 @@
           `;
         });
 
-        // Buscar transações de comissão geradas por estes indicados
         const transQuery = query(collection(db, "transactions"), where("userId", "==", user.uid));
         onSnapshot(transQuery, (transSnap) => {
-          totalEarnings = 0;
+          let totalEarnings = 0;
           transSnap.forEach((tDoc) => {
             const tData = tDoc.data();
             if (tData.type === "comissao_afiliado") {
@@ -722,7 +717,6 @@
       alert("Link de afiliado copiado com sucesso!");
     };
 
-    // --- CARREGAR PLANOS DO ADMIN ---
     function loadAdminPlans() {
       const plansContainer = document.getElementById("admin-plans-list");
       
@@ -737,22 +731,36 @@
         snapshot.forEach((docSnap) => {
           const plan = docSnap.data();
           const planId = docSnap.id;
+          
+          const price = plan.price || 0;
+          const durationDays = plan.durationDays || 7;
+          const totalReturn = plan.totalReturn || (price * 1.20);
 
           plansContainer.innerHTML += `
             <div class="plan-card">
-              <div class="plan-info">
-                <h4>${plan.title || 'Plano de Investimento'}</h4>
-                <div class="plan-price-tag">$ ${(plan.price || 0).toFixed(2)}</div>
-                <p>${plan.description || 'Rendimento garantido'}</p>
+              <div class="plan-header">
+                <div class="plan-title">${plan.title || 'Plano de Investimento'}</div>
+                <div class="plan-duration"><i class="fa-solid fa-clock"></i> ${durationDays} Dias</div>
               </div>
-              <button class="plan-btn" onclick="buyPlan('${planId}', '${plan.title}', ${plan.price})">Investir</button>
+              
+              <div class="plan-metrics">
+                <div class="metric-item">
+                  <span class="metric-label">Capital Inicial</span>
+                  <span class="metric-value" style="color: var(--accent-cyan);">$ ${price.toFixed(2)}</span>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-label">Retorno Total (Capital+Lucro)</span>
+                  <span class="metric-value" style="color: var(--accent-green);">$ ${totalReturn.toFixed(2)}</span>
+                </div>
+              </div>
+
+              <button class="plan-btn" onclick="buyPlan('${planId}', '${plan.title}', ${price}, ${durationDays}, ${totalReturn})">Investir $ ${price.toFixed(2)}</button>
             </div>
           `;
         });
       });
     }
 
-    // --- UPLOAD FOTO DE PERFIL ---
     window.uploadProfilePhoto = (event) => {
       const file = event.target.files[0];
       if (!file) return;
@@ -773,7 +781,6 @@
       reader.readAsDataURL(file);
     };
 
-    // --- DEPÓSITO PIX ---
     window.handlePixDeposit = async () => {
       const user = auth.currentUser;
       if (!user) return alert("Usuário não autenticado.");
@@ -801,7 +808,6 @@
       }
     };
 
-    // --- SAQUE ---
     window.handleWithdrawRequest = async () => {
       const user = auth.currentUser;
       if (!user) return alert("Usuário não autenticado.");
@@ -834,8 +840,8 @@
       }
     };
 
-    // --- COMPRAR PLANO E PAGAR 5% AUTOMÁTICO AO AFILIADO ---
-    window.buyPlan = async (planId, planTitle, planPrice) => {
+    // COMPRA DE PLANO (Inicia no status 'ativo')
+    window.buyPlan = async (planId, planTitle, planPrice, durationDays, totalReturn) => {
       const user = auth.currentUser;
       if (!user) return alert("Usuário não autenticado.");
 
@@ -844,66 +850,108 @@
         return alert(`Saldo insuficiente para adquirir o plano "${planTitle}" ($${planPrice.toFixed(2)}). Faça um depósito via PIX.`);
       }
 
-      if (!confirm(`Confirmar a aquisição do plano "${planTitle}" por $${planPrice.toFixed(2)}?`)) return;
+      if (!confirm(`Confirmar investimento no plano "${planTitle}" ($${planPrice.toFixed(2)}) com ciclo de ${durationDays} dias?`)) return;
+
+      const now = new Date().getTime();
+      const endDate = now + (durationDays * 24 * 60 * 60 * 1000);
 
       try {
-        // 1. Registra a compra do plano para o usuário atual
         await addDoc(collection(db, "transactions"), {
           userId: user.uid,
           type: "produto_adquirido",
-          description: `Aquisição do Plano: ${planTitle}`,
+          description: `Investimento: ${planTitle} (${durationDays} dias)`,
           amount: planPrice,
+          totalReturn: totalReturn,
+          startDate: now,
+          endDate: endDate,
           status: "ativo",
-          createdAt: new Date().getTime()
+          createdAt: now
         });
 
-        // Desconta o valor do saldo do usuário
         await updateDoc(doc(db, "users", user.uid), { balance: increment(-planPrice) });
 
-        // 2. SISTEMA DE AFILIADO: Verifica se o usuário tem um 'referredBy' e paga 5%
-        if (currentUserData.referredBy) {
-          const usersQuery = query(collection(db, "users"), where("refCode", "==", currentUserData.referredBy));
-          const userSnapshots = await getDocs(usersQuery);
-
-          if (!userSnapshots.empty) {
-            const referrerDoc = userSnapshots.docs[0];
-            const referrerId = referrerDoc.id;
-            const commissionAmount = planPrice * 0.05; // 5% de comissão
-
-            // Credita a comissão na conta do padrinho (afiliado)
-            await updateDoc(doc(db, "users", referrerId), {
-              balance: increment(commissionAmount)
-            });
-
-            // Registra a transação de comissão no extrato do afiliado
-            await addDoc(collection(db, "transactions"), {
-              userId: referrerId,
-              type: "comissao_afiliado",
-              description: `Comissão de 5% do indicado (${currentUserData.name})`,
-              amount: commissionAmount,
-              status: "concluido",
-              createdAt: new Date().getTime()
-            });
-
-            // Notifica o afiliado
-            await addDoc(collection(db, "transactions"), {
-              userId: referrerId,
-              type: "notificacao",
-              description: `Você recebeu uma comissão de $${commissionAmount.toFixed(2)} referente ao investimento do seu indicado!`,
-              amount: 0.00,
-              status: "concluido",
-              createdAt: new Date().getTime()
-            });
-          }
-        }
-
-        alert(`Parabéns! Plano "${planTitle}" adquirido com sucesso.`);
+        alert(`Investimento efetuado! O plano estará ativo por ${durationDays} dias. O retorno de $${totalReturn.toFixed(2)} e a comissão do seu padrinho serão concedidos ao finalizar!`);
       } catch (error) {
-        alert("Erro ao efetuar compra do plano: " + error.message);
+        alert("Erro ao efetuar investimento: " + error.message);
       }
     };
 
-    // --- ABA TRANSAÇÕES / EXTRATO ---
+    // VERIFICA E FINALIZA PLANOS VENCIDOS (+ CREDITA 5% AO AFILIADO APENAS NA FINALIZAÇÃO)
+    async function checkAndCompleteInvestments(uid) {
+      const q = query(
+        collection(db, "transactions"),
+        where("userId", "==", uid),
+        where("status", "==", "ativo")
+      );
+
+      const snapshot = await getDocs(q);
+      const now = new Date().getTime();
+
+      snapshot.forEach(async (docSnap) => {
+        const trans = docSnap.data();
+        
+        // Se a data atual ultrapassou ou igualou a data final do ciclo
+        if (trans.endDate && now >= trans.endDate) {
+          const transRef = doc(db, "transactions", docSnap.id);
+          
+          // 1. Marca o plano como concluído
+          await updateDoc(transRef, { status: "concluido" });
+
+          // 2. Credita o Retorno Total (Capital + Lucro) na conta do investidor
+          await updateDoc(doc(db, "users", uid), {
+            balance: increment(trans.totalReturn)
+          });
+
+          // Notifica o cliente
+          await addDoc(collection(db, "transactions"), {
+            userId: uid,
+            type: "notificacao",
+            description: `Seu plano (${trans.description}) foi finalizado! O valor de $${(trans.totalReturn).toFixed(2)} foi creditado no seu saldo.`,
+            amount: 0.00,
+            status: "concluido",
+            createdAt: now
+          });
+
+          // 3. PAGAMENTO DA COMISSÃO AO AFILIADO SOMENTE NA FINALIZAÇÃO
+          if (currentUserData.referredBy) {
+            const usersQuery = query(collection(db, "users"), where("refCode", "==", currentUserData.referredBy));
+            const userSnapshots = await getDocs(usersQuery);
+
+            if (!userSnapshots.empty) {
+              const referrerDoc = userSnapshots.docs[0];
+              const referrerId = referrerDoc.id;
+              const commissionAmount = trans.amount * 0.05; // 5% de comissão sobre o capital inicial do plano
+
+              // Credita no saldo do padrinho
+              await updateDoc(doc(db, "users", referrerId), {
+                balance: increment(commissionAmount)
+              });
+
+              // Registra a comissão na conta do padrinho
+              await addDoc(collection(db, "transactions"), {
+                userId: referrerId,
+                type: "comissao_afiliado",
+                description: `Comissão de 5% - Plano finalizado do indicado (${currentUserData.name})`,
+                amount: commissionAmount,
+                status: "concluido",
+                createdAt: now
+              });
+
+              // Notifica o padrinho
+              await addDoc(collection(db, "transactions"), {
+                userId: referrerId,
+                type: "notificacao",
+                description: `Você recebeu $${commissionAmount.toFixed(2)} de comissão referente à finalização de um plano do seu indicado!`,
+                amount: 0.00,
+                status: "concluido",
+                createdAt: now
+              });
+            }
+          }
+        }
+      });
+    }
+
     function loadTransactions(uid) {
       const q = query(collection(db, "transactions"), where("userId", "==", uid));
       
@@ -962,7 +1010,6 @@
       });
     }
 
-    // --- ABA NOTIFICAÇÕES ---
     function loadNotifications(uid) {
       const q = query(collection(db, "transactions"), where("userId", "==", uid));
       
@@ -997,7 +1044,6 @@
       });
     }
 
-    // --- LOGOUT ---
     const btnLogout = document.getElementById("btn-logout");
     if (btnLogout) {
       btnLogout.addEventListener("click", () => signOut(auth));
