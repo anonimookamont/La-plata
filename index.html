@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Plata - Plataforma de Investimentos</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* Estilos específicos para a navegação por abas */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    
+    .nav-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 25px;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 10px;
+    }
+    .nav-tab {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 8px 16px;
+      border-radius: 6px;
+      margin-top: 0;
+      width: auto;
+    }
+    .nav-tab.active {
+      background-color: #0284c7;
+      color: white;
+    }
+    
+    .investment-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    .investment-card {
+      background-color: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .investment-card:hover {
+      border-color: #38bdf8;
+      transform: translateY(-3px);
+    }
+    .investment-price {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #4ade80;
+      margin: 15px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TELA DE AUTENTICAÇÃO -->
+  <div id="auth-section" class="auth-container" style="max-width: 400px;">
+    <h1 style="color: #38bdf8; text-align: center; margin-bottom: 5px;">La Plata</h1>
+    <h2 id="auth-title" style="text-align: center; font-size: 1.2rem; color: #94a3b8;">Login do Investidor</h2>
+    
+    <div class="input-group" id="name-group" style="display: none;">
+      <label>Nome Completo</label>
+      <input type="text" id="auth-name" placeholder="Seu nome">
+    </div>
+    <div class="input-group">
+      <label>E-mail</label>
+      <input type="email" id="auth-email" placeholder="seu@email.com">
+    </div>
+    <div class="input-group">
+      <label>Senha</label>
+      <input type="password" id="auth-password" placeholder="******">
+    </div>
+    <button id="btn-submit">Entrar</button>
+    <button id="btn-toggle-mode" style="background: transparent; border: 1px solid #334155; margin-top: 10px;">Criar uma conta</button>
+  </div>
+
+  <!-- DASHBOARD DO CLIENTE -->
+  <div id="dashboard-section" class="dashboard-container hidden">
+    <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <div>
+        <h1 style="margin-bottom: 0;">La Plata</h1>
+        <p style="color: #94a3b8; font-size: 0.9rem;">Bem-vindo(a), <span id="user-name">...</span></p>
+      </div>
+    </header>
+
+    <!-- Menu de Abas -->
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="switchTab('overview')">Visão Geral</button>
+      <button class="nav-tab" onclick="switchTab('history')">Histórico & Notificações</button>
+      <button class="nav-tab" onclick="switchTab('profile')">Meu Perfil</button>
+    </div>
+
+    <!-- ABA 1: VISÃO GERAL -->
+    <div id="tab-overview" class="tab-content active">
+      <div class="cards-grid">
+        <div class="card">
+          <h3>Saldo Disponível</h3>
+          <span id="user-balance">R$ 0,00</span>
+        </div>
+        <div class="card" style="border-color: #4ade80;">
+          <h3>Rendimento Total</h3>
+          <span id="user-yield">R$ 0,00</span>
+        </div>
+      </div>
+
+      <h2>Adquirir Investimento</h2>
+      <p style="color: #94a3b8; margin-bottom: 15px; font-size: 0.9rem;">Escolha um dos planos abaixo para alocar seu capital:</p>
+      
+      <div class="investment-grid">
+        <div class="investment-card">
+          <h3>Plano Starter</h3>
+          <div class="investment-price">$ 100</div>
+          <button onclick="buyInvestment(100)">Investir $100</button>
+        </div>
+        <div class="investment-card">
+          <h3>Plano Bronze</h3>
+          <div class="investment-price">$ 250</div>
+          <button onclick="buyInvestment(250)">Investir $250</button>
+        </div>
+        <div class="investment-card">
+          <h3>Plano Silver</h3>
+          <div class="investment-price">$ 390</div>
+          <button onclick="buyInvestment(390)">Investir $390</button>
+        </div>
+        <div class="investment-card">
+          <h3>Plano Gold</h3>
+          <div class="investment-price">$ 670</div>
+          <button onclick="buyInvestment(670)">Investir $670</button>
+        </div>
+        <div class="investment-card">
+          <h3>Plano Platinum</h3>
+          <div class="investment-price">$ 860</div>
+          <button onclick="buyInvestment(860)">Investir $860</button>
+        </div>
+        <div class="investment-card" style="border-color: #f59e0b;">
+          <h3>Plano Diamond</h3>
+          <div class="investment-price">$ 1200</div>
+          <button onclick="buyInvestment(1200)" style="background-color: #d97706;">Investir $1200</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABA 2: HISTÓRICO & NOTIFICAÇÕES -->
+    <div id="tab-history" class="tab-content">
+      <h2>Histórico Completo de Transações & Notificações</h2>
+      <p style="color: #94a3b8; margin-bottom: 15px; font-size: 0.9rem;">Acompanhe PIX recebidos, enviados, produtos adquiridos e avisos do sistema.</p>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Tipo</th>
+            <th>Detalhes / Descrição</th>
+            <th>Valor</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="transactions-list">
+          <tr><td colspan="5" style="text-align: center;">Carregando histórico...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ABA 3: PERFIL DO USUÁRIO -->
+    <div id="tab-profile" class="tab-content">
+      <h2>Dados do Usuário</h2>
+      <div style="background-color: #0f172a; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+        <div class="input-group">
+          <label>Nome Completo</label>
+          <input type="text" id="profile-name" readonly style="background-color: #1e293b;">
+        </div>
+        <div class="input-group">
+          <label>E-mail Cadastrado</label>
+          <input type="email" id="profile-email" readonly style="background-color: #1e293b;">
+        </div>
+        <div class="input-group">
+          <label>ID do Cliente (UID)</label>
+          <input type="text" id="profile-uid" readonly style="background-color: #1e293b; color: #64748b;">
+        </div>
+      </div>
+
+      <button id="btn-logout" style="background-color: #ef4444; max-width: 250px;">Encerrar Sessão (Log out)</button>
+    </div>
+
+  </div>
+
+  <script>
+    // Função global simples para alternar as abas no frontend
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById('tab-' + tabId).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+  </script>
+  <script type="module" src="js/index.js"></script>
+</body>
+</html>
