@@ -5,264 +5,89 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>La Plata - Plataforma de Investimentos</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Roboto, sans-serif;
-    }
-
-    body {
-      background-color: #0f172a;
-      color: #f8fafc;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 15px;
-    }
-
-    .auth-container, .dashboard-container {
-      background-color: #1e293b;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-      width: 100%;
-      max-width: 900px;
-    }
-
-    .hidden { 
-      display: none !important; 
-    }
-
-    h1, h2 {
-      margin-bottom: 15px;
-      color: #38bdf8;
-    }
-
-    .input-group {
-      margin-bottom: 15px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-size: 0.9rem;
-      color: #94a3b8;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 12px;
-      border-radius: 6px;
-      border: 1px solid #334155;
-      background-color: #0f172a;
-      color: #fff;
-      font-size: 1rem;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      background-color: #0284c7;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-      margin-bottom: 25px;
-    }
-
-    .card {
-      background-color: #0f172a;
-      padding: 15px;
-      border-radius: 8px;
-      border-left: 4px solid #38bdf8;
-    }
-
-    .card span {
-      display: block;
-      font-size: 1.5rem;
-      font-weight: bold;
-      margin-top: 5px;
-      color: #4ade80;
-    }
-
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-    
-    .nav-tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-      border-bottom: 1px solid #334155;
-      padding-bottom: 10px;
-      overflow-x: auto;
-    }
-    
-    .nav-tab {
-      background: transparent;
-      border: none;
-      color: #94a3b8;
-      font-weight: bold;
-      padding: 8px 12px;
-      border-radius: 6px;
-      margin-top: 0;
-      white-space: nowrap;
-      cursor: pointer;
-    }
-    
-    .nav-tab.active {
-      background-color: #0284c7;
-      color: white;
-    }
-
-    .investment-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 12px;
-      margin-bottom: 25px;
-    }
-
-    .investment-card {
-      background-color: #0f172a;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      padding: 15px;
-      text-align: center;
-    }
-
-    .investment-price {
-      font-size: 1.3rem;
-      font-weight: bold;
-      color: #4ade80;
-      margin: 10px 0;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-    }
-
-    th, td {
-      padding: 10px;
-      text-align: left;
-      border-bottom: 1px solid #334155;
-      font-size: 0.85rem;
-    }
-
-    th {
-      background-color: #0f172a;
-      color: #38bdf8;
-    }
-
-    .badge-pending { color: #facc15; font-weight: bold; }
-    .badge-approved { color: #4ade80; font-weight: bold; }
-    .badge-rejected { color: #f87171; font-weight: bold; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+    .container { width: 100%; max-width: 480px; background: #1e293b; border-radius: 16px; padding: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+    .hidden { display: none !important; }
+    h2, h3 { text-align: center; margin-bottom: 20px; color: #38bdf8; }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; font-size: 0.85rem; color: #94a3b8; margin-bottom: 5px; }
+    input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; font-size: 1rem; }
+    input:focus { outline: none; border-color: #38bdf8; }
+    .btn { width: 100%; padding: 12px; background: #0284c7; border: none; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; font-size: 1rem; margin-top: 10px; }
+    .btn:hover { background: #0369a1; }
+    .btn-secondary { background: transparent; border: 1px solid #334155; color: #94a3b8; }
+    .btn-danger { background: #ef4444; margin-top: 20px; }
+    .card-balance { background: #0f172a; padding: 16px; border-radius: 12px; text-align: center; margin-bottom: 20px; border: 1px solid #334155; }
+    .balance-amount { font-size: 1.8rem; font-weight: bold; color: #22c55e; margin-top: 5px; }
+    .grid-plans { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+    .plan-card { background: #0f172a; border: 1px solid #334155; padding: 12px; border-radius: 8px; text-align: center; }
+    .plan-card h4 { color: #f8fafc; font-size: 0.95rem; margin-bottom: 5px; }
+    .plan-card button { width: 100%; padding: 8px; background: #22c55e; border: none; border-radius: 6px; color: #fff; font-weight: bold; margin-top: 8px; cursor: pointer; }
+    .section-title { font-size: 1rem; color: #38bdf8; margin: 20px 0 10px 0; border-bottom: 1px solid #334155; padding-bottom: 5px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
+    th, td { padding: 8px; text-align: left; border-bottom: 1px solid #334155; }
+    th { color: #94a3b8; }
+    .badge-approved { color: #22c55e; font-weight: bold; }
+    .badge-pending { color: #eab308; font-weight: bold; }
+    .badge-rejected { color: #ef4444; font-weight: bold; }
+    .notifications-box { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 10px; max-height: 150px; overflow-y: auto; }
   </style>
 </head>
 <body>
 
-  <!-- TELA DE AUTENTICAÇÃO -->
-  <div id="auth-section" class="auth-container" style="max-width: 400px;">
-    <h1 style="color: #38bdf8; text-align: center; margin-bottom: 5px;">La Plata</h1>
-    <h2 id="auth-title" style="text-align: center; font-size: 1.1rem; color: #94a3b8;">Login do Investidor</h2>
+  <div class="container">
     
-    <div class="input-group" id="name-group" style="display: none;">
-      <label>Nome Completo</label>
-      <input type="text" id="auth-name" placeholder="Seu nome">
-    </div>
-    <div class="input-group">
-      <label>E-mail</label>
-      <input type="email" id="auth-email" placeholder="seu@email.com">
-    </div>
-    <div class="input-group">
-      <label>Senha</label>
-      <input type="password" id="auth-password" placeholder="******">
-    </div>
-    <button id="btn-submit">Entrar</button>
-    <button id="btn-toggle-mode" style="background: transparent; border: 1px solid #334155;">Criar uma conta</button>
-  </div>
-
-  <!-- DASHBOARD DO CLIENTE -->
-  <div id="dashboard-section" class="dashboard-container hidden">
-    <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-      <div>
-        <h1 style="margin-bottom: 0;">La Plata</h1>
-        <p style="color: #94a3b8; font-size: 0.85rem;">Bem-vindo(a), <span id="user-name">...</span></p>
-      </div>
-    </header>
-
-    <!-- Menu de Abas -->
-    <div class="nav-tabs">
-      <button class="nav-tab active" onclick="switchTab('overview')">Visão Geral</button>
-      <button class="nav-tab" onclick="switchTab('history')">Histórico & Notificações</button>
-      <button class="nav-tab" onclick="switchTab('profile')">Meu Perfil</button>
-    </div>
-
-    <!-- ABA 1: VISÃO GERAL -->
-    <div id="tab-overview" class="tab-content active">
-      <div class="cards-grid">
-        <div class="card">
-          <h3>Saldo Disponível</h3>
-          <span id="user-balance">$ 0,00</span>
-        </div>
-        <div class="card" style="border-left-color: #4ade80;">
-          <h3>Rendimento Total</h3>
-          <span id="user-yield">$ 0,00</span>
-        </div>
-      </div>
-
-      <h2>Adquirir Investimento</h2>
-      <p style="color: #94a3b8; margin-bottom: 15px; font-size: 0.85rem;">Escolha um dos planos abaixo para alocar seu capital:</p>
+    <!-- 1. TELA DE AUTENTICAÇÃO -->
+    <div id="auth-section">
+      <h2 id="auth-title">Login do Investidor</h2>
       
-      <div class="investment-grid">
-        <div class="investment-card">
-          <h3>Plano Starter</h3>
-          <div class="investment-price">$ 100</div>
-          <button onclick="buyInvestment(100)">Investir $100</button>
-        </div>
-        <div class="investment-card">
-          <h3>Plano Bronze</h3>
-          <div class="investment-price">$ 250</div>
-          <button onclick="buyInvestment(250)">Investir $250</button>
-        </div>
-        <div class="investment-card">
-          <h3>Plano Silver</h3>
-          <div class="investment-price">$ 390</div>
-          <button onclick="buyInvestment(390)">Investir $390</button>
-        </div>
-        <div class="investment-card">
-          <h3>Plano Gold</h3>
-          <div class="investment-price">$ 670</div>
-          <button onclick="buyInvestment(670)">Investir $670</button>
-        </div>
-        <div class="investment-card">
-          <h3>Plano Platinum</h3>
-          <div class="investment-price">$ 860</div>
-          <button onclick="buyInvestment(860)">Investir $860</button>
-        </div>
-        <div class="investment-card" style="border-color: #f59e0b;">
-          <h3>Plano Diamond</h3>
-          <div class="investment-price">$ 1200</div>
-          <button onclick="buyInvestment(1200)" style="background-color: #d97706;">Investir $1200</button>
-        </div>
+      <div class="form-group" id="name-group" style="display: none;">
+        <label>Nome Completo</label>
+        <input type="text" id="auth-name" placeholder="O seu nome">
       </div>
+
+      <div class="form-group">
+        <label>E-mail</label>
+        <input type="email" id="auth-email" placeholder="seu@email.com">
+      </div>
+
+      <div class="form-group">
+        <label>Senha</label>
+        <input type="password" id="auth-password" placeholder="••••••••">
+      </div>
+
+      <button class="btn" id="btn-submit">Entrar</button>
+      <button class="btn btn-secondary" id="btn-toggle-mode">Criar uma conta</button>
     </div>
 
-    <!-- ABA 2: HISTÓRICO & NOTIFICAÇÕES -->
-    <div id="tab-history" class="tab-content">
-      <h2>Histórico Completo</h2>
-      <p style="color: #94a3b8; margin-bottom: 15px; font-size: 0.85rem;">Acompanhe extratos, produtos adquiridos e notificações.</p>
-      
+    <!-- 2. PAINEL PRINCIPAL (DASHBOARD) -->
+    <div id="dashboard-section" class="hidden">
+      <h3>Bem-vindo, <span id="user-name">Investidor</span>!</h3>
+
+      <!-- SALDO -->
+      <div class="card-balance">
+        <small style="color: #94a3b8;">Saldo Disponível</small>
+        <div class="balance-amount" id="user-balance">$ 0.00</div>
+      </div>
+
+      <!-- PLANOS DE INVESTIMENTO -->
+      <div class="section-title">Planos Disponíveis</div>
+      <div class="grid-plans">
+        <div class="plan-card">
+          <h4>Plano Start</h4>
+          <small>$ 50.00</small>
+          <button onclick="buyInvestment(50)">Investir</button>
+        </div>
+        <div class="plan-card">
+          <h4>Plano Pro</h4>
+          <small>$ 100.00</small>
+          <button onclick="buyInvestment(100)">Investir</button>
+        </div>
+      </div>
+
+      <!-- SEÇÃO 1: APENAS TRANSAÇÕES -->
+      <div class="section-title">Histórico de Transações</div>
       <div style="overflow-x: auto;">
         <table>
           <thead>
@@ -275,45 +100,36 @@
             </tr>
           </thead>
           <tbody id="transactions-list">
-            <tr><td colspan="5" style="text-align: center;">Carregando...</td></tr>
+            <tr>
+              <td colspan="5" style="text-align: center; color: #94a3b8;">A carregar transações...</td>
+            </tr>
           </tbody>
         </table>
       </div>
-    </div>
 
-    <!-- ABA 3: PERFIL DO USUÁRIO -->
-    <div id="tab-profile" class="tab-content">
-      <h2>Dados do Usuário</h2>
-      <div style="background-color: #0f172a; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-        <div class="input-group">
-          <label>Nome Completo</label>
-          <input type="text" id="profile-name" readonly style="background-color: #1e293b;">
-        </div>
-        <div class="input-group">
-          <label>E-mail Cadastrado</label>
-          <input type="email" id="profile-email" readonly style="background-color: #1e293b;">
-        </div>
-        <div class="input-group">
-          <label>ID do Cliente (UID)</label>
-          <input type="text" id="profile-uid" readonly style="background-color: #1e293b; color: #64748b;">
-        </div>
+      <!-- SEÇÃO 2: APENAS NOTIFICAÇÕES -->
+      <div class="section-title">Notificações da Conta</div>
+      <div class="notifications-box" id="notifications-list">
+        <div style="text-align: center; color: #94a3b8; padding: 10px;">A carregar notificações...</div>
       </div>
 
-      <button id="btn-logout" style="background-color: #ef4444;">Encerrar Sessão (Log out)</button>
+      <!-- PERFIL E SAÍDA -->
+      <div class="section-title">Dados da Conta</div>
+      <div class="form-group">
+        <label>E-mail Registado</label>
+        <input type="text" id="profile-email" readonly disabled>
+      </div>
+      <div class="form-group">
+        <label>ID do Utilizador (UID)</label>
+        <input type="text" id="profile-uid" readonly disabled>
+      </div>
+
+      <button class="btn btn-danger" id="btn-logout">Encerrar Sessão (Log out)</button>
     </div>
 
   </div>
 
-  <script>
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
-      
-      document.getElementById('tab-' + tabId).classList.add('active');
-      event.currentTarget.classList.add('active');
-    }
-  </script>
-  <!-- Script com parâmetro de versão para evitar cache antiga no telemóvel -->
-  <script type="module" src="Js/Index.js?v=2.5"></script>
+  <!-- IMPORTAÇÃO DO SCRIPT PRINCIPAL -->
+  <script type="module" src="./Js/Index.js?v=3.0"></script>
 </body>
 </html>
