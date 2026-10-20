@@ -11,101 +11,99 @@ import {
 
 let isSignUp = false;
 
-// Aguarda o carregamento completo do HTML para evitar que os botões falhem
-document.addEventListener("DOMContentLoaded", () => {
-  const authSection = document.getElementById("auth-section");
-  const dashboardSection = document.getElementById("dashboard-section");
-  const authTitle = document.getElementById("auth-title");
-  const nameGroup = document.getElementById("name-group");
-  const btnSubmit = document.getElementById("btn-submit");
-  const btnToggleMode = document.getElementById("btn-toggle-mode");
+// Elementos DOM
+const authSection = document.getElementById("auth-section");
+const dashboardSection = document.getElementById("dashboard-section");
+const authTitle = document.getElementById("auth-title");
+const nameGroup = document.getElementById("name-group");
+const btnSubmit = document.getElementById("btn-submit");
+const btnToggleMode = document.getElementById("btn-toggle-mode");
 
-  // Alternar entre Login e Cadastro
-  if (btnToggleMode) {
-    btnToggleMode.addEventListener("click", () => {
-      isSignUp = !isSignUp;
-      if (isSignUp) {
-        if (authTitle) authTitle.innerText = "Criar Conta - La Plata";
-        if (nameGroup) nameGroup.style.display = "block";
-        if (btnSubmit) btnSubmit.innerText = "Cadastrar";
-        btnToggleMode.innerText = "Já tenho uma conta";
-      } else {
-        if (authTitle) authTitle.innerText = "Login do Investidor";
-        if (nameGroup) nameGroup.style.display = "none";
-        if (btnSubmit) btnSubmit.innerText = "Entrar";
-        btnToggleMode.innerText = "Criar uma conta";
-      }
-    });
-  }
-
-  // Ação do Botão Enviar (Entrar / Cadastrar)
-  if (btnSubmit) {
-    btnSubmit.addEventListener("click", async () => {
-      const emailInput = document.getElementById("auth-email").value.trim();
-      const passwordInput = document.getElementById("auth-password").value.trim();
-      const nameInput = document.getElementById("auth-name") ? document.getElementById("auth-name").value.trim() : "";
-
-      if (!emailInput || !passwordInput) {
-        alert("Por favor, preencha o e-mail e a senha.");
-        return;
-      }
-
-      try {
-        if (isSignUp) {
-          if (!nameInput) {
-            alert("Por favor, preencha o seu nome completo.");
-            return;
-          }
-          
-          const res = await createUserWithEmailAndPassword(auth, emailInput, passwordInput);
-          
-          await setDoc(doc(db, "users", res.user.uid), {
-            uid: res.user.uid,
-            name: nameInput,
-            email: emailInput,
-            balance: 0.00,
-            yieldTotal: 0.00,
-            createdAt: new Date().getTime()
-          });
-
-          await addDoc(collection(db, "transactions"), {
-            userId: res.user.uid,
-            type: "notificacao",
-            description: "Bem-vindo à plataforma La Plata! Conta criada com sucesso.",
-            amount: 0.00,
-            status: "concluido",
-            createdAt: new Date().getTime()
-          });
-
-          alert("Conta criada com sucesso!");
-        } else {
-          await signInWithEmailAndPassword(auth, emailInput, passwordInput);
-        }
-      } catch (error) {
-        console.error(error);
-        alert("Erro na autenticação: " + error.message);
-      }
-    });
-  }
-
-  // Gestão de Sessão
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      if (authSection) authSection.classList.add("hidden");
-      if (dashboardSection) dashboardSection.classList.remove("hidden");
-      
-      const emailElem = document.getElementById("profile-email");
-      const uidElem = document.getElementById("profile-uid");
-      if (emailElem) emailElem.value = user.email || "";
-      if (uidElem) uidElem.value = user.uid || "";
-
-      loadUserData(user.uid);
-      loadTransactions(user.uid);
+// Alternar entre Login e Cadastro (Executa imediatamente)
+if (btnToggleMode) {
+  btnToggleMode.addEventListener("click", () => {
+    isSignUp = !isSignUp;
+    if (isSignUp) {
+      if (authTitle) authTitle.innerText = "Criar Conta - La Plata";
+      if (nameGroup) nameGroup.style.display = "block";
+      if (btnSubmit) btnSubmit.innerText = "Cadastrar";
+      btnToggleMode.innerText = "Já tenho uma conta";
     } else {
-      if (authSection) authSection.classList.remove("hidden");
-      if (dashboardSection) dashboardSection.classList.add("hidden");
+      if (authTitle) authTitle.innerText = "Login do Investidor";
+      if (nameGroup) nameGroup.style.display = "none";
+      if (btnSubmit) btnSubmit.innerText = "Entrar";
+      btnToggleMode.innerText = "Criar uma conta";
     }
   });
+}
+
+// Ação do Botão Enviar (Entrar / Cadastrar)
+if (btnSubmit) {
+  btnSubmit.addEventListener("click", async () => {
+    const emailInput = document.getElementById("auth-email").value.trim();
+    const passwordInput = document.getElementById("auth-password").value.trim();
+    const nameInput = document.getElementById("auth-name") ? document.getElementById("auth-name").value.trim() : "";
+
+    if (!emailInput || !passwordInput) {
+      alert("Por favor, preencha o e-mail e a senha.");
+      return;
+    }
+
+    try {
+      if (isSignUp) {
+        if (!nameInput) {
+          alert("Por favor, preencha o seu nome completo.");
+          return;
+        }
+        
+        const res = await createUserWithEmailAndPassword(auth, emailInput, passwordInput);
+        
+        await setDoc(doc(db, "users", res.user.uid), {
+          uid: res.user.uid,
+          name: nameInput,
+          email: emailInput,
+          balance: 0.00,
+          yieldTotal: 0.00,
+          createdAt: new Date().getTime()
+        });
+
+        await addDoc(collection(db, "transactions"), {
+          userId: res.user.uid,
+          type: "notificacao",
+          description: "Bem-vindo à plataforma La Plata! Conta criada com sucesso.",
+          amount: 0.00,
+          status: "concluido",
+          createdAt: new Date().getTime()
+        });
+
+        alert("Conta criada com sucesso!");
+      } else {
+        await signInWithEmailAndPassword(auth, emailInput, passwordInput);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Erro na autenticação: " + error.message);
+    }
+  });
+}
+
+// Gestão de Sessão Global
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    if (authSection) authSection.classList.add("hidden");
+    if (dashboardSection) dashboardSection.classList.remove("hidden");
+    
+    const emailElem = document.getElementById("profile-email");
+    const uidElem = document.getElementById("profile-uid");
+    if (emailElem) emailElem.value = user.email || "";
+    if (uidElem) uidElem.value = user.uid || "";
+
+    loadUserData(user.uid);
+    loadTransactions(user.uid);
+  } else {
+    if (authSection) authSection.classList.remove("hidden");
+    if (dashboardSection) dashboardSection.classList.add("hidden");
+  }
 });
 
 function loadUserData(uid) {
