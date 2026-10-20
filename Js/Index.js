@@ -19,7 +19,7 @@ const nameGroup = document.getElementById("name-group");
 const btnSubmit = document.getElementById("btn-submit");
 const btnToggleMode = document.getElementById("btn-toggle-mode");
 
-// Alternar entre Login e Cadastro (Executa imediatamente)
+// Alternar entre Login e Cadastro
 if (btnToggleMode) {
   btnToggleMode.addEventListener("click", () => {
     isSignUp = !isSignUp;
@@ -37,7 +37,7 @@ if (btnToggleMode) {
   });
 }
 
-// Ação do Botão Enviar (Entrar / Cadastrar)
+// Botão de Entrar / Cadastrar com Alerta de Erro Detalhado do Firebase
 if (btnSubmit) {
   btnSubmit.addEventListener("click", async () => {
     const emailInput = document.getElementById("auth-email").value.trim();
@@ -82,7 +82,7 @@ if (btnSubmit) {
       }
     } catch (error) {
       console.error(error);
-      alert("Erro na autenticação: " + error.message);
+      alert("ERRO FIREBASE: " + error.code + " - " + error.message);
     }
   });
 }
@@ -123,6 +123,7 @@ function loadUserData(uid) {
   });
 }
 
+// Comprar Investimento com Alerta de Erro Detalhado
 window.buyInvestment = async (amount) => {
   const user = auth.currentUser;
   if (!user) return alert("Utilizador não autenticado.");
@@ -142,7 +143,8 @@ window.buyInvestment = async (amount) => {
 
     alert(`Parabéns! Investimento de $${amount} adquirido com sucesso.`);
   } catch (error) {
-    alert("Erro ao processar investimento: " + error.message);
+    console.error(error);
+    alert("ERRO AO INVESTIR: " + error.code + " - " + error.message);
   }
 };
 
