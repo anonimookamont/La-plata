@@ -17,6 +17,7 @@
       --accent-cyan: #38bdf8;
       --accent-green: #10b981;
       --accent-red: #ef4444;
+      --accent-pix: #14b8a6;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --border-color: #334155;
@@ -83,6 +84,7 @@
     }
     .btn-primary { background: var(--accent-blue); color: #fff; margin-top: 10px; }
     .btn-secondary { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); margin-top: 10px; }
+    .btn-pix { background: var(--accent-pix); color: #fff; }
     .btn-danger { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
 
     /* --- HEADER APP --- */
@@ -97,7 +99,24 @@
       z-index: 10;
     }
     .user-info-brief { display: flex; align-items: center; gap: 12px; }
-    .avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--accent-blue); display: flex; justify-content: center; align-items: center; font-weight: 700; color: #fff; }
+    
+    /* Avatar Estilizado */
+    .avatar {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      background: var(--accent-blue);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: 700;
+      color: #fff;
+      overflow: hidden;
+      border: 2px solid var(--accent-cyan);
+      object-fit: cover;
+    }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+
     .greeting { font-size: 0.8rem; color: var(--text-muted); }
     .user-name-title { font-size: 1rem; font-weight: 600; color: var(--text-main); }
 
@@ -120,6 +139,16 @@
     
     .section-header { font-size: 1rem; font-weight: 600; color: var(--accent-cyan); margin: 20px 0 12px 0; }
     
+    /* PIX Deposit Card */
+    .pix-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    .pix-card h3 { font-size: 0.95rem; color: var(--accent-pix); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+
     .plans-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .plan-card {
       background: var(--bg-card);
@@ -131,6 +160,40 @@
     .plan-title { font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
     .plan-price { font-size: 1.1rem; font-weight: 700; color: var(--accent-cyan); margin: 6px 0 12px 0; }
     .plan-btn { padding: 8px; font-size: 0.85rem; border-radius: 8px; background: var(--accent-green); color: #fff; border: none; font-weight: 600; cursor: pointer; width: 100%; }
+
+    /* --- PROFILE EDIT AREA --- */
+    .profile-upload-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .profile-avatar-lg {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: var(--accent-blue);
+      margin: 0 auto 10px auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2rem;
+      color: #fff;
+      overflow: hidden;
+      border: 3px solid var(--accent-cyan);
+      position: relative;
+    }
+    .profile-avatar-lg img { width: 100%; height: 100%; object-fit: cover; }
+    .file-input-label {
+      display: inline-block;
+      padding: 8px 14px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      color: var(--accent-cyan);
+      font-weight: 500;
+    }
+    .file-input-label input { display: none; }
 
     /* --- TRANSACTIONS & NOTIFICATIONS VIEWS --- */
     .data-list { display: flex; flex-direction: column; gap: 10px; }
@@ -149,7 +212,7 @@
     .data-amount { font-size: 0.95rem; font-weight: 700; }
     
     .badge { font-size: 0.7rem; padding: 3px 8px; border-radius: 6px; font-weight: 600; text-transform: uppercase; }
-    .badge-ativo, .badge-concluido { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
+    .badge-ativo, .badge-concluido, .badge-deposito { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
     .badge-pendente { background: rgba(234, 179, 8, 0.15); color: #eab308; }
 
     .notification-card {
@@ -239,7 +302,9 @@
       <!-- Top Header -->
       <div class="app-header">
         <div class="user-info-brief">
-          <div class="avatar" id="avatar-initials">U</div>
+          <div class="avatar" id="avatar-container">
+            <span id="avatar-initials">U</span>
+          </div>
           <div>
             <div class="greeting">Olá,</div>
             <div class="user-name-title" id="user-name">Carregando...</div>
@@ -247,11 +312,23 @@
         </div>
       </div>
 
-      <!-- ABA 1: INÍCIO / INVESTIMENTOS -->
+      <!-- ABA 1: INÍCIO / INVESTIMENTOS & PIX -->
       <div id="tab-home" class="tab-content active">
         <div class="balance-card">
-          <div class="balance-title">Saldo Total Acumulado</div>
+          <div class="balance-title">Saldo Total Disponível</div>
           <div class="balance-value" id="user-balance">$ 0.00</div>
+        </div>
+
+        <!-- Área de Depósito PIX -->
+        <div class="pix-card">
+          <h3><i class="fa-solid fa-qrcode"></i> Depósito Instantâneo via PIX</h3>
+          <div class="form-group" style="margin-bottom: 10px;">
+            <label>Valor do Depósito ($)</label>
+            <input type="number" id="pix-amount" class="form-control" placeholder="Ex: 100.00" min="1" step="0.01">
+          </div>
+          <button class="btn btn-pix" onclick="handlePixDeposit()">
+            <i class="fa-solid fa-bolt"></i> Gerar e Depositar via PIX
+          </button>
         </div>
 
         <div class="section-header">Planos Recomendados</div>
@@ -271,7 +348,7 @@
 
       <!-- ABA 2: HISTÓRICO DE TRANSAÇÕES -->
       <div id="tab-history" class="tab-content">
-        <div class="section-header">Histórico de Transações</div>
+        <div class="section-header">Histórico de Transações e Depósitos</div>
         <div class="data-list" id="transactions-list">
           <div style="text-align: center; color: var(--text-muted); padding: 20px;">Buscando dados...</div>
         </div>
@@ -285,10 +362,20 @@
         </div>
       </div>
 
-      <!-- ABA 4: PERFIL -->
+      <!-- ABA 4: PERFIL (Com Foto de Perfil) -->
       <div id="tab-profile" class="tab-content">
-        <div class="section-header">Configurações de Conta</div>
+        <div class="section-header">Perfil e Conta</div>
         
+        <div class="profile-upload-container">
+          <div class="profile-avatar-lg" id="profile-avatar-lg">
+            <span id="profile-avatar-initials">U</span>
+          </div>
+          <label class="file-input-label">
+            <i class="fa-solid fa-camera"></i> Alterar Foto de Perfil
+            <input type="file" id="profile-photo-input" accept="image/*" onchange="uploadProfilePhoto(event)">
+          </label>
+        </div>
+
         <div class="form-group">
           <label>Nome Registrado</label>
           <input type="text" id="profile-name" class="form-control" readonly>
@@ -304,7 +391,7 @@
           <input type="text" id="profile-uid" class="form-control" readonly>
         </div>
 
-        <button class="btn btn-danger" id="btn-logout" style="margin-top: 30px;">
+        <button class="btn btn-danger" id="btn-logout" style="margin-top: 20px;">
           <i class="fa-solid fa-right-from-bracket"></i> Sair da Conta
         </button>
       </div>
@@ -343,7 +430,7 @@
       signOut 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { 
-      doc, setDoc, addDoc, collection, onSnapshot, query, where 
+      doc, setDoc, updateDoc, addDoc, collection, onSnapshot, query, where, increment 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     let isSignUp = false;
@@ -409,6 +496,7 @@
               name: nameInput,
               email: emailInput,
               balance: 0.00,
+              photoURL: "",
               createdAt: new Date().getTime()
             });
 
@@ -454,20 +542,96 @@
       }
     });
 
-    // --- CARREGAR DADOS DO USUÁRIO ---
+    // --- CARREGAR DADOS DO USUÁRIO & AVATAR ---
     function loadUserData(uid) {
       onSnapshot(doc(db, "users", uid), (snapshot) => {
         if (snapshot.exists()) {
           const data = snapshot.data();
           const name = data.name || "Investidor";
+          const photoURL = data.photoURL || "";
           
           document.getElementById("user-name").innerText = name;
           document.getElementById("profile-name").value = name;
           document.getElementById("user-balance").innerText = `$ ${(data.balance || 0).toFixed(2)}`;
-          document.getElementById("avatar-initials").innerText = name.charAt(0).toUpperCase();
+
+          // Atualizar Avatares (Cabeçalho e Perfil)
+          const avatarContainer = document.getElementById("avatar-container");
+          const profileAvatarLg = document.getElementById("profile-avatar-lg");
+
+          if (photoURL) {
+            avatarContainer.innerHTML = `<img src="${photoURL}" alt="Perfil">`;
+            profileAvatarLg.innerHTML = `<img src="${photoURL}" alt="Perfil">`;
+          } else {
+            const initial = name.charAt(0).toUpperCase();
+            avatarContainer.innerHTML = `<span>${initial}</span>`;
+            profileAvatarLg.innerHTML = `<span>${initial}</span>`;
+          }
         }
       });
     }
+
+    // --- UPLOAD DA FOTO DE PERFIL (Base64 para o Firestore) ---
+    window.uploadProfilePhoto = (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        const base64Image = e.target.result;
+        const user = auth.currentUser;
+        if (!user) return;
+
+        try {
+          await updateDoc(doc(db, "users", user.uid), {
+            photoURL: base64Image
+          });
+          alert("Foto de perfil atualizada com sucesso!");
+        } catch (error) {
+          console.error(error);
+          alert("Erro ao salvar foto: " + error.message);
+        }
+      };
+      reader.readAsDataURL(file);
+    };
+
+    // --- DEPÓSITO VIA PIX ---
+    window.handlePixDeposit = async () => {
+      const user = auth.currentUser;
+      if (!user) return alert("Usuário não autenticado.");
+
+      const inputVal = document.getElementById("pix-amount").value;
+      const amount = parseFloat(inputVal);
+
+      if (!amount || amount <= 0) {
+        alert("Insira um valor válido para depósito.");
+        return;
+      }
+
+      if (!confirm(`Gerar pagamento PIX no valor de $${amount.toFixed(2)}?`)) return;
+
+      try {
+        // Registra a transação de depósito
+        await addDoc(collection(db, "transactions"), {
+          userId: user.uid,
+          type: "deposito_pix",
+          description: `Depósito via PIX ($${amount.toFixed(2)})`,
+          amount: amount,
+          status: "concluido",
+          createdAt: new Date().getTime()
+        });
+
+        // Atualiza o saldo do usuário somando o depósito
+        await updateDoc(doc(db, "users", user.uid), {
+          balance: increment(amount)
+        });
+
+        document.getElementById("pix-amount").value = "";
+        alert(`Depósito PIX de $${amount.toFixed(2)} efetuado com sucesso! Saldo atualizado.`);
+      } catch (error) {
+        console.error(error);
+        alert("Erro ao processar PIX: " + error.message);
+      }
+    };
 
     // --- ADQUIRIR PLANO / INVESTIMENTO ---
     window.buyInvestment = async (amount) => {
@@ -517,6 +681,10 @@
 
         items.forEach(t => {
           const date = t.createdAt ? new Date(t.createdAt).toLocaleDateString("pt-BR") : "Recente";
+          const isDeposit = t.type === "deposito_pix";
+          const badgeClass = isDeposit ? "badge-deposito" : `badge-${t.status || 'ativo'}`;
+          const amountSign = isDeposit ? "+" : "-";
+
           list.innerHTML += `
             <div class="data-card">
               <div class="data-info">
@@ -524,8 +692,8 @@
                 <span class="data-sub">${date}</span>
               </div>
               <div>
-                <span class="data-amount">$ ${(t.amount || 0).toFixed(2)}</span>
-                <span class="badge badge-${t.status || 'ativo'}">${t.status || 'ativo'}</span>
+                <span class="data-amount" style="color: ${isDeposit ? 'var(--accent-green)' : 'inherit'}">${amountSign} $ ${(t.amount || 0).toFixed(2)}</span>
+                <span class="badge ${badgeClass}">${isDeposit ? 'PIX' : (t.status || 'ativo')}</span>
               </div>
             </div>
           `;
@@ -533,7 +701,7 @@
       });
     }
 
-    // --- ABA NOTIFICAÇÕES (Exclui investimentos) ---
+    // --- ABA NOTIFICAÇÕES (Exclui investimentos/transações) ---
     function loadNotifications(uid) {
       const q = query(collection(db, "transactions"), where("userId", "==", uid));
       
@@ -576,4 +744,3 @@
   </script>
 </body>
 </html>
-        
