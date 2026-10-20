@@ -85,6 +85,7 @@
     .btn-primary { background: var(--accent-blue); color: #fff; margin-top: 10px; }
     .btn-secondary { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); margin-top: 10px; }
     .btn-pix { background: var(--accent-pix); color: #fff; }
+    .btn-withdraw { background: #d97706; color: #fff; }
     .btn-danger { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
 
     /* --- HEADER APP --- */
@@ -100,7 +101,6 @@
     }
     .user-info-brief { display: flex; align-items: center; gap: 12px; }
     
-    /* Avatar Estilizado */
     .avatar {
       width: 45px;
       height: 45px;
@@ -139,27 +139,31 @@
     
     .section-header { font-size: 1rem; font-weight: 600; color: var(--accent-cyan); margin: 20px 0 12px 0; }
     
-    /* PIX Deposit Card */
-    .pix-card {
+    /* Cards de Ação (PIX e Saque) */
+    .action-card {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
       border-radius: 14px;
       padding: 16px;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
-    .pix-card h3 { font-size: 0.95rem; color: var(--accent-pix); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+    .action-card h3 { font-size: 0.95rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
 
-    .plans-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    /* Grid Dinâmica de Planos do Admin */
+    .plans-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
     .plan-card {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
       border-radius: 12px;
       padding: 16px;
-      text-align: center;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    .plan-title { font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
-    .plan-price { font-size: 1.1rem; font-weight: 700; color: var(--accent-cyan); margin: 6px 0 12px 0; }
-    .plan-btn { padding: 8px; font-size: 0.85rem; border-radius: 8px; background: var(--accent-green); color: #fff; border: none; font-weight: 600; cursor: pointer; width: 100%; }
+    .plan-info h4 { font-size: 1rem; font-weight: 600; color: var(--text-main); margin-bottom: 4px; }
+    .plan-info p { font-size: 0.8rem; color: var(--text-muted); }
+    .plan-price-tag { font-size: 1.1rem; font-weight: 700; color: var(--accent-cyan); margin-bottom: 8px; }
+    .plan-btn { padding: 8px 16px; font-size: 0.85rem; border-radius: 8px; background: var(--accent-green); color: #fff; border: none; font-weight: 600; cursor: pointer; }
 
     /* --- PROFILE EDIT AREA --- */
     .profile-upload-container {
@@ -213,6 +217,7 @@
     
     .badge { font-size: 0.7rem; padding: 3px 8px; border-radius: 6px; font-weight: 600; text-transform: uppercase; }
     .badge-ativo, .badge-concluido, .badge-deposito { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
+    .badge-saque { background: rgba(217, 119, 6, 0.15); color: #d97706; }
     .badge-pendente { background: rgba(234, 179, 8, 0.15); color: #eab308; }
 
     .notification-card {
@@ -312,7 +317,7 @@
         </div>
       </div>
 
-      <!-- ABA 1: INÍCIO / INVESTIMENTOS & PIX -->
+      <!-- ABA 1: INÍCIO (Depósito PIX, Saque e Planos do Admin) -->
       <div id="tab-home" class="tab-content active">
         <div class="balance-card">
           <div class="balance-title">Saldo Total Disponível</div>
@@ -320,35 +325,39 @@
         </div>
 
         <!-- Área de Depósito PIX -->
-        <div class="pix-card">
-          <h3><i class="fa-solid fa-qrcode"></i> Depósito Instantâneo via PIX</h3>
+        <div class="action-card">
+          <h3 style="color: var(--accent-pix);"><i class="fa-solid fa-qrcode"></i> Depósito Instantâneo PIX</h3>
           <div class="form-group" style="margin-bottom: 10px;">
             <label>Valor do Depósito ($)</label>
             <input type="number" id="pix-amount" class="form-control" placeholder="Ex: 100.00" min="1" step="0.01">
           </div>
           <button class="btn btn-pix" onclick="handlePixDeposit()">
-            <i class="fa-solid fa-bolt"></i> Gerar e Depositar via PIX
+            <i class="fa-solid fa-bolt"></i> Depositar via PIX
           </button>
         </div>
 
-        <div class="section-header">Planos Recomendados</div>
-        <div class="plans-grid">
-          <div class="plan-card">
-            <div class="plan-title">Plano Start</div>
-            <div class="plan-price">$ 50.00</div>
-            <button class="plan-btn" onclick="buyInvestment(50)">Investir</button>
+        <!-- Área de Saque -->
+        <div class="action-card">
+          <h3 style="color: #d97706;"><i class="fa-solid fa-wallet"></i> Solicitar Saque</h3>
+          <div class="form-group" style="margin-bottom: 10px;">
+            <label>Valor do Saque ($)</label>
+            <input type="number" id="withdraw-amount" class="form-control" placeholder="Ex: 50.00" min="1" step="0.01">
           </div>
-          <div class="plan-card">
-            <div class="plan-title">Plano Pro</div>
-            <div class="plan-price">$ 100.00</div>
-            <button class="plan-btn" onclick="buyInvestment(100)">Investir</button>
-          </div>
+          <button class="btn btn-withdraw" onclick="handleWithdrawRequest()">
+            <i class="fa-solid fa-paper-plane"></i> Pedir Saque
+          </button>
+        </div>
+
+        <!-- Planos Cadastrados pelo Admin -->
+        <div class="section-header">Planos de Investimento Disponíveis</div>
+        <div class="plans-grid" id="admin-plans-list">
+          <div style="text-align: center; color: var(--text-muted); padding: 15px;">A carregar planos...</div>
         </div>
       </div>
 
       <!-- ABA 2: HISTÓRICO DE TRANSAÇÕES -->
       <div id="tab-history" class="tab-content">
-        <div class="section-header">Histórico de Transações e Depósitos</div>
+        <div class="section-header">Histórico Geral</div>
         <div class="data-list" id="transactions-list">
           <div style="text-align: center; color: var(--text-muted); padding: 20px;">Buscando dados...</div>
         </div>
@@ -362,7 +371,7 @@
         </div>
       </div>
 
-      <!-- ABA 4: PERFIL (Com Foto de Perfil) -->
+      <!-- ABA 4: PERFIL -->
       <div id="tab-profile" class="tab-content">
         <div class="section-header">Perfil e Conta</div>
         
@@ -430,10 +439,11 @@
       signOut 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { 
-      doc, setDoc, updateDoc, addDoc, collection, onSnapshot, query, where, increment 
+      doc, setDoc, updateDoc, addDoc, collection, onSnapshot, query, where, increment, getDoc 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     let isSignUp = false;
+    let currentUserData = { balance: 0 };
 
     // --- CONTROLE DE ABAS (Navegação Inferior) ---
     window.switchTab = (tabName) => {
@@ -490,7 +500,6 @@
             
             const res = await createUserWithEmailAndPassword(auth, emailInput, passwordInput);
             
-            // Gravação na coleção raiz 'users'
             await setDoc(doc(db, "users", res.user.uid), {
               uid: res.user.uid,
               name: nameInput,
@@ -500,7 +509,6 @@
               createdAt: new Date().getTime()
             });
 
-            // Gravação de notificação inicial na coleção raiz 'transactions'
             await addDoc(collection(db, "transactions"), {
               userId: res.user.uid,
               type: "notificacao",
@@ -536,6 +544,7 @@
         loadUserData(user.uid);
         loadTransactions(user.uid);
         loadNotifications(user.uid);
+        loadAdminPlans();
       } else {
         authSection.classList.remove("hidden");
         dashboardSection.classList.add("hidden");
@@ -547,6 +556,7 @@
       onSnapshot(doc(db, "users", uid), (snapshot) => {
         if (snapshot.exists()) {
           const data = snapshot.data();
+          currentUserData = data;
           const name = data.name || "Investidor";
           const photoURL = data.photoURL || "";
           
@@ -554,7 +564,6 @@
           document.getElementById("profile-name").value = name;
           document.getElementById("user-balance").innerText = `$ ${(data.balance || 0).toFixed(2)}`;
 
-          // Atualizar Avatares (Cabeçalho e Perfil)
           const avatarContainer = document.getElementById("avatar-container");
           const profileAvatarLg = document.getElementById("profile-avatar-lg");
 
@@ -570,7 +579,39 @@
       });
     }
 
-    // --- UPLOAD DA FOTO DE PERFIL (Base64 para o Firestore) ---
+    // --- CARREGAR PLANOS CRIADOS PELO ADMIN (Coleção raiz 'plans') ---
+    function loadAdminPlans() {
+      const plansContainer = document.getElementById("admin-plans-list");
+      
+      onSnapshot(collection(db, "plans"), (snapshot) => {
+        plansContainer.innerHTML = "";
+        
+        if (snapshot.empty) {
+          plansContainer.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 15px;">Nenhum plano disponível no momento.</div>`;
+          return;
+        }
+
+        snapshot.forEach((docSnap) => {
+          const plan = docSnap.data();
+          const planId = docSnap.id;
+
+          plansContainer.innerHTML += `
+            <div class="plan-card">
+              <div class="plan-info">
+                <h4>${plan.title || 'Plano de Investimento'}</h4>
+                <div class="plan-price-tag">$ ${(plan.price || 0).toFixed(2)}</div>
+                <p>${plan.description || 'Rendimento garantido'}</p>
+              </div>
+              <button class="plan-btn" onclick="buyPlan('${planId}', '${plan.title}', ${plan.price})">Investir</button>
+            </div>
+          `;
+        });
+      }, (error) => {
+        console.error("Erro ao carregar planos:", error);
+      });
+    }
+
+    // --- UPLOAD DA FOTO DE PERFIL ---
     window.uploadProfilePhoto = (event) => {
       const file = event.target.files[0];
       if (!file) return;
@@ -582,9 +623,7 @@
         if (!user) return;
 
         try {
-          await updateDoc(doc(db, "users", user.uid), {
-            photoURL: base64Image
-          });
+          await updateDoc(doc(db, "users", user.uid), { photoURL: base64Image });
           alert("Foto de perfil atualizada com sucesso!");
         } catch (error) {
           console.error(error);
@@ -599,18 +638,12 @@
       const user = auth.currentUser;
       if (!user) return alert("Usuário não autenticado.");
 
-      const inputVal = document.getElementById("pix-amount").value;
-      const amount = parseFloat(inputVal);
-
-      if (!amount || amount <= 0) {
-        alert("Insira um valor válido para depósito.");
-        return;
-      }
+      const amount = parseFloat(document.getElementById("pix-amount").value);
+      if (!amount || amount <= 0) return alert("Insira um valor válido para depósito.");
 
       if (!confirm(`Gerar pagamento PIX no valor de $${amount.toFixed(2)}?`)) return;
 
       try {
-        // Registra a transação de depósito
         await addDoc(collection(db, "transactions"), {
           userId: user.uid,
           type: "deposito_pix",
@@ -620,43 +653,82 @@
           createdAt: new Date().getTime()
         });
 
-        // Atualiza o saldo do usuário somando o depósito
-        await updateDoc(doc(db, "users", user.uid), {
-          balance: increment(amount)
-        });
-
+        await updateDoc(doc(db, "users", user.uid), { balance: increment(amount) });
         document.getElementById("pix-amount").value = "";
-        alert(`Depósito PIX de $${amount.toFixed(2)} efetuado com sucesso! Saldo atualizado.`);
+        alert(`Depósito PIX de $${amount.toFixed(2)} efetuado com sucesso!`);
       } catch (error) {
-        console.error(error);
         alert("Erro ao processar PIX: " + error.message);
       }
     };
 
-    // --- ADQUIRIR PLANO / INVESTIMENTO ---
-    window.buyInvestment = async (amount) => {
+    // --- SOLICITAR SAQUE ---
+    window.handleWithdrawRequest = async () => {
       const user = auth.currentUser;
       if (!user) return alert("Usuário não autenticado.");
 
-      if (!confirm(`Confirmar a aquisição do plano no valor de $${amount}?`)) return;
+      const amount = parseFloat(document.getElementById("withdraw-amount").value);
+      if (!amount || amount <= 0) return alert("Insira um valor válido para saque.");
+
+      const currentBalance = currentUserData.balance || 0;
+      if (amount > currentBalance) {
+        return alert(`Saldo insuficiente! O seu saldo atual é de $${currentBalance.toFixed(2)}.`);
+      }
+
+      if (!confirm(`Solicitar saque no valor de $${amount.toFixed(2)}?`)) return;
+
+      try {
+        // Registra a transação de saque como pendente de aprovação
+        await addDoc(collection(db, "transactions"), {
+          userId: user.uid,
+          type: "saque",
+          description: `Solicitação de Saque ($${amount.toFixed(2)})`,
+          amount: amount,
+          status: "pendente",
+          createdAt: new Date().getTime()
+        });
+
+        // Desconta o valor do saldo do usuário imediatamente
+        await updateDoc(doc(db, "users", user.uid), { balance: increment(-amount) });
+
+        document.getElementById("withdraw-amount").value = "";
+        alert("Solicitação de saque enviada com sucesso! O valor ficará pendente de aprovação.");
+      } catch (error) {
+        alert("Erro ao solicitar saque: " + error.message);
+      }
+    };
+
+    // --- ADQUIRIR PLANO DO ADMIN ---
+    window.buyPlan = async (planId, planTitle, planPrice) => {
+      const user = auth.currentUser;
+      if (!user) return alert("Usuário não autenticado.");
+
+      const currentBalance = currentUserData.balance || 0;
+      if (planPrice > currentBalance) {
+        return alert(`Saldo insuficiente para adquirir o plano "${planTitle}" ($${planPrice.toFixed(2)}). Faça um depósito via PIX.`);
+      }
+
+      if (!confirm(`Confirmar a aquisição do plano "${planTitle}" por $${planPrice.toFixed(2)}?`)) return;
 
       try {
         await addDoc(collection(db, "transactions"), {
           userId: user.uid,
           type: "produto_adquirido",
-          description: `Aquisição de Plano ($${amount})`,
-          amount: amount,
+          description: `Aquisição do Plano: ${planTitle}`,
+          amount: planPrice,
           status: "ativo",
           createdAt: new Date().getTime()
         });
 
-        alert("Investimento registrado com sucesso!");
+        // Desconta o valor do plano do saldo
+        await updateDoc(doc(db, "users", user.uid), { balance: increment(-planPrice) });
+
+        alert(`Parabéns! Plano "${planTitle}" adquirido com sucesso.`);
       } catch (error) {
-        alert("Erro ao efetuar compra: " + error.message);
+        alert("Erro ao efetuar compra do plano: " + error.message);
       }
     };
 
-    // --- ABA TRANSAÇÕES (Exclui notificações) ---
+    // --- ABA TRANSAÇÕES ---
     function loadTransactions(uid) {
       const q = query(collection(db, "transactions"), where("userId", "==", uid));
       
@@ -682,8 +754,21 @@
         items.forEach(t => {
           const date = t.createdAt ? new Date(t.createdAt).toLocaleDateString("pt-BR") : "Recente";
           const isDeposit = t.type === "deposito_pix";
-          const badgeClass = isDeposit ? "badge-deposito" : `badge-${t.status || 'ativo'}`;
-          const amountSign = isDeposit ? "+" : "-";
+          const isWithdraw = t.type === "saque";
+          
+          let badgeClass = `badge-${t.status || 'ativo'}`;
+          let amountColor = 'inherit';
+          let amountSign = "-";
+
+          if (isDeposit) {
+            badgeClass = "badge-deposito";
+            amountColor = "var(--accent-green)";
+            amountSign = "+";
+          } else if (isWithdraw) {
+            badgeClass = "badge-saque";
+            amountColor = "#d97706";
+            amountSign = "-";
+          }
 
           list.innerHTML += `
             <div class="data-card">
@@ -692,8 +777,8 @@
                 <span class="data-sub">${date}</span>
               </div>
               <div>
-                <span class="data-amount" style="color: ${isDeposit ? 'var(--accent-green)' : 'inherit'}">${amountSign} $ ${(t.amount || 0).toFixed(2)}</span>
-                <span class="badge ${badgeClass}">${isDeposit ? 'PIX' : (t.status || 'ativo')}</span>
+                <span class="data-amount" style="color: ${amountColor}">${amountSign} $ ${(t.amount || 0).toFixed(2)}</span>
+                <span class="badge ${badgeClass}">${t.status || 'ativo'}</span>
               </div>
             </div>
           `;
@@ -701,7 +786,7 @@
       });
     }
 
-    // --- ABA NOTIFICAÇÕES (Exclui investimentos/transações) ---
+    // --- ABA NOTIFICAÇÕES ---
     function loadNotifications(uid) {
       const q = query(collection(db, "transactions"), where("userId", "==", uid));
       
