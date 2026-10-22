@@ -43,23 +43,41 @@
 
     .hidden { display: none !important; }
 
-    /* LOGO & SIMBOLO DO LEÃO */
-    .brand-logo {
+    /* LOGO & BANNER DO LEÃO */
+    .auth-banner {
+      width: 100%;
+      height: 140px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #1f1a0e 0%, #0d0d12 100%);
+      border: 1px solid var(--border-gold);
       display: flex;
       flex-direction: column;
+      justify-content: center;
       align-items: center;
-      gap: 6px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     }
-    .brand-lion-icon {
-      font-size: 2.8rem;
-      background: var(--gold-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0px 2px 10px rgba(212, 175, 55, 0.3));
+    .auth-banner::before {
+      content: '';
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      background: rgba(212, 175, 55, 0.08);
+      border-radius: 50%;
+      blur: 25px;
+    }
+    .brand-lion-svg {
+      width: 50px;
+      height: 50px;
+      fill: var(--gold-primary);
+      filter: drop-shadow(0px 2px 8px rgba(212, 175, 55, 0.4));
+      margin-bottom: 4px;
     }
     .brand-name {
       font-family: 'Cinzel', serif;
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       font-weight: 700;
       letter-spacing: 2px;
       background: var(--gold-gradient);
@@ -67,31 +85,31 @@
       -webkit-text-fill-color: transparent;
     }
     .brand-sub {
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       letter-spacing: 3px;
       color: var(--text-muted);
       text-transform: uppercase;
-      margin-top: -4px;
+      margin-top: -2px;
     }
 
-    /* --- TELA DE AUTENTICAÇÃO --- */
+    /* --- TELA DE AUTENTICAÇÃO ESTILO AGROFARM --- */
     .auth-container {
-      padding: 50px 24px;
+      padding: 30px 20px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       min-height: 100vh;
     }
-    .auth-header { text-align: center; margin-bottom: 35px; }
-    .auth-slogan { font-size: 0.85rem; color: var(--text-muted); margin-top: 15px; font-weight: 400; line-height: 1.4; }
+    .auth-title { font-size: 1.6rem; font-weight: 800; color: #ffffff; margin-bottom: 4px; }
+    .auth-subtitle { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 24px; }
 
-    .form-group { margin-bottom: 18px; }
-    .form-group label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .input-wrapper { position: relative; }
-    .input-wrapper i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--gold-primary); font-size: 0.9rem; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-main); margin-bottom: 6px; }
+    
+    .input-wrapper { position: relative; display: flex; align-items: center; }
     .form-control {
       width: 100%;
-      padding: 14px 16px 14px 44px;
+      padding: 14px 16px;
       background: var(--bg-input);
       border: 1px solid var(--bg-card-border);
       border-radius: 12px;
@@ -100,13 +118,35 @@
       transition: all 0.2s;
     }
     .form-control:focus { outline: none; border-color: var(--gold-primary); box-shadow: 0 0 10px rgba(212, 175, 55, 0.15); }
+    
+    .toggle-password {
+      position: absolute;
+      right: 14px;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .ref-toggle-btn {
+      color: var(--gold-primary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      margin-bottom: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
 
     .btn {
       width: 100%;
       padding: 15px;
       border: none;
       border-radius: 12px;
-      font-size: 0.95rem;
+      font-size: 1rem;
       font-weight: 700;
       cursor: pointer;
       display: flex;
@@ -121,22 +161,23 @@
       box-shadow: 0 4px 15px rgba(212, 175, 55, 0.25);
     }
     .btn-gold:active { transform: scale(0.98); }
-    .btn-outline {
-      background: transparent;
-      border: 1px solid var(--bg-card-border);
+
+    .auth-switch-text {
+      text-align: center;
+      font-size: 0.85rem;
       color: var(--text-muted);
-      margin-top: 10px;
+      margin-top: 18px;
     }
-    .btn-secondary-action {
-      background: #1c1c26;
-      border: 1px solid var(--border-gold);
+    .auth-switch-link {
       color: var(--gold-primary);
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
     }
-    .btn-danger { background: rgba(239, 68, 68, 0.12); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
 
     /* --- APP HEADER --- */
     .app-header {
-      padding: 20px 20px 15px 20px;
+      padding: 18px 20px 14px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -149,8 +190,8 @@
     .user-info-brief { display: flex; align-items: center; gap: 12px; }
     
     .avatar {
-      width: 44px;
-      height: 44px;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
       background: #1a1a24;
       display: flex;
@@ -164,7 +205,7 @@
     .avatar img { width: 100%; height: 100%; object-fit: cover; }
 
     .greeting { font-size: 0.75rem; color: var(--text-muted); }
-    .user-name-title { font-size: 1rem; font-weight: 700; color: var(--text-main); }
+    .user-name-title { font-size: 0.95rem; font-weight: 700; color: var(--text-main); }
 
     /* --- ABAS DE NAVEGAÇÃO --- */
     .tab-content { padding: 20px; display: none; }
@@ -180,17 +221,6 @@
       position: relative;
       overflow: hidden;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-    .balance-card::before {
-      content: '';
-      position: absolute;
-      top: -30px;
-      right: -30px;
-      width: 100px;
-      height: 100px;
-      background: rgba(212, 175, 55, 0.08);
-      border-radius: 50%;
-      blur: 20px;
     }
     .balance-title { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
     .balance-value { font-size: 2.2rem; font-weight: 800; color: #ffffff; margin: 8px 0; }
@@ -321,21 +351,26 @@
 
   <div class="app-viewport">
     
-    <!-- 1. TELA DE AUTENTICAÇÃO -->
+    <!-- 1. TELA DE AUTENTICAÇÃO (INSPIRADA NO LAYOUT SOLICITADO) -->
     <div id="auth-section" class="auth-container">
-      <div class="auth-header">
-        <div class="brand-logo">
-          <i class="fa-solid fa-shield-cat brand-lion-icon"></i>
-          <span class="brand-name">LÁ PLATA</span>
-          <span class="brand-sub">INVESTIMENTOS</span>
-        </div>
-        <p class="auth-slogan">Seu futuro financeiro começa com as melhores decisões de hoje.</p>
+      
+      <!-- Banner com Leão em Destaque -->
+      <div class="auth-banner">
+        <!-- SVG Vetorial do Leão -->
+        <svg class="brand-lion-svg" viewBox="0 0 24 24">
+          <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4C13.2,4 14.3,4.3 15.3,4.9C14.7,5.5 14,6.3 14,7.5C14,8.9 14.9,9.8 15.8,10.7C16.4,11.3 17,12 17,13C17,14.4 15.6,15.2 14.5,15.6C13.8,15.8 13,16 12,16C11,16 10.2,15.8 9.5,15.6C8.4,15.2 7,14.4 7,13C7,12 7.6,11.3 8.2,10.7C9.1,9.8 10,8.9 10,7.5C10,6.3 9.3,5.5 8.7,4.9C9.7,4.3 10.8,4 12,4Z"/>
+        </svg>
+        <span class="brand-name">LÁ PLATA</span>
+        <span class="brand-sub">INVESTIMENTOS</span>
       </div>
 
-      <div class="form-group" id="name-group" style="display: none;">
-        <label>Nome Completo</label>
+      <h1 class="auth-title" id="auth-main-title">Criar conta</h1>
+      <p class="auth-subtitle" id="auth-main-subtitle">Comece a investir na plataforma em minutos</p>
+
+      <!-- Formulário -->
+      <div class="form-group" id="name-group">
+        <label>Nome completo</label>
         <div class="input-wrapper">
-          <i class="fa-solid fa-user"></i>
           <input type="text" id="auth-name" class="form-control" placeholder="Seu nome completo">
         </div>
       </div>
@@ -343,37 +378,53 @@
       <div class="form-group">
         <label>E-mail</label>
         <div class="input-wrapper">
-          <i class="fa-solid fa-envelope"></i>
           <input type="email" id="auth-email" class="form-control" placeholder="seu@email.com">
+        </div>
+      </div>
+
+      <div class="form-group" id="phone-group">
+        <label>Telefone</label>
+        <div class="input-wrapper">
+          <input type="tel" id="auth-phone" class="form-control" placeholder="(00) 00000-0000" maxlength="15" oninput="maskPhone(this)">
         </div>
       </div>
 
       <div class="form-group">
         <label>Senha</label>
         <div class="input-wrapper">
-          <i class="fa-solid fa-lock"></i>
-          <input type="password" id="auth-password" class="form-control" placeholder="••••••••">
+          <input type="password" id="auth-password" class="form-control" placeholder="Mínimo de 6 caracteres">
+          <i class="fa-regular fa-eye toggle-password" id="btn-toggle-password" onclick="togglePasswordVisibility()"></i>
         </div>
       </div>
 
-      <div class="form-group" id="ref-group" style="display: none;">
-        <label>Código de Indicação (Opcional)</label>
+      <!-- Código de indicação opcional -->
+      <div id="ref-toggle-container">
+        <button type="button" class="ref-toggle-btn" onclick="toggleRefInput()">
+          <i class="fa-solid fa-tag"></i> Tenho um código de indicação
+        </button>
+      </div>
+
+      <div class="form-group hidden" id="ref-group">
+        <label>Código de Indicação</label>
         <div class="input-wrapper">
-          <i class="fa-solid fa-user-plus"></i>
-          <input type="text" id="auth-ref" class="form-control" placeholder="Código do padrinho">
+          <input type="text" id="auth-ref" class="form-control" placeholder="Insira o código do seu padrinho">
         </div>
       </div>
 
       <button class="btn btn-gold" id="btn-submit">
-        <span>Acessar Painel</span> <i class="fa-solid fa-arrow-right"></i>
+        <span id="btn-submit-label">Criar conta</span>
       </button>
-      <button class="btn btn-outline" id="btn-toggle-mode">Criar uma conta</button>
+
+      <div class="auth-switch-text">
+        <span id="auth-switch-msg">Já tem conta?</span> 
+        <a class="auth-switch-link" id="btn-toggle-mode">Entrar</a>
+      </div>
     </div>
 
     <!-- 2. PAINEL PRINCIPAL DO INVESTIDOR -->
     <div id="dashboard-section" class="hidden">
       
-      <!-- Top Header com Logo Minimalista -->
+      <!-- Top Header -->
       <div class="app-header">
         <div class="user-info-brief">
           <div class="avatar" id="avatar-container">
@@ -384,12 +435,12 @@
             <div class="user-name-title" id="user-name">Investidor</div>
           </div>
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 1rem; font-weight: 700; color: var(--gold-primary);">
+        <div style="font-family: 'Cinzel', serif; font-size: 0.95rem; font-weight: 700; color: var(--gold-primary); display: flex; align-items: center; gap: 6px;">
           <i class="fa-solid fa-shield-cat"></i> LÁ PLATA
         </div>
       </div>
 
-      <!-- ABA 1: INÍCIO / PAINEL -->
+      <!-- ABA 1: INÍCIO -->
       <div id="tab-home" class="tab-content active">
         <div class="balance-card">
           <div class="balance-title">Patrimônio Total</div>
@@ -416,7 +467,7 @@
             <label>Valor do Saque ($)</label>
             <input type="number" id="withdraw-amount" class="form-control" placeholder="Ex: 50.00" min="1" step="0.01">
           </div>
-          <button class="btn btn-secondary-action" onclick="handleWithdrawRequest()">
+          <button class="btn btn-gold" style="background: #1c1c26; border: 1px solid var(--border-gold); color: var(--gold-primary);" onclick="handleWithdrawRequest()">
             <i class="fa-solid fa-paper-plane"></i> Pedir Saque
           </button>
         </div>
@@ -453,7 +504,7 @@
         </div>
       </div>
 
-      <!-- ABA 3: EXTRATO / HISTÓRICO -->
+      <!-- ABA 3: EXTRATO -->
       <div id="tab-history" class="tab-content">
         <div class="section-header"><i class="fa-solid fa-receipt"></i> Histórico & Movimentações</div>
         <div class="data-list" id="transactions-list">
@@ -461,7 +512,7 @@
         </div>
       </div>
 
-      <!-- ABA 4: AVISOS / NOTIFICAÇÕES -->
+      <!-- ABA 4: AVISOS -->
       <div id="tab-notifications" class="tab-content">
         <div class="section-header"><i class="fa-solid fa-bell"></i> Notificações</div>
         <div id="notifications-list">
@@ -469,7 +520,7 @@
         </div>
       </div>
 
-      <!-- ABA 5: PERFIL & SEGURANÇA -->
+      <!-- ABA 5: PERFIL -->
       <div id="tab-profile" class="tab-content">
         <div class="section-header"><i class="fa-solid fa-user-shield"></i> Perfil & Segurança</div>
         
@@ -494,11 +545,16 @@
         </div>
 
         <div class="form-group">
+          <label>Telefone</label>
+          <input type="text" id="profile-phone" class="form-control" readonly>
+        </div>
+
+        <div class="form-group">
           <label>Código de Afiliado</label>
           <input type="text" id="profile-refcode" class="form-control" readonly>
         </div>
 
-        <button class="btn btn-danger" id="btn-logout" style="margin-top: 20px;">
+        <button class="btn btn-danger" id="btn-logout" style="background: rgba(239, 68, 68, 0.12); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); margin-top: 20px;">
           <i class="fa-solid fa-right-from-bracket"></i> Encerrar Sessão
         </button>
       </div>
@@ -544,19 +600,50 @@
       doc, setDoc, updateDoc, addDoc, collection, onSnapshot, query, where, increment, getDocs 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    let isSignUp = false;
+    let isSignUp = true; // Inicia em modo Cadastro idêntico à imagem
     let currentUserData = { balance: 0, refCode: "", referredBy: null };
+
+    // MÁSCARA AUTOMÁTICA DE TELEFONE
+    window.maskPhone = (input) => {
+      let value = input.value.replace(/\D/g, "");
+      if (value.length > 11) value = value.slice(0, 11);
+      
+      if (value.length > 6) {
+        input.value = `(${value.slice(0, 2)}) ${value.slice(2, 7)}-${value.slice(7)}`;
+      } else if (value.length > 2) {
+        input.value = `(${value.slice(0, 2)}) ${value.slice(2)}`;
+      } else if (value.length > 0) {
+        input.value = `(${value}`;
+      } else {
+        input.value = "";
+      }
+    };
+
+    // MOSTRAR/OCULTAR SENHA
+    window.togglePasswordVisibility = () => {
+      const passInput = document.getElementById("auth-password");
+      const toggleBtn = document.getElementById("btn-toggle-password");
+      if (passInput.type === "password") {
+        passInput.type = "text";
+        toggleBtn.classList.replace("fa-eye", "fa-eye-slash");
+      } else {
+        passInput.type = "password";
+        toggleBtn.classList.replace("fa-eye-slash", "fa-eye");
+      }
+    };
+
+    // EXIBIR CAMPO DE INDICAÇÃO
+    window.toggleRefInput = () => {
+      const refGroup = document.getElementById("ref-group");
+      refGroup.classList.toggle("hidden");
+    };
 
     window.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
       const refParam = urlParams.get('ref');
       if (refParam) {
-        isSignUp = true;
-        document.getElementById('name-group').style.display = 'block';
-        document.getElementById('ref-group').style.display = 'block';
+        document.getElementById('ref-group').classList.remove('hidden');
         document.getElementById('auth-ref').value = refParam;
-        document.getElementById('btn-submit').querySelector('span').innerText = "Cadastrar";
-        document.getElementById('btn-toggle-mode').innerText = "Já tenho uma conta";
       }
     });
 
@@ -574,34 +661,48 @@
       }
     };
 
+    // ALTERNAR ENTRE CRIAR CONTA E ENTRAR
     const btnToggleMode = document.getElementById("btn-toggle-mode");
     const nameGroup = document.getElementById("name-group");
+    const phoneGroup = document.getElementById("phone-group");
+    const refToggleContainer = document.getElementById("ref-toggle-container");
     const refGroup = document.getElementById("ref-group");
-    const btnSubmit = document.getElementById("btn-submit");
 
     if (btnToggleMode) {
       btnToggleMode.addEventListener("click", () => {
         isSignUp = !isSignUp;
         if (isSignUp) {
-          nameGroup.style.display = "block";
-          refGroup.style.display = "block";
-          btnSubmit.querySelector("span").innerText = "Cadastrar Conta";
-          btnToggleMode.innerText = "Já tenho uma conta";
+          document.getElementById("auth-main-title").innerText = "Criar conta";
+          document.getElementById("auth-main-subtitle").innerText = "Comece a investir na plataforma em minutos";
+          nameGroup.classList.remove("hidden");
+          phoneGroup.classList.remove("hidden");
+          refToggleContainer.classList.remove("hidden");
+          document.getElementById("btn-submit-label").innerText = "Criar conta";
+          document.getElementById("auth-switch-msg").innerText = "Já tem conta?";
+          btnToggleMode.innerText = "Entrar";
         } else {
-          nameGroup.style.display = "none";
-          refGroup.style.display = "none";
-          btnSubmit.querySelector("span").innerText = "Acessar Painel";
-          btnToggleMode.innerText = "Criar uma conta";
+          document.getElementById("auth-main-title").innerText = "Entrar";
+          document.getElementById("auth-main-subtitle").innerText = "Acesse sua conta para gerenciar seus investimentos";
+          nameGroup.classList.add("hidden");
+          phoneGroup.classList.add("hidden");
+          refToggleContainer.classList.add("hidden");
+          refGroup.classList.add("hidden");
+          document.getElementById("btn-submit-label").innerText = "Entrar";
+          document.getElementById("auth-switch-msg").innerText = "Ainda não tem conta?";
+          btnToggleMode.innerText = "Criar conta";
         }
       });
     }
 
+    // SUBMIT DO FORMULÁRIO DE AUTENTICAÇÃO
+    const btnSubmit = document.getElementById("btn-submit");
     if (btnSubmit) {
       btnSubmit.addEventListener("click", async () => {
         const emailInput = document.getElementById("auth-email").value.trim();
         const passwordInput = document.getElementById("auth-password").value.trim();
-        const nameInput = document.getElementById("auth-name") ? document.getElementById("auth-name").value.trim() : "";
-        const refInput = document.getElementById("auth-ref") ? document.getElementById("auth-ref").value.trim() : "";
+        const nameInput = document.getElementById("auth-name").value.trim();
+        const phoneInput = document.getElementById("auth-phone").value.trim();
+        const refInput = document.getElementById("auth-ref").value.trim();
 
         if (!emailInput || !passwordInput) {
           alert("Preencha o e-mail e a senha.");
@@ -614,14 +715,20 @@
               alert("Preencha o seu nome completo.");
               return;
             }
+            if (!phoneInput) {
+              alert("Preencha o seu número de telefone.");
+              return;
+            }
             
             const res = await createUserWithEmailAndPassword(auth, emailInput, passwordInput);
             const generatedRefCode = "LAPLATA" + Math.floor(1000 + Math.random() * 9000);
 
+            // GRAVAÇÃO COMPLETA NO FIRESTORE INCLUINDO TELEFONE
             await setDoc(doc(db, "users", res.user.uid), {
               uid: res.user.uid,
               name: nameInput,
               email: emailInput,
+              phone: phoneInput,
               balance: 0.00,
               photoURL: "",
               refCode: generatedRefCode,
@@ -680,6 +787,7 @@
           
           document.getElementById("user-name").innerText = name;
           document.getElementById("profile-name").value = name;
+          document.getElementById("profile-phone").value = data.phone || "Não informado";
           document.getElementById("profile-refcode").value = data.refCode || "";
           document.getElementById("user-balance").innerText = `$ ${(data.balance || 0).toFixed(2)}`;
 
