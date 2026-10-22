@@ -44,7 +44,6 @@
 
     .hidden { display: none !important; }
 
-    /* BANNER COM LEÃO VETORIAL OURO */
     .auth-banner {
       width: 100%;
       height: 150px;
@@ -94,7 +93,6 @@
       margin-top: -2px;
     }
 
-    /* TELA DE AUTENTICAÇÃO */
     .auth-container {
       padding: 30px 20px;
       display: flex;
@@ -177,7 +175,6 @@
       text-decoration: none;
     }
 
-    /* APP HEADER */
     .app-header {
       padding: 18px 20px 14px 20px;
       display: flex;
@@ -209,11 +206,9 @@
     .greeting { font-size: 0.75rem; color: var(--text-muted); }
     .user-name-title { font-size: 0.95rem; font-weight: 700; color: var(--text-main); }
 
-    /* ABAS DE NAVEGAÇÃO */
     .tab-content { padding: 20px; display: none; }
     .tab-content.active { display: block; }
 
-    /* CARDS & SALDO */
     .balance-card {
       background: linear-gradient(135deg, #181822 0%, #0d0d12 100%);
       border: 1px solid var(--border-gold);
@@ -228,7 +223,6 @@
     .balance-value { font-size: 2.2rem; font-weight: 800; color: #ffffff; margin: 8px 0; }
     .balance-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--gold-primary); background: rgba(212, 175, 55, 0.1); padding: 4px 10px; border-radius: 20px; }
 
-    /* GRÁFICO CARTESIANO DE RENDIMENTO */
     .chart-card {
       background: var(--bg-card);
       border: 1px solid var(--bg-card-border);
@@ -252,7 +246,6 @@
     }
     .action-card h3 { font-size: 0.95rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; font-weight: 700; }
 
-    /* CARTEIRAS DA LOJA */
     .plans-grid { display: flex; flex-direction: column; gap: 14px; }
     .plan-card {
       background: var(--bg-card);
@@ -279,7 +272,6 @@
     .metric-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; }
     .metric-value { font-size: 1rem; font-weight: 700; }
 
-    /* CARD DE PLANO ADQUIRIDO (COM BARRA DE PROGRESSO EM %) */
     .my-plan-card {
       background: var(--bg-card);
       border: 1px solid var(--bg-card-border);
@@ -305,7 +297,6 @@
       transition: width 0.4s ease;
     }
 
-    /* AFILIADOS */
     .affiliate-box {
       background: linear-gradient(135deg, #1c180e 0%, #121217 100%);
       border: 1px solid var(--border-gold);
@@ -325,7 +316,6 @@
       outline: none;
     }
 
-    /* LISTA DE DADOS */
     .data-list { display: flex; flex-direction: column; gap: 10px; }
     .data-card {
       background: var(--bg-card);
@@ -355,7 +345,6 @@
       margin-bottom: 10px;
     }
 
-    /* MODAL DE ALERTA */
     .custom-modal-overlay {
       position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px);
       display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px;
@@ -368,7 +357,6 @@
     .modal-title { font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
     .modal-message { font-size: 0.88rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 20px; }
 
-    /* BARRA INFERIOR DE NAVEGAÇÃO */
     .bottom-nav {
       position: fixed; bottom: 0; width: 100%; max-width: 480px; height: var(--nav-height);
       background: #0d0d12; border-top: 1px solid #1c1c26; display: flex; justify-content: space-around;
@@ -387,7 +375,6 @@
 
   <div class="app-viewport">
     
-    <!-- MODAL DE ALERTA CUSTOMIZADO -->
     <div id="custom-alert-modal" class="custom-modal-overlay hidden">
       <div class="custom-modal-box">
         <div class="modal-icon" id="modal-alert-icon"><i class="fa-solid fa-circle-info"></i></div>
@@ -397,9 +384,8 @@
       </div>
     </div>
 
-    <!-- 1. TELA DE AUTENTICAÇÃO -->
+    <!-- TELA DE AUTENTICAÇÃO -->
     <div id="auth-section" class="auth-container">
-      
       <div class="auth-banner">
         <svg class="lion-svg-icon" viewBox="0 0 100 100">
           <path fill="#d4af37" d="M50 10 C30 10, 15 25, 15 45 C15 58, 22 68, 30 75 C32 65, 38 55, 45 52 C42 48, 40 42, 42 36 C45 28, 55 28, 58 36 C60 42, 58 48, 55 52 C62 55, 68 65, 70 75 C78 68, 85 58, 85 45 C85 25, 70 10, 50 10 Z M50 22 C55 22, 58 26, 56 31 C54 36, 46 36, 44 31 C42 26, 45 22, 50 22 Z M50 85 C40 85, 32 80, 28 72 C35 68, 42 62, 50 62 C58 62, 65 68, 72 72 C68 80, 60 85, 50 85 Z"/>
@@ -463,10 +449,9 @@
       </div>
     </div>
 
-    <!-- 2. PAINEL PRINCIPAL DO INVESTIDOR -->
+    <!-- PAINEL PRINCIPAL DO INVESTIDOR -->
     <div id="dashboard-section" class="hidden">
       
-      <!-- Top Header -->
       <div class="app-header">
         <div class="user-info-brief">
           <div class="avatar" id="avatar-container">
@@ -493,7 +478,6 @@
           <div class="balance-badge"><i class="fa-solid fa-chart-line"></i> Conta Verificada</div>
         </div>
 
-        <!-- GRÁFICO CARTESIANO DE RENDIMENTO -->
         <div class="chart-card">
           <div class="chart-header">
             <div class="chart-title"><i class="fa-solid fa-chart-area"></i> Evolução do Patrimônio</div>
@@ -504,7 +488,6 @@
           </div>
         </div>
 
-        <!-- Depósito PIX -->
         <div class="action-card">
           <h3 style="color: var(--gold-primary);"><i class="fa-solid fa-qrcode"></i> Aporte via PIX</h3>
           <div class="form-group" style="margin-bottom: 12px;">
@@ -516,7 +499,6 @@
           </button>
         </div>
 
-        <!-- Solicitar Saque -->
         <div class="action-card">
           <h3 style="color: #d97706;"><i class="fa-solid fa-wallet"></i> Solicitar Resgate</h3>
           <div class="form-group" style="margin-bottom: 12px;">
@@ -528,7 +510,6 @@
           </button>
         </div>
 
-        <!-- Carteiras de Investimento do Admin -->
         <div class="section-header"><i class="fa-solid fa-cubes"></i> Carteiras Recomendadas</div>
         <div class="plans-grid" id="admin-plans-list">
           <div style="text-align: center; color: var(--text-muted); padding: 15px;">A carregar carteiras...</div>
@@ -623,7 +604,6 @@
         </button>
       </div>
 
-      <!-- BARRA DE NAVEGAÇÃO INFERIOR -->
       <nav class="bottom-nav">
         <div class="nav-item active" onclick="switchTab('home')">
           <i class="fa-solid fa-house"></i>
@@ -655,7 +635,6 @@
 
   </div>
 
-  <!-- SCRIPT MODULAR PRINCIPAL -->
   <script type="module">
     import { auth, db } from "./Js/firebase-config.js";
     import { 
@@ -665,14 +644,13 @@
       signOut 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { 
-      doc, setDoc, updateDoc, addDoc, collection, onSnapshot, query, where, increment, getDocs, getDoc 
+      doc, setDoc, updateDoc, addDoc, collection, onSnapshot, query, where, increment, getDocs 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     let isSignUp = true;
-    let currentUserData = { balance: 0, refCode: "", referredBy: null, padrinhoUid: null };
+    let currentUserData = { balance: 0, refCode: "", referredBy: null };
     let yieldCartesianChartInstance = null;
 
-    // MODAL DE ALERTA PERSONALIZADO
     window.showCustomAlert = (title, message, iconClass = "fa-circle-info") => {
       document.getElementById("modal-alert-title").innerText = title;
       document.getElementById("modal-alert-msg").innerText = message;
@@ -684,7 +662,6 @@
       document.getElementById("custom-alert-modal").classList.add("hidden");
     };
 
-    // MÁSCARA AUTOMÁTICA DE TELEFONE
     window.maskPhone = (input) => {
       let value = input.value.replace(/\D/g, "");
       if (value.length > 11) value = value.slice(0, 11);
@@ -772,7 +749,7 @@
       });
     }
 
-    // AUTENTICAÇÃO E CADASTRO VINCULANDO O PADRINHO POR UID
+    // CADASTRO COM VÍNCULO DIRETO PELO CÓDIGO DO PADRINHO (REFERREDBY)
     const btnSubmit = document.getElementById("btn-submit");
     if (btnSubmit) {
       btnSubmit.addEventListener("click", async () => {
@@ -780,7 +757,7 @@
         const passwordInput = document.getElementById("auth-password").value.trim();
         const nameInput = document.getElementById("auth-name").value.trim();
         const phoneInput = document.getElementById("auth-phone").value.trim();
-        const refInput = document.getElementById("auth-ref").value.trim();
+        const refInput = document.getElementById("auth-ref").value.trim().toUpperCase();
 
         if (!emailInput || !passwordInput) {
           showCustomAlert("Atenção", "Preencha o e-mail e a senha.", "fa-circle-exclamation");
@@ -789,24 +766,9 @@
 
         try {
           if (isSignUp) {
-            if (!nameInput) {
-              showCustomAlert("Atenção", "Preencha o seu nome completo.", "fa-circle-exclamation");
-              return;
-            }
-            if (!phoneInput) {
-              showCustomAlert("Atenção", "Preencha o seu número de telefone.", "fa-circle-exclamation");
-              return;
-            }
+            if (!nameInput) return showCustomAlert("Atenção", "Preencha o seu nome completo.");
+            if (!phoneInput) return showCustomAlert("Atenção", "Preencha o seu número de telefone.");
 
-            let padrinhoUid = null;
-            if (refInput) {
-              const qPadrinho = query(collection(db, "users"), where("refCode", "==", refInput));
-              const snapPadrinho = await getDocs(qPadrinho);
-              if (!snapPadrinho.empty) {
-                padrinhoUid = snapPadrinho.docs[0].id;
-              }
-            }
-            
             const res = await createUserWithEmailAndPassword(auth, emailInput, passwordInput);
             const generatedRefCode = "LAPLATA" + Math.floor(1000 + Math.random() * 9000);
 
@@ -819,8 +781,7 @@
               photoURL: "",
               refCode: generatedRefCode,
               referredBy: refInput || null,
-              padrinhoUid: padrinhoUid,
-              createdAt: new Date().getTime()
+              createdAt: Date.now()
             }, { merge: true });
 
             await addDoc(collection(db, "transactions"), {
@@ -829,7 +790,7 @@
               description: "Bem-vindo à LÁ PLATA INVESTIMENTOS! Sua conta foi criada com sucesso.",
               amount: 0.00,
               status: "concluido",
-              createdAt: new Date().getTime()
+              createdAt: Date.now()
             });
 
             showCustomAlert("Sucesso", "Sua conta foi criada com sucesso!", "fa-circle-check");
@@ -857,7 +818,6 @@
         loadUserActivePlans(user.uid);
         loadNotifications(user.uid);
         loadAdminPlans();
-        loadAffiliateData(user);
         checkAndCompleteInvestments(user.uid);
       } else {
         authSection.classList.remove("hidden");
@@ -900,11 +860,12 @@
             avatarContainer.innerHTML = `<span>${initial}</span>`;
             profileAvatarLg.innerHTML = `<span>${initial}</span>`;
           }
+
+          loadAffiliateData(refCode, uid);
         }
       });
     }
 
-    // CARREGAR MINHAS CARTEIRAS E PROGRESSO
     function loadUserActivePlans(uid) {
       const q = query(
         collection(db, "transactions"),
@@ -973,7 +934,6 @@
       });
     }
 
-    // FOTO DE PERFIL
     window.uploadProfilePhoto = (event) => {
       const file = event.target.files[0];
       if (!file) return;
@@ -997,10 +957,11 @@
       reader.readAsDataURL(file);
     };
 
-    // CORREÇÃO DOS AFILIADOS BUSCANDO DIRETO PELO PADRINHO UID
-    async function loadAffiliateData(user) {
-      const usersRef = collection(db, "users");
-      const q = query(usersRef, where("padrinhoUid", "==", user.uid));
+    // BUSCA EXATA DOS INDICADOS (REFERRED_BY == CÓDIGO DO PADRINHO)
+    async function loadAffiliateData(myRefCode, uid) {
+      if (!myRefCode) return;
+
+      const q = query(collection(db, "users"), where("referredBy", "==", myRefCode));
       
       onSnapshot(q, (snapshot) => {
         const referralsListElem = document.getElementById("referrals-list");
@@ -1027,8 +988,7 @@
           });
         }
 
-        // Soma comissões acumuladas
-        const transQuery = query(collection(db, "transactions"), where("userId", "==", user.uid));
+        const transQuery = query(collection(db, "transactions"), where("userId", "==", uid));
         onSnapshot(transQuery, (transSnap) => {
           let totalEarnings = 0;
           transSnap.forEach((tDoc) => {
@@ -1037,12 +997,12 @@
               totalEarnings += (tData.amount || 0);
             }
           });
+          document.getElementById("affiliate
           document.getElementById("affiliate-earnings-total").innerText = `$ ${totalEarnings.toFixed(2)}`;
         });
       });
     }
 
-    // RENDERIZAR GRÁFICO CARTESIANO DE RENDIMENTO
     function renderUserCartesianChart(transactions) {
       const ctx = document.getElementById("userYieldCartesianChart").getContext("2d");
       const sorted = [...transactions].sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0));
@@ -1179,7 +1139,7 @@
           description: `Aporte via PIX ($${amount.toFixed(2)})`,
           amount: amount,
           status: "concluido",
-          createdAt: new Date().getTime()
+          createdAt: Date.now()
         });
 
         await updateDoc(doc(db, "users", user.uid), { balance: increment(amount) });
@@ -1209,7 +1169,7 @@
           description: `Solicitação de Saque ($${amount.toFixed(2)})`,
           amount: amount,
           status: "pendente",
-          createdAt: new Date().getTime()
+          createdAt: Date.now()
         });
 
         await updateDoc(doc(db, "users", user.uid), { balance: increment(-amount) });
@@ -1229,7 +1189,7 @@
         return showCustomAlert("Saldo Insuficiente", `Aporte necessário de $${planPrice.toFixed(2)} para esta carteira.`, "fa-circle-exclamation");
       }
 
-      const now = new Date().getTime();
+      const now = Date.now();
       const endDate = now + (durationDays * 24 * 60 * 60 * 1000);
 
       try {
@@ -1253,7 +1213,7 @@
       }
     };
 
-    // EXECUÇÃO DA AUTOMAÇÃO DE CONCLUIR PLANO E PAGAR 5% AO PADRINHO
+    // EXECUÇÃO DA AUTOMAÇÃO NO APP
     async function checkAndCompleteInvestments(uid) {
       const q = query(
         collection(db, "transactions"),
@@ -1263,7 +1223,7 @@
       );
 
       const snapshot = await getDocs(q);
-      const now = new Date().getTime();
+      const now = Date.now();
 
       snapshot.forEach(async (docSnap) => {
         const trans = docSnap.data();
@@ -1272,10 +1232,7 @@
           const transRef = doc(db, "transactions", docSnap.id);
           
           await updateDoc(transRef, { status: "concluido" });
-
-          await updateDoc(doc(db, "users", uid), {
-            balance: increment(trans.totalReturn)
-          });
+          await updateDoc(doc(db, "users", uid), { balance: increment(trans.totalReturn) });
 
           await addDoc(collection(db, "transactions"), {
             userId: uid,
@@ -1286,32 +1243,26 @@
             createdAt: now
           });
 
-          // PAGA OS 5% DE COMISSÃO AO PADRINHO
-          if (currentUserData.padrinhoUid) {
-            const referrerId = currentUserData.padrinhoUid;
-            const commissionAmount = trans.amount * 0.05;
+          if (currentUserData.referredBy) {
+            const usersQuery = query(collection(db, "users"), where("refCode", "==", currentUserData.referredBy));
+            const userSnapshots = await getDocs(usersQuery);
 
-            await updateDoc(doc(db, "users", referrerId), {
-              balance: increment(commissionAmount)
-            });
+            if (!userSnapshots.empty) {
+              const referrerDoc = userSnapshots.docs[0];
+              const referrerId = referrerDoc.id;
+              const commissionAmount = trans.amount * 0.05;
 
-            await addDoc(collection(db, "transactions"), {
-              userId: referrerId,
-              type: "comissao_afiliado",
-              description: `Comissão 5% - Finalização de plano do indicado (${currentUserData.name})`,
-              amount: commissionAmount,
-              status: "concluido",
-              createdAt: now
-            });
+              await updateDoc(doc(db, "users", referrerId), { balance: increment(commissionAmount) });
 
-            await addDoc(collection(db, "transactions"), {
-              userId: referrerId,
-              type: "notificacao",
-              description: `Você recebeu $${commissionAmount.toFixed(2)} de comissão de afiliado!`,
-              amount: 0.00,
-              status: "concluido",
-              createdAt: now
-            });
+              await addDoc(collection(db, "transactions"), {
+                userId: referrerId,
+                type: "comissao_afiliado",
+                description: `Comissão 5% - Finalização do indicado (${currentUserData.name})`,
+                amount: commissionAmount,
+                status: "concluido",
+                createdAt: now
+              });
+            }
           }
         }
       });
