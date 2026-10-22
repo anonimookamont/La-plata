@@ -39,6 +39,7 @@
       box-shadow: 0 0 50px rgba(0,0,0,0.9);
       border-left: 1px solid #1a1a22;
       border-right: 1px solid #1a1a22;
+      overflow-x: hidden;
     }
 
     .app-viewport.logged-in {
@@ -47,6 +48,7 @@
 
     .hidden { display: none !important; }
 
+    /* AUTH / LOGIN SCREEN */
     .auth-banner {
       width: 100%;
       height: 140px;
@@ -169,6 +171,7 @@
       text-decoration: none;
     }
 
+    /* HEADER & DASHBOARD */
     .app-header {
       padding: 18px 20px 14px 20px;
       display: flex;
@@ -200,8 +203,9 @@
     .greeting { font-size: 0.7rem; color: var(--text-muted); }
     .user-name-title { font-size: 0.9rem; font-weight: 700; color: var(--text-main); }
 
-    .tab-content { padding: 20px; display: none; }
-    .tab-content.active { display: block; }
+    /* TABS SYSTEM (ISOLAMENTO ESTRITO) */
+    .tab-content { padding: 20px; display: none !important; }
+    .tab-content.active { display: block !important; }
 
     .balance-card {
       background: linear-gradient(135deg, #181822 0%, #0d0d12 100%);
@@ -352,10 +356,14 @@
     .modal-title { font-size: 1rem; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
     .modal-message { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 18px; }
 
+    /* MENU INFERIOR - SÓ EXIBIDO QUANDO LOGADO */
     .bottom-nav {
       position: fixed; bottom: 0; width: 100%; max-width: 480px; height: var(--nav-height);
-      background: #0d0d12; border-top: 1px solid #1c1c26; display: flex; justify-content: space-around;
+      background: #0d0d12; border-top: 1px solid #1c1c26; display: none; justify-space: space-around;
       align-items: center; z-index: 100;
+    }
+    .logged-in .bottom-nav {
+      display: flex !important;
     }
     .nav-item {
       display: flex; flex-direction: column; align-items: center; gap: 3px;
@@ -525,7 +533,7 @@
       </div>
 
       <!-- ABA 3: AFILIADOS -->
-  <div id="tab-affiliates" class="tab-content">
+      <div id="tab-affiliates" class="tab-content">
         <div class="section-header"><i class="fa-solid fa-users"></i> Programa de Afiliados</div>
         
         <div class="affiliate-box">
@@ -599,7 +607,7 @@
           <input type="text" id="profile-refcode" class="form-control" readonly>
         </div>
 
-        <!-- CÓDIGO DE PADRINHO NO PERFIL (CASO NÃO TENHA) -->
+        <!-- CÓDIGO DE PADRINHO NO PERFIL -->
         <div class="form-group" id="profile-referrer-group">
           <label>Código do Padrinho (Afiliado Indicação)</label>
           <div style="display:flex; gap: 8px;">
@@ -718,11 +726,19 @@
     });
 
     window.switchTab = (tabName) => {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      const allTabs = document.querySelectorAll('.tab-content');
+      allTabs.forEach(el => {
+        el.classList.remove('active');
+        el.style.setProperty('display', 'none', 'important');
+      });
+
       document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
 
       const targetTab = document.getElementById(`tab-${tabName}`);
-      if (targetTab) targetTab.classList.add('active');
+      if (targetTab) {
+        targetTab.classList.add('active');
+        targetTab.style.setProperty('display', 'block', 'important');
+      }
 
       const tabsOrder = ['home', 'myplans', 'affiliates', 'history', 'notifications', 'profile'];
       const activeNavIndex = tabsOrder.indexOf(tabName);
@@ -828,6 +844,8 @@
         viewport.classList.add("logged-in");
         
         document.getElementById("profile-email").value = user.email || "";
+
+        switchTab('home');
 
         loadUserData(user.uid);
         loadTransactions(user.uid);
