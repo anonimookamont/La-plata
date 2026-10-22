@@ -36,17 +36,20 @@
       min-height: 100vh;
       background-color: var(--bg-dark);
       position: relative;
-      padding-bottom: calc(var(--nav-height) + 20px);
       box-shadow: 0 0 50px rgba(0,0,0,0.9);
       border-left: 1px solid #1a1a22;
       border-right: 1px solid #1a1a22;
+    }
+
+    .app-viewport.logged-in {
+      padding-bottom: calc(var(--nav-height) + 20px);
     }
 
     .hidden { display: none !important; }
 
     .auth-banner {
       width: 100%;
-      height: 150px;
+      height: 140px;
       border-radius: 16px;
       background: linear-gradient(135deg, #1f1a0e 0%, #0d0d12 100%);
       border: 1px solid var(--border-gold);
@@ -54,31 +57,21 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    }
-    .auth-banner::before {
-      content: '';
-      position: absolute;
-      width: 150px;
-      height: 150px;
-      background: rgba(212, 175, 55, 0.08);
-      border-radius: 50%;
-      filter: blur(25px);
     }
     
     .lion-svg-icon {
-      width: 52px;
-      height: 52px;
-      margin-bottom: 6px;
+      width: 48px;
+      height: 48px;
+      margin-bottom: 4px;
       filter: drop-shadow(0px 2px 8px rgba(212, 175, 55, 0.4));
     }
 
     .brand-name {
       font-family: 'Cinzel', serif;
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       font-weight: 700;
       letter-spacing: 2px;
       background: var(--gold-gradient);
@@ -86,35 +79,35 @@
       -webkit-text-fill-color: transparent;
     }
     .brand-sub {
-      font-size: 0.6rem;
+      font-size: 0.55rem;
       letter-spacing: 3px;
       color: var(--text-muted);
       text-transform: uppercase;
-      margin-top: -2px;
     }
 
     .auth-container {
-      padding: 30px 20px;
+      padding: 24px 20px;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       min-height: 100vh;
+      overflow-y: auto;
     }
-    .auth-title { font-size: 1.6rem; font-weight: 800; color: #ffffff; margin-bottom: 4px; }
-    .auth-subtitle { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 24px; }
+    .auth-title { font-size: 1.5rem; font-weight: 800; color: #ffffff; margin-bottom: 2px; }
+    .auth-subtitle { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px; }
 
-    .form-group { margin-bottom: 16px; }
-    .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-main); margin-bottom: 6px; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-main); margin-bottom: 5px; }
     
     .input-wrapper { position: relative; display: flex; align-items: center; }
     .form-control {
       width: 100%;
-      padding: 14px 16px;
+      padding: 12px 14px;
       background: var(--bg-input);
       border: 1px solid var(--bg-card-border);
       border-radius: 12px;
       color: #fff;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       transition: all 0.2s;
     }
     .form-control:focus { outline: none; border-color: var(--gold-primary); box-shadow: 0 0 10px rgba(212, 175, 55, 0.15); }
@@ -129,13 +122,13 @@
 
     .ref-toggle-btn {
       color: var(--gold-primary);
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 600;
       background: none;
       border: none;
       padding: 0;
       cursor: pointer;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -143,16 +136,16 @@
 
     .btn {
       width: 100%;
-      padding: 15px;
+      padding: 14px;
       border: none;
       border-radius: 12px;
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 700;
       cursor: pointer;
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       transition: all 0.2s;
     }
     .btn-gold {
@@ -164,9 +157,10 @@
 
     .auth-switch-text {
       text-align: center;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: var(--text-muted);
-      margin-top: 18px;
+      margin-top: 16px;
+      margin-bottom: 30px;
     }
     .auth-switch-link {
       color: var(--gold-primary);
@@ -203,8 +197,8 @@
     }
     .avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-    .greeting { font-size: 0.75rem; color: var(--text-muted); }
-    .user-name-title { font-size: 0.95rem; font-weight: 700; color: var(--text-main); }
+    .greeting { font-size: 0.7rem; color: var(--text-muted); }
+    .user-name-title { font-size: 0.9rem; font-weight: 700; color: var(--text-main); }
 
     .tab-content { padding: 20px; display: none; }
     .tab-content.active { display: block; }
@@ -213,78 +207,80 @@
       background: linear-gradient(135deg, #181822 0%, #0d0d12 100%);
       border: 1px solid var(--border-gold);
       border-radius: 20px;
-      padding: 22px;
+      padding: 20px;
       margin-bottom: 18px;
       position: relative;
       overflow: hidden;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
-    .balance-title { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
-    .balance-value { font-size: 2.2rem; font-weight: 800; color: #ffffff; margin: 8px 0; }
-    .balance-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--gold-primary); background: rgba(212, 175, 55, 0.1); padding: 4px 10px; border-radius: 20px; }
+    .balance-title { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
+    .balance-value { font-size: 2rem; font-weight: 800; color: #ffffff; margin: 6px 0 2px 0; }
+    .balance-growth { font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; margin-top: 4px; }
+    .growth-positive { color: #10b981; }
+    .growth-negative { color: #ef4444; }
 
     .chart-card {
       background: var(--bg-card);
       border: 1px solid var(--bg-card-border);
       border-radius: 18px;
-      padding: 18px;
-      margin-bottom: 22px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+      padding: 16px;
+      margin-bottom: 20px;
     }
-    .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-    .chart-title { font-size: 0.9rem; font-weight: 700; color: var(--gold-primary); display: flex; align-items: center; gap: 8px; }
-    .chart-container-box { position: relative; width: 100%; height: 180px; }
+    .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .chart-title { font-size: 0.85rem; font-weight: 700; color: var(--gold-primary); display: flex; align-items: center; gap: 8px; }
+    .chart-container-box { position: relative; width: 100%; height: 160px; }
 
-    .section-header { font-size: 0.95rem; font-weight: 700; color: var(--gold-primary); margin: 24px 0 14px 0; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
+    .section-header { font-size: 0.9rem; font-weight: 700; color: var(--gold-primary); margin: 20px 0 12px 0; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
 
     .action-card {
       background: var(--bg-card);
       border: 1px solid var(--bg-card-border);
       border-radius: 16px;
-      padding: 18px;
-      margin-bottom: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
     }
-    .action-card h3 { font-size: 0.95rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; font-weight: 700; }
+    .action-card h3 { font-size: 0.9rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; font-weight: 700; }
+    .rule-notice { font-size: 0.7rem; color: var(--text-muted); margin-top: 6px; line-height: 1.3; }
 
-    .plans-grid { display: flex; flex-direction: column; gap: 14px; }
+    .plans-grid { display: flex; flex-direction: column; gap: 12px; }
     .plan-card {
       background: var(--bg-card);
       border: 1px solid var(--bg-card-border);
       border-radius: 16px;
-      padding: 20px;
+      padding: 18px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
     }
     .plan-header { display: flex; justify-content: space-between; align-items: center; }
-    .plan-title { font-size: 1.1rem; font-weight: 700; color: #fff; }
-    .plan-duration { font-size: 0.75rem; background: rgba(212, 175, 55, 0.12); color: var(--gold-primary); padding: 4px 10px; border-radius: 20px; font-weight: 600; border: 1px solid rgba(212, 175, 55, 0.2); }
+    .plan-title { font-size: 1rem; font-weight: 700; color: #fff; }
+    .plan-duration { font-size: 0.7rem; background: rgba(212, 175, 55, 0.12); color: var(--gold-primary); padding: 3px 8px; border-radius: 20px; font-weight: 600; border: 1px solid rgba(212, 175, 55, 0.2); }
     
     .plan-metrics {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 10px;
       background: var(--bg-input);
-      padding: 14px;
-      border-radius: 12px;
+      padding: 12px;
+      border-radius: 10px;
     }
-    .metric-item { display: flex; flex-direction: column; gap: 3px; }
-    .metric-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; }
-    .metric-value { font-size: 1rem; font-weight: 700; }
+    .metric-item { display: flex; flex-direction: column; gap: 2px; }
+    .metric-label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; }
+    .metric-value { font-size: 0.95rem; font-weight: 700; }
 
     .my-plan-card {
       background: var(--bg-card);
       border: 1px solid var(--bg-card-border);
       border-radius: 16px;
-      padding: 18px;
+      padding: 16px;
       margin-bottom: 12px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
     .progress-bar-bg {
       width: 100%;
-      height: 8px;
+      height: 7px;
       background: var(--bg-input);
       border-radius: 10px;
       overflow: hidden;
@@ -301,48 +297,47 @@
       background: linear-gradient(135deg, #1c180e 0%, #121217 100%);
       border: 1px solid var(--border-gold);
       border-radius: 16px;
-      padding: 18px;
-      margin-bottom: 20px;
+      padding: 16px;
+      margin-bottom: 18px;
     }
-    .affiliate-link-container { display: flex; gap: 8px; margin-top: 12px; }
+    .affiliate-link-container { display: flex; gap: 8px; margin-top: 10px; }
     .affiliate-link-input {
       background: #0a0a0d;
       border: 1px solid var(--bg-card-border);
       color: var(--gold-primary);
-      padding: 12px;
+      padding: 10px;
       border-radius: 10px;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       width: 100%;
       outline: none;
     }
 
-    .data-list { display: flex; flex-direction: column; gap: 10px; }
+    .data-list { display: flex; flex-direction: column; gap: 8px; }
     .data-card {
       background: var(--bg-card);
       border: 1px solid var(--bg-card-border);
-      border-radius: 14px;
-      padding: 14px 16px;
+      border-radius: 12px;
+      padding: 12px 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .data-info { display: flex; flex-direction: column; gap: 4px; }
-    .data-title { font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
-    .data-sub { font-size: 0.75rem; color: var(--text-muted); }
-    .data-amount { font-size: 0.95rem; font-weight: 700; }
+    .data-info { display: flex; flex-direction: column; gap: 3px; }
+    .data-title { font-size: 0.85rem; font-weight: 600; color: var(--text-main); }
+    .data-sub { font-size: 0.7rem; color: var(--text-muted); }
+    .data-amount { font-size: 0.9rem; font-weight: 700; }
     
-    .badge { font-size: 0.65rem; padding: 4px 8px; border-radius: 6px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .badge { font-size: 0.6rem; padding: 3px 7px; border-radius: 6px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
     .badge-ativo { background: rgba(56, 189, 248, 0.12); color: #38bdf8; }
     .badge-concluido, .badge-deposito, .badge-comissao { background: rgba(212, 175, 55, 0.15); color: var(--gold-primary); }
     .badge-saque { background: rgba(217, 119, 6, 0.15); color: #d97706; }
-    .badge-pendente { background: rgba(234, 179, 8, 0.15); color: #eab308; }
 
     .notification-card {
       background: var(--bg-card);
       border-left: 3px solid var(--gold-primary);
       border-radius: 10px;
-      padding: 14px;
-      margin-bottom: 10px;
+      padding: 12px;
+      margin-bottom: 8px;
     }
 
     .custom-modal-overlay {
@@ -351,11 +346,11 @@
     }
     .custom-modal-box {
       background: var(--bg-card); border: 1px solid var(--border-gold);
-      border-radius: 20px; padding: 24px; width: 100%; max-width: 360px; text-align: center;
+      border-radius: 20px; padding: 22px; width: 100%; max-width: 340px; text-align: center;
     }
-    .modal-icon { font-size: 2.2rem; color: var(--gold-primary); margin-bottom: 12px; }
-    .modal-title { font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
-    .modal-message { font-size: 0.88rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 20px; }
+    .modal-icon { font-size: 2rem; color: var(--gold-primary); margin-bottom: 10px; }
+    .modal-title { font-size: 1rem; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
+    .modal-message { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 18px; }
 
     .bottom-nav {
       position: fixed; bottom: 0; width: 100%; max-width: 480px; height: var(--nav-height);
@@ -364,16 +359,16 @@
     }
     .nav-item {
       display: flex; flex-direction: column; align-items: center; gap: 3px;
-      color: var(--text-muted); text-decoration: none; font-size: 0.6rem; font-weight: 600;
+      color: var(--text-muted); text-decoration: none; font-size: 0.55rem; font-weight: 600;
       cursor: pointer; width: 16%; transition: all 0.2s;
     }
-    .nav-item i { font-size: 1.05rem; }
+    .nav-item i { font-size: 1rem; }
     .nav-item.active { color: var(--gold-primary); }
   </style>
 </head>
 <body>
 
-  <div class="app-viewport">
+  <div class="app-viewport" id="app-viewport">
     
     <div id="custom-alert-modal" class="custom-modal-overlay hidden">
       <div class="custom-modal-box">
@@ -433,7 +428,7 @@
       </div>
 
       <div class="form-group hidden" id="ref-group">
-        <label>Código de Indicação</label>
+        <label>Código de Indicação (Padrinho)</label>
         <div class="input-wrapper">
           <input type="text" id="auth-ref" class="form-control" placeholder="Insira o código do seu padrinho">
         </div>
@@ -462,8 +457,8 @@
             <div class="user-name-title" id="user-name">Investidor</div>
           </div>
         </div>
-        <div style="font-family: 'Cinzel', serif; font-size: 0.95rem; font-weight: 700; color: var(--gold-primary); display: flex; align-items: center; gap: 6px;">
-          <svg style="width: 20px; height: 20px;" viewBox="0 0 100 100">
+        <div style="font-family: 'Cinzel', serif; font-size: 0.9rem; font-weight: 700; color: var(--gold-primary); display: flex; align-items: center; gap: 6px;">
+          <svg style="width: 18px; height: 18px;" viewBox="0 0 100 100">
             <path fill="#d4af37" d="M50 10 C30 10, 15 25, 15 45 C15 58, 22 68, 30 75 C32 65, 38 55, 45 52 C42 48, 40 42, 42 36 C45 28, 55 28, 58 36 C60 42, 58 48, 55 52 C62 55, 68 65, 70 75 C78 68, 85 58, 85 45 C85 25, 70 10, 50 10 Z"/>
           </svg>
           LÁ PLATA
@@ -475,13 +470,15 @@
         <div class="balance-card">
           <div class="balance-title">Patrimônio Total</div>
           <div class="balance-value" id="user-balance">$ 0.00</div>
-          <div class="balance-badge"><i class="fa-solid fa-chart-line"></i> Conta Verificada</div>
+          <div id="balance-growth-indicator" class="balance-growth growth-positive">
+            <i class="fa-solid fa-arrow-trend-up"></i> <span>+0.0% no período</span>
+          </div>
         </div>
 
         <div class="chart-card">
           <div class="chart-header">
             <div class="chart-title"><i class="fa-solid fa-chart-area"></i> Evolução do Patrimônio</div>
-            <span style="font-size: 0.75rem; color: var(--gold-primary); font-weight: 600;">Tempo Real</span>
+            <span style="font-size: 0.7rem; color: var(--gold-primary); font-weight: 600;">Tempo Real</span>
           </div>
           <div class="chart-container-box">
             <canvas id="userYieldCartesianChart"></canvas>
@@ -490,9 +487,9 @@
 
         <div class="action-card">
           <h3 style="color: var(--gold-primary);"><i class="fa-solid fa-qrcode"></i> Aporte via PIX</h3>
-          <div class="form-group" style="margin-bottom: 12px;">
-            <label>Valor do Depósito ($)</label>
-            <input type="number" id="pix-amount" class="form-control" placeholder="Ex: 100.00" min="1" step="0.01">
+          <div class="form-group" style="margin-bottom: 8px;">
+            <label>Valor do Depósito ($) - Mínimo: $80.00</label>
+            <input type="number" id="pix-amount" class="form-control" placeholder="Ex: 100.00" min="80" step="0.01">
           </div>
           <button class="btn btn-gold" onclick="handlePixDeposit()">
             <i class="fa-solid fa-bolt"></i> Gerar PIX
@@ -501,13 +498,16 @@
 
         <div class="action-card">
           <h3 style="color: #d97706;"><i class="fa-solid fa-wallet"></i> Solicitar Resgate</h3>
-          <div class="form-group" style="margin-bottom: 12px;">
-            <label>Valor do Saque ($)</label>
-            <input type="number" id="withdraw-amount" class="form-control" placeholder="Ex: 50.00" min="1" step="0.01">
+          <div class="form-group" style="margin-bottom: 8px;">
+            <label>Valor do Saque ($) - Mínimo: $150.00</label>
+            <input type="number" id="withdraw-amount" class="form-control" placeholder="Ex: 150.00" min="150" step="0.01">
           </div>
           <button class="btn btn-gold" style="background: #1c1c26; border: 1px solid var(--border-gold); color: var(--gold-primary);" onclick="handleWithdrawRequest()">
             <i class="fa-solid fa-paper-plane"></i> Pedir Saque
           </button>
+          <div class="rule-notice">
+            <i class="fa-solid fa-circle-info"></i> <b>Aviso:</b> O limite/mínimo para resgate é de $150.00. Todos os saques possuem prazo de até 72 horas para serem processados e pagos.
+          </div>
         </div>
 
         <div class="section-header"><i class="fa-solid fa-cubes"></i> Carteiras Recomendadas</div>
@@ -525,12 +525,16 @@
       </div>
 
       <!-- ABA 3: AFILIADOS -->
-      <div id="tab-affiliates" class="tab-content">
+  <div id="tab-affiliates" class="tab-content">
         <div class="section-header"><i class="fa-solid fa-users"></i> Programa de Afiliados</div>
         
-        <div class="affiliate-link-container">
+        <div class="affiliate-box">
+          <h4 style="font-size: 0.9rem; color: var(--gold-primary); margin-bottom: 4px;">Comissão Automática sobre Planos</h4>
+          <p style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.4;">Compartilhe seu link exclusivo. Quando um indicado concluir um investimento, a porcentagem de comissão configurada é creditada direto no seu saldo!</p>
+          
+          <div class="affiliate-link-container">
             <input type="text" id="my-ref-link" class="affiliate-link-input" readonly placeholder="Gerando seu link...">
-            <button class="btn btn-gold" style="width: auto; padding: 0 16px;" onclick="copyRefLink()"><i class="fa-solid fa-copy"></i> Copiar</button>
+            <button class="btn btn-gold" style="width: auto; padding: 0 14px;" onclick="copyRefLink()"><i class="fa-solid fa-copy"></i> Copiar</button>
           </div>
         </div>
 
@@ -565,11 +569,11 @@
       <div id="tab-profile" class="tab-content">
         <div class="section-header"><i class="fa-solid fa-user-shield"></i> Perfil & Segurança</div>
         
-        <div class="profile-upload-container" style="text-align: center; margin-bottom: 25px;">
-          <div class="avatar" id="profile-avatar-lg" style="width: 80px; height: 80px; margin: 0 auto 12px auto; font-size: 1.8rem;">
+        <div class="profile-upload-container" style="text-align: center; margin-bottom: 20px;">
+          <div class="avatar" id="profile-avatar-lg" style="width: 74px; height: 74px; margin: 0 auto 10px auto; font-size: 1.6rem;">
             <span id="profile-avatar-initials">U</span>
           </div>
-          <label style="display: inline-block; padding: 8px 16px; background: var(--bg-card); border: 1px solid var(--border-gold); border-radius: 8px; font-size: 0.8rem; color: var(--gold-primary); cursor: pointer; font-weight: 600;">
+          <label style="display: inline-block; padding: 7px 14px; background: var(--bg-card); border: 1px solid var(--border-gold); border-radius: 8px; font-size: 0.75rem; color: var(--gold-primary); cursor: pointer; font-weight: 600;">
             <i class="fa-solid fa-camera"></i> Alterar Foto de Perfil
             <input type="file" id="profile-photo-input" accept="image/*" style="display:none;" onchange="uploadProfilePhoto(event)">
           </label>
@@ -595,7 +599,20 @@
           <input type="text" id="profile-refcode" class="form-control" readonly>
         </div>
 
-        <button class="btn btn-danger" id="btn-logout" style="background: rgba(239, 68, 68, 0.12); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); margin-top: 20px;">
+        <!-- CÓDIGO DE PADRINHO NO PERFIL (CASO NÃO TENHA) -->
+        <div class="form-group" id="profile-referrer-group">
+          <label>Código do Padrinho (Afiliado Indicação)</label>
+          <div style="display:flex; gap: 8px;">
+            <input type="text" id="profile-referrer-input" class="form-control" placeholder="Ex: LAPLATA1234">
+            <button class="btn btn-gold" style="width: auto; padding: 0 14px; font-size: 0.8rem;" onclick="saveProfileReferrer()">Salvar</button>
+          </div>
+        </div>
+
+        <button class="btn btn-danger" style="background: rgba(239, 68, 68, 0.12); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); margin-top: 16px;" onclick="confirmDeleteAccount()">
+          <i class="fa-solid fa-user-xmark"></i> Excluir Minha Conta
+        </button>
+
+        <button class="btn btn-secondary" id="btn-logout" style="background: #1c1c26; color: var(--text-muted); border: 1px solid var(--bg-card-border); margin-top: 10px;">
           <i class="fa-solid fa-right-from-bracket"></i> Encerrar Sessão
         </button>
       </div>
@@ -637,10 +654,11 @@
       signInWithEmailAndPassword, 
       createUserWithEmailAndPassword, 
       onAuthStateChanged, 
-      signOut 
+      signOut,
+      deleteUser
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { 
-      doc, setDoc, updateDoc, addDoc, collection, onSnapshot, query, where, increment, getDocs 
+      doc, setDoc, updateDoc, addDoc, deleteDoc, collection, onSnapshot, query, where, increment, getDocs 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     let isSignUp = true;
@@ -776,6 +794,7 @@
               photoURL: "",
               refCode: generatedRefCode,
               referredBy: refInput || null,
+              customCommission: 5, // Padrão 5%
               createdAt: Date.now()
             }, { merge: true });
 
@@ -801,10 +820,12 @@
     onAuthStateChanged(auth, (user) => {
       const authSection = document.getElementById("auth-section");
       const dashboardSection = document.getElementById("dashboard-section");
+      const viewport = document.getElementById("app-viewport");
 
       if (user) {
         authSection.classList.add("hidden");
         dashboardSection.classList.remove("hidden");
+        viewport.classList.add("logged-in");
         
         document.getElementById("profile-email").value = user.email || "";
 
@@ -816,6 +837,7 @@
       } else {
         authSection.classList.remove("hidden");
         dashboardSection.classList.add("hidden");
+        viewport.classList.remove("logged-in");
       }
     });
 
@@ -839,6 +861,16 @@
           document.getElementById("profile-refcode").value = refCode;
           document.getElementById("user-balance").innerText = `$ ${(data.balance || 0).toFixed(2)}`;
 
+          // Tratar exibição do campo de padrinho no perfil
+          const referrerInput = document.getElementById("profile-referrer-input");
+          if (data.referredBy) {
+            referrerInput.value = data.referredBy;
+            referrerInput.disabled = true;
+          } else {
+            referrerInput.value = "";
+            referrerInput.disabled = false;
+          }
+
           const baseUrl = window.location.href.split('?')[0];
           const refLink = `${baseUrl}?ref=${refCode}`;
           document.getElementById("my-ref-link").value = refLink;
@@ -859,6 +891,51 @@
         }
       });
     }
+
+    window.saveProfileReferrer = async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+      const refCodeInput = document.getElementById("profile-referrer-input").value.trim().toUpperCase();
+
+      if (!refCodeInput) return showCustomAlert("Atenção", "Insira um código de padrinho válido.");
+
+      // Verificar se o código existe
+      const q = query(collection(db, "users"), where("refCode", "==", refCodeInput));
+      const snap = await getDocs(q);
+
+      if (snap.empty) {
+        return showCustomAlert("Código Inválido", "Este código de indicação não foi encontrado na plataforma.");
+      }
+
+      const padrinhoDoc = snap.docs[0].data();
+      if (padrinhoDoc.uid === user.uid) {
+        return showCustomAlert("Atenção", "Você não pode ser seu próprio padrinho.");
+      }
+
+      try {
+        await updateDoc(doc(db, "users", user.uid), {
+          referredBy: refCodeInput
+        });
+        showCustomAlert("Sucesso", "Padrinho vinculado com sucesso!", "fa-circle-check");
+      } catch (err) {
+        showCustomAlert("Erro", err.message);
+      }
+    };
+
+    window.confirmDeleteAccount = async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      if (confirm("Tem certeza absoluta de que deseja excluir sua conta e todos os dados associados? Esta ação é irreversível.")) {
+        try {
+          await deleteDoc(doc(db, "users", user.uid));
+          await deleteUser(user);
+          showCustomAlert("Conta Excluída", "Sua conta foi removida com sucesso.");
+        } catch (err) {
+          showCustomAlert("Erro", "Para sua segurança, faça login novamente antes de excluir a conta ou contate o suporte: " + err.message);
+        }
+      }
+    };
 
     function loadUserActivePlans(uid) {
       const q = query(
@@ -898,7 +975,7 @@
           container.innerHTML += `
             <div class="my-plan-card">
               <div style="display:flex; justify-content:space-between; align-items:center;">
-                <b style="font-size:1rem; color:#fff;">${plan.description}</b>
+                <b style="font-size:0.95rem; color:#fff;">${plan.description}</b>
                 <span class="badge ${isConcluido ? 'badge-concluido' : 'badge-ativo'}">${isConcluido ? 'CONCLUÍDO' : 'EM ANDAMENTO'}</span>
               </div>
               
@@ -914,7 +991,7 @@
               </div>
 
               <div>
-                <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-bottom:4px;">
+                <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:var(--text-muted); margin-bottom:3px;">
                   <span>Progresso do Ciclo</span>
                   <b style="color: var(--gold-primary);">${progressPercent.toFixed(1)}%</b>
                 </div>
@@ -1002,12 +1079,14 @@
       const labels = ["Início"];
       const balanceHistory = [0];
       let runningBalance = 0;
+      let totalDeposited = 0;
 
       sorted.forEach(t => {
         const dateStr = t.createdAt ? new Date(t.createdAt).toLocaleDateString("pt-BR", { day: '2-digit', month: '2-digit' }) : "";
         
         if (t.type === "deposito_pix") {
           runningBalance += (t.amount || 0);
+          totalDeposited += (t.amount || 0);
         } else if (t.type === "saque" && t.status !== "rejeitado") {
           runningBalance -= (t.amount || 0);
         } else if (t.type === "produto_adquirido" && t.status === "concluido") {
@@ -1020,9 +1099,27 @@
         balanceHistory.push(Math.max(0, runningBalance));
       });
 
+      // Calcular crescimento percentual do patrimônio
+      const currentBal = currentUserData.balance || 0;
+      let growthPercent = 0;
+      if (totalDeposited > 0) {
+        growthPercent = ((currentBal - totalDeposited) / totalDeposited) * 100;
+      } else if (currentBal > 0) {
+        growthPercent = 100;
+      }
+
+      const growthIndicator = document.getElementById("balance-growth-indicator");
+      if (growthPercent >= 0) {
+        growthIndicator.className = "balance-growth growth-positive";
+        growthIndicator.innerHTML = `<i class="fa-solid fa-arrow-trend-up"></i> <span>+${growthPercent.toFixed(1)}% de ganho</span>`;
+      } else {
+        growthIndicator.className = "balance-growth growth-negative";
+        growthIndicator.innerHTML = `<i class="fa-solid fa-arrow-trend-down"></i> <span>${growthPercent.toFixed(1)}% no período</span>`;
+      }
+
       if (yieldCartesianChartInstance) yieldCartesianChartInstance.destroy();
 
-      const gradient = ctx.createLinearGradient(0, 0, 0, 180);
+      const gradient = ctx.createLinearGradient(0, 0, 0, 160);
       gradient.addColorStop(0, 'rgba(212, 175, 55, 0.35)');
       gradient.addColorStop(1, 'rgba(212, 175, 55, 0.0)');
 
@@ -1039,7 +1136,7 @@
             fill: true,
             tension: 0.3,
             pointBackgroundColor: '#f3e5ab',
-            pointRadius: 4
+            pointRadius: 3
           }]
         },
         options: {
@@ -1047,8 +1144,8 @@
           maintainAspectRatio: false,
           plugins: { legend: { display: false } },
           scales: {
-            x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#8e8ea0', font: { size: 10 } } },
-            y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#8e8ea0', font: { size: 10 } } }
+            x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#8e8ea0', font: { size: 9 } } },
+            y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#8e8ea0', font: { size: 9 } } }
           }
         }
       });
@@ -1122,7 +1219,7 @@
       if (!user) return showCustomAlert("Atenção", "Usuário não autenticado.");
 
       const amount = parseFloat(document.getElementById("pix-amount").value);
-      if (!amount || amount <= 0) return showCustomAlert("Atenção", "Insira um valor válido para depósito.", "fa-circle-exclamation");
+      if (!amount || amount < 80) return showCustomAlert("Atenção", "O valor mínimo para depósito via PIX é de $80.00.", "fa-circle-exclamation");
 
       try {
         await addDoc(collection(db, "transactions"), {
@@ -1147,7 +1244,7 @@
       if (!user) return showCustomAlert("Atenção", "Usuário não autenticado.");
 
       const amount = parseFloat(document.getElementById("withdraw-amount").value);
-      if (!amount || amount <= 0) return showCustomAlert("Atenção", "Insira um valor válido para saque.", "fa-circle-exclamation");
+      if (!amount || amount < 150) return showCustomAlert("Atenção", "O limite/mínimo para solicitação de saque é de $150.00.", "fa-circle-exclamation");
 
       const currentBalance = currentUserData.balance || 0;
       if (amount > currentBalance) {
@@ -1166,13 +1263,12 @@
 
         await updateDoc(doc(db, "users", user.uid), { balance: increment(-amount) });
         document.getElementById("withdraw-amount").value = "";
-        showCustomAlert("Solicitação Enviada", "Solicitação de resgate registrada com sucesso!", "fa-circle-check");
+        showCustomAlert("Solicitação Enviada", "Resgate solicitado! Prazo de até 72 horas para compensação.", "fa-circle-check");
       } catch (error) {
         showCustomAlert("Erro ao Sacar", error.message, "fa-triangle-exclamation");
       }
     };
 
-    // CORREÇÃO DEFINITIVA DA COMPRA (SEM ENCARRAR NO CAMPO REFERRED_BY)
     window.buyPlan = async (planId, planTitle, planPrice, durationDays, totalReturn) => {
       const user = auth.currentUser;
       if (!user) return showCustomAlert("Atenção", "Usuário não autenticado.");
@@ -1198,10 +1294,9 @@
           createdAt: now
         });
 
-        // Apenas desconta o valor do saldo do cliente no Firestore
         await updateDoc(doc(db, "users", user.uid), { balance: increment(-planPrice) });
 
-        showCustomAlert("Investimento Efetuado", `Sua aplicação em "${planTitle}" está ativa por ${durationDays} dias. Acompanhe na aba "Planos".`, "fa-circle-check");
+        showCustomAlert("Investimento Efetuado", `Sua aplicação em "${planTitle}" está ativa por ${durationDays} dias.`, "fa-circle-check");
       } catch (error) {
         showCustomAlert("Erro na Aplicação", error.message, "fa-triangle-exclamation");
       }
@@ -1265,7 +1360,7 @@
           `;
         });
       });
-                                                  }
+    }
 
     function loadNotifications(uid) {
       const q = query(collection(db, "transactions"), where("userId", "==", uid));
@@ -1293,8 +1388,8 @@
           const date = n.createdAt ? new Date(n.createdAt).toLocaleString("pt-BR") : "Recente";
           list.innerHTML += `
             <div class="notification-card">
-              <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px;">${date}</div>
-              <div style="font-size: 0.85rem; color: var(--text-main);">${n.description}</div>
+              <div style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 3px;">${date}</div>
+              <div style="font-size: 0.8rem; color: var(--text-main);">${n.description}</div>
             </div>
           `;
         });
