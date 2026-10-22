@@ -368,7 +368,7 @@
     .modal-title { font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
     .modal-message { font-size: 0.88rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 20px; }
 
-    /* BARRA INFERIOR DE NAVEGAÇÃO AJUSTADA COM ABA PLANOS */
+    /* BARRA INFERIOR DE NAVEGAÇÃO */
     .bottom-nav {
       position: fixed; bottom: 0; width: 100%; max-width: 480px; height: var(--nav-height);
       background: #0d0d12; border-top: 1px solid #1c1c26; display: flex; justify-content: space-around;
@@ -535,7 +535,7 @@
         </div>
       </div>
 
-      <!-- NOVO: ABA 2: MEUS PLANOS / CARTEIRAS ADQUIRIDAS COM PROGRESSO EM % -->
+      <!-- ABA 2: MEUS PLANOS -->
       <div id="tab-myplans" class="tab-content">
         <div class="section-header"><i class="fa-solid fa-chart-pie"></i> Meus Investimentos Ativos</div>
         <div id="my-active-plans-list">
@@ -669,7 +669,7 @@
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     let isSignUp = true;
-    let currentUserData = { balance: 0, refCode: "", referredBy: null };
+    let currentUserData = { balance: 0, refCode: "", referredBy: null, padrinhoUid: null };
     let yieldCartesianChartInstance = null;
 
     // MODAL DE ALERTA PERSONALIZADO
@@ -772,7 +772,7 @@
       });
     }
 
-    // AUTENTICAÇÃO E CADASTRO
+    // AUTENTICAÇÃO E CADASTRO VINCULANDO O PADRINHO POR UID
     const btnSubmit = document.getElementById("btn-submit");
     if (btnSubmit) {
       btnSubmit.addEventListener("click", async () => {
@@ -797,6 +797,15 @@
               showCustomAlert("Atenção", "Preencha o seu número de telefone.", "fa-circle-exclamation");
               return;
             }
+
+            let padrinhoUid = null;
+            if (refInput) {
+              const qPadrinho = query(collection(db, "users"), where("refCode", "==", refInput));
+              const snapPadrinho = await getDocs(qPadrinho);
+              if (!snapPadrinho.empty) {
+                padrinhoUid = snapPadrinho.docs[0].id;
+              }
+            }
             
             const res = await createUserWithEmailAndPassword(auth, emailInput, passwordInput);
             const generatedRefCode = "LAPLATA" + Math.floor(1000 + Math.random() * 9000);
@@ -810,6 +819,7 @@
               photoURL: "",
               refCode: generatedRefCode,
               referredBy: refInput || null,
+              padrinhoUid: padrinhoUid,
               createdAt: new Date().getTime()
             }, { merge: true });
 
@@ -963,7 +973,7 @@
       });
     }
 
-    // CORREÇÃO DEFINITIVA DA FOTO DE PERFIL (SOLUÇÃO DO NO DOCUMENT TO UPDATE)
+    // FOTO DE PERFIL
     window.uploadProfilePhoto = (event) => {
       const file = event.target.files[0];
       if (!file) return;
@@ -975,7 +985,6 @@
         if (!user) return;
 
         try {
-          // Usa setDoc com merge: true para garantir que o documento exista no Firestore
           await setDoc(doc(db, "users", user.uid), { 
             photoURL: base64Image 
           }, { merge: true });
@@ -987,16 +996,13 @@
       };
       reader.readAsDataURL(file);
     };
-  
-    // CORREÇÃO DEFINITIVA DO PROGRAMA DE AFILIADOS E COMISSÕES
-    async function loadAffiliateData(user) {
-      if (!currentUserData.refCode) return;
 
-      // Busca todos os usuários cujo referredBy corresponde ao refCode DO USUÁRIO LOGADO
+    // CORREÇÃO DOS AFILIADOS BUSCANDO DIRETO PELO PADRINHO UID
+    async function loadAffiliateData(user) {
       const usersRef = collection(db, "users");
-      const q = query(usersRef, where("referredBy", "==", currentUserData.refCode));
+      const q = query(usersRef, where("padrinhoUid", "==", user.uid));
       
-      onSnapshot(q, async (snapshot) => {
+      onSnapshot(q, (snapshot) => {
         const referralsListElem = document.getElementById("referrals-list");
         const referralsCountElem = document.getElementById("referrals-count");
         referralsListElem.innerHTML = "";
@@ -1021,7 +1027,7 @@
           });
         }
 
-        // Calcula comissões acumuladas recebidas pelo usuário logado
+        // Soma comissões acumuladas
         const transQuery = query(collection(db, "transactions"), where("userId", "==", user.uid));
         onSnapshot(transQuery, (transSnap) => {
           let totalEarnings = 0;
@@ -1036,7 +1042,7 @@
       });
     }
 
-    // RENDERIZAR GRÁFICO CARTESIANO DE RENDIMENTO DO INVESTIDOR
+    // RENDERIZAR GRÁFICO CARTESIANO DE RENDIMENTO
     function renderUserCartesianChart(transactions) {
       const ctx = document.getElementById("userYieldCartesianChart").getContext("2d");
       const sorted = [...transactions].sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0));
@@ -1252,6 +1258,7 @@
       const q = query(
         collection(db, "transactions"),
         where("userId", "==", uid),
+        where("type", "==", "produto_adquirido"),
         where("status", "==", "ativo")
       );
 
@@ -1279,38 +1286,32 @@
             createdAt: now
           });
 
-          // PAGA OS 5% DE COMISSÃO AO PADRINHO QUANDO O INDICADO CONCLUI O PLANO
-          if (currentUserData.referredBy) {
-            const usersQuery = query(collection(db, "users"), where("refCode", "==", currentUserData.referredBy));
-            const userSnapshots = await getDocs(usersQuery);
+          // PAGA OS 5% DE COMISSÃO AO PADRINHO
+          if (currentUserData.padrinhoUid) {
+            const referrerId = currentUserData.padrinhoUid;
+            const commissionAmount = trans.amount * 0.05;
 
-            if (!userSnapshots.empty) {
-              const referrerDoc = userSnapshots.docs[0];
-              const referrerId = referrerDoc.id;
-              const commissionAmount = trans.amount * 0.05;
+            await updateDoc(doc(db, "users", referrerId), {
+              balance: increment(commissionAmount)
+            });
 
-              await updateDoc(doc(db, "users", referrerId), {
-                balance: increment(commissionAmount)
-              });
+            await addDoc(collection(db, "transactions"), {
+              userId: referrerId,
+              type: "comissao_afiliado",
+              description: `Comissão 5% - Finalização de plano do indicado (${currentUserData.name})`,
+              amount: commissionAmount,
+              status: "concluido",
+              createdAt: now
+            });
 
-              await addDoc(collection(db, "transactions"), {
-                userId: referrerId,
-                type: "comissao_afiliado",
-                description: `Comissão 5% - Finalização de plano do indicado (${currentUserData.name})`,
-                amount: commissionAmount,
-                status: "concluido",
-                createdAt: now
-              });
-
-              await addDoc(collection(db, "transactions"), {
-                userId: referrerId,
-                type: "notificacao",
-                description: `Você recebeu $${commissionAmount.toFixed(2)} de comissão de afiliado!`,
-                amount: 0.00,
-                status: "concluido",
-                createdAt: now
-              });
-            }
+            await addDoc(collection(db, "transactions"), {
+              userId: referrerId,
+              type: "notificacao",
+              description: `Você recebeu $${commissionAmount.toFixed(2)} de comissão de afiliado!`,
+              amount: 0.00,
+              status: "concluido",
+              createdAt: now
+            });
           }
         }
       });
