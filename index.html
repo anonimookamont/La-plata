@@ -21,6 +21,9 @@
       --gold-gradient: linear-gradient(135deg, #f3e5ab 0%, #d4af37 50%, #aa7c11 100%);
       --gold-gradient-button: linear-gradient(135deg, #e6c865 0%, #d4af37 100%);
       
+      --accent-green: #a3e635;
+      --accent-green-bg: rgba(163, 230, 53, 0.15);
+      
       --text-main: #f8fafc;
       --text-muted: #8e8ea0;
       --border-gold: rgba(212, 175, 55, 0.3);
@@ -203,6 +206,35 @@
     .greeting { font-size: 0.7rem; color: var(--text-muted); }
     .user-name-title { font-size: 0.9rem; font-weight: 700; color: var(--text-main); }
 
+    /* SELETOR DE ABAS SUPERIORES ESTILO PÍLULA (REFERÊNCIA VERDE) */
+    .pill-tabs-nav {
+      display: flex;
+      background: #14141c;
+      padding: 5px;
+      border-radius: 28px;
+      border: 1px solid #22222e;
+      margin: 14px 0;
+      gap: 4px;
+    }
+    .pill-tab-btn {
+      flex: 1;
+      padding: 9px 12px;
+      border: none;
+      border-radius: 20px;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-align: center;
+    }
+    .pill-tab-btn.active {
+      background: var(--accent-green);
+      color: #000000;
+      box-shadow: 0 4px 12px rgba(163, 230, 53, 0.3);
+    }
+
     /* TABS SYSTEM */
     .tab-content { padding: 20px; display: none !important; }
     .tab-content.active { display: block !important; }
@@ -219,9 +251,7 @@
     }
     .balance-title { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
     .balance-value { font-size: 2rem; font-weight: 800; color: #ffffff; margin: 6px 0 2px 0; }
-    .balance-growth { font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; margin-top: 4px; }
-    .growth-positive { color: #10b981; }
-    .growth-negative { color: #ef4444; }
+    .balance-growth { font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; margin-top: 4px; color: #10b981; }
 
     .chart-card {
       background: var(--bg-card);
@@ -356,7 +386,7 @@
     .modal-title { font-size: 1rem; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
     .modal-message { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 18px; }
 
-    /* MENU INFERIOR - SÓ EXIBIDO QUANDO LOGADO */
+    /* MENU INFERIOR */
     .bottom-nav {
       position: fixed; bottom: 0; width: 100%; max-width: 480px; height: var(--nav-height);
       background: #0d0d12; border-top: 1px solid #1c1c26; display: none; justify-space: space-around;
@@ -478,8 +508,8 @@
         <div class="balance-card">
           <div class="balance-title">Patrimônio Total</div>
           <div class="balance-value" id="user-balance">$ 0.00</div>
-          <div id="balance-growth-indicator" class="balance-growth growth-positive">
-            <i class="fa-solid fa-arrow-trend-up"></i> <span>+0.0% no período</span>
+          <div id="balance-growth-indicator" class="balance-growth">
+            <i class="fa-solid fa-arrow-trend-up"></i> <span id="growth-text-label">+0.0% de crescimento</span>
           </div>
         </div>
 
@@ -510,7 +540,7 @@
             <label>Valor do Saque ($) - Mínimo: $150.00</label>
             <input type="number" id="withdraw-amount" class="form-control" placeholder="Ex: 150.00" min="150" step="0.01" oninput="calculateWithdrawFeePreview()">
           </div>
-          <button class="btn btn-gold" style="background: #1c1c26; border: 1px solid var(--border-gold); color: var(--gold-primary);" onclick="handleWithdrawRequest()">
+          <button class="btn btn-gold" style="background: #1c1c26; border: 1px solid var(--border: 1px solid var(--border-gold); color: var(--gold-primary);" onclick="handleWithdrawRequest()">
             <i class="fa-solid fa-paper-plane"></i> Pedir Saque
           </button>
           <div class="rule-notice" id="withdraw-fee-notice">
@@ -519,20 +549,35 @@
         </div>
 
         <div class="section-header"><i class="fa-solid fa-cubes"></i> Carteiras Recomendadas</div>
+        
+        <!-- SELETOR DE FREQUÊNCIA DOS PLANOS NA ABA INÍCIO (TIPO DA IMAGEM) -->
+        <div class="pill-tabs-nav">
+          <button class="pill-tab-btn active" id="btn-home-freq-diario" onclick="filterHomePlansByFreq('diario')">Diários</button>
+          <button class="pill-tab-btn" id="btn-home-freq-semanal" onclick="filterHomePlansByFreq('semanal')">Semanais</button>
+          <button class="pill-tab-btn" id="btn-home-freq-mensal" onclick="filterHomePlansByFreq('mensal')">Mensais</button>
+        </div>
+
         <div class="plans-grid" id="admin-plans-list">
           <div style="text-align: center; color: var(--text-muted); padding: 15px;">A carregar carteiras...</div>
         </div>
       </div>
 
-      <!-- ABA 2: MEUS PLANOS -->
+      <!-- ABA 2: MEUS PLANOS (COM SEPARAÇÃO ATIVOS X TERMINADOS) -->
       <div id="tab-myplans" class="tab-content">
-        <div class="section-header"><i class="fa-solid fa-chart-pie"></i> Meus Investimentos Ativos</div>
+        <div class="section-header"><i class="fa-solid fa-chart-pie"></i> Meus Investimentos</div>
+        
+        <!-- SELETOR ATIVOS vs TERMINADOS ESTILO PÍLULA VERDE -->
+        <div class="pill-tabs-nav">
+          <button class="pill-tab-btn active" id="btn-myplans-ativos" onclick="switchMyPlansTab('ativos')">Planos Ativos</button>
+          <button class="pill-tab-btn" id="btn-myplans-terminados" onclick="switchMyPlansTab('terminados')">Planos Terminados</button>
+        </div>
+
         <div id="my-active-plans-list">
           <div style="text-align: center; color: var(--text-muted); padding: 20px;">Carregando seus investimentos...</div>
         </div>
       </div>
 
-      <!-- ABA 3: AFILIADOS -->
+      <!-- ABA 3: AFILIADOS (COM EVOLUÇÃO PERCENTUAL E GRÁFICO CARTESIANO) -->
       <div id="tab-affiliates" class="tab-content">
         <div class="section-header"><i class="fa-solid fa-users"></i> Programa de Afiliados</div>
         
@@ -549,6 +594,19 @@
         <div class="balance-card">
           <div class="balance-title">Comissões Acumuladas</div>
           <div class="balance-value" id="affiliate-earnings-total" style="color: var(--gold-primary);">$ 0.00</div>
+          <div class="balance-growth" style="color: #a3e635;">
+            <i class="fa-solid fa-arrow-trend-up"></i> <span id="affiliate-growth-label">+0.0% no período</span>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title"><i class="fa-solid fa-chart-line"></i> Evolução das Comissões</div>
+            <span style="font-size: 0.7rem; color: #a3e635; font-weight: 600;">Histórico</span>
+          </div>
+          <div class="chart-container-box">
+            <canvas id="affiliateCommissionCartesianChart"></canvas>
+          </div>
         </div>
 
         <div class="section-header"><i class="fa-solid fa-user-check"></i> Seus Indicados (<span id="referrals-count">0</span>)</div>
@@ -671,6 +729,11 @@
     let isSignUp = true;
     let currentUserData = { balance: 0, refCode: "", referredBy: null };
     let yieldCartesianChartInstance = null;
+    let affiliateChartInstance = null;
+    let currentHomePlansFreq = "diario";
+    let currentMyPlansFilter = "ativos";
+    let cachedMyPlansList = [];
+    let cachedAdminPlansList = [];
 
     window.showCustomAlert = (title, message, iconClass = "fa-circle-info") => {
       document.getElementById("modal-alert-title").innerText = title;
@@ -757,6 +820,27 @@
       if (activeNavIndex !== -1) {
         document.querySelectorAll('.nav-item')[activeNavIndex].classList.add('active');
       }
+    };
+
+    // FILTRO DE CARTEIRAS RECOMENDADAS NA ABA INÍCIO (DIÁRIOS, SEMANAIS, MENSAIS)
+    window.filterHomePlansByFreq = (freq) => {
+      currentHomePlansFreq = freq;
+      document.getElementById('btn-home-freq-diario').classList.remove('active');
+      document.getElementById('btn-home-freq-semanal').classList.remove('active');
+      document.getElementById('btn-home-freq-mensal').classList.remove('active');
+
+      document.getElementById(`btn-home-freq-${freq}`).classList.add('active');
+      renderAdminPlansList();
+    };
+
+    // FILTRO DOS MEUS PLANOS (ATIVOS X TERMINADOS)
+    window.switchMyPlansTab = (mode) => {
+      currentMyPlansFilter = mode;
+      document.getElementById('btn-myplans-ativos').classList.remove('active');
+      document.getElementById('btn-myplans-terminados').classList.remove('active');
+
+      document.getElementById(`btn-myplans-${mode}`).classList.add('active');
+      renderUserMyPlans();
     };
 
     const btnToggleMode = document.getElementById("btn-toggle-mode");
@@ -894,7 +978,7 @@
           const referrerInput = document.getElementById("profile-referrer-input");
           if (data.referredBy) {
             referrerInput.value = data.referredBy;
-            referrerInput.disabled = true;
+  referrerInput.disabled = true;
           } else {
             referrerInput.value = "";
             referrerInput.disabled = false;
@@ -973,70 +1057,88 @@
       );
 
       onSnapshot(q, (snapshot) => {
-        const container = document.getElementById("my-active-plans-list");
-        container.innerHTML = "";
+        cachedMyPlansList = [];
+        snapshot.forEach((docSnap) => {
+          cachedMyPlansList.push(docSnap.data());
+        });
+        renderUserMyPlans();
+      });
+    }
 
-        if (snapshot.empty) {
-          container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 20px;">Você ainda não possui carteiras de investimento ativas.</div>`;
-          return;
+    function renderUserMyPlans() {
+      const container = document.getElementById("my-active-plans-list");
+      container.innerHTML = "";
+
+      if (cachedMyPlansList.length === 0) {
+        container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 20px;">Você ainda não possui carteiras de investimento nesta aba.</div>`;
+        return;
+      }
+
+      const now = Date.now();
+      let count = 0;
+
+      cachedMyPlansList.forEach((plan) => {
+        const startDate = plan.startDate || plan.createdAt || now;
+        const endDate = plan.endDate || (startDate + 7 * 24 * 60 * 60 * 1000);
+
+        const totalTime = endDate - startDate;
+        const elapsedTime = now - startDate;
+        
+        let progressPercent = 0;
+        if (plan.status === "concluido") {
+          progressPercent = 100;
+        } else {
+          progressPercent = Math.min(100, Math.max(0, (elapsedTime / totalTime) * 100));
         }
 
-        const now = Date.now();
+        const isConcluido = plan.status === "concluido" || progressPercent >= 100;
+        
+        // Filtro estrito: Ativos x Terminados
+        if (currentMyPlansFilter === "ativos" && isConcluido) return;
+        if (currentMyPlansFilter === "terminados" && !isConcluido) return;
 
-        snapshot.forEach((docSnap) => {
-          const plan = docSnap.data();
-          const startDate = plan.startDate || plan.createdAt || now;
-          const endDate = plan.endDate || (startDate + 7 * 24 * 60 * 60 * 1000);
+        count++;
+        const freqText = (plan.frequency || 'diario').toUpperCase();
 
-          const totalTime = endDate - startDate;
-          const elapsedTime = now - startDate;
-          
-          let progressPercent = 0;
-          if (plan.status === "concluido") {
-            progressPercent = 100;
-          } else {
-            progressPercent = Math.min(100, Math.max(0, (elapsedTime / totalTime) * 100));
-          }
-
-          const isConcluido = plan.status === "concluido" || progressPercent >= 100;
-          const freqText = (plan.frequency || 'diario').toUpperCase();
-
-          container.innerHTML += `
-            <div class="my-plan-card">
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <b style="font-size:0.95rem; color:#fff;">${plan.description}</b>
-                <span class="badge ${isConcluido ? 'badge-concluido' : 'badge-ativo'}">${isConcluido ? 'CONCLUÍDO' : 'EM ANDAMENTO'}</span>
+        container.innerHTML += `
+          <div class="my-plan-card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <b style="font-size:0.95rem; color:#fff;">${plan.description}</b>
+              <span class="badge ${isConcluido ? 'badge-concluido' : 'badge-ativo'}">${isConcluido ? 'TERMINADO' : 'EM ANDAMENTO'}</span>
+            </div>
+            
+            <div class="plan-metrics" style="margin-top: 4px;">
+              <div class="metric-item">
+                <span class="metric-label">Aporte</span>
+                <span class="metric-value">$ ${(plan.amount || 0).toFixed(2)}</span>
               </div>
-              
-              <div class="plan-metrics" style="margin-top: 4px;">
-                <div class="metric-item">
-                  <span class="metric-label">Aporte</span>
-                  <span class="metric-value">$ ${(plan.amount || 0).toFixed(2)}</span>
-                </div>
-                <div class="metric-item">
-                  <span class="metric-label">Retorno Total</span>
-                  <span class="metric-value" style="color: var(--gold-primary);">$ ${(plan.totalReturn || 0).toFixed(2)}</span>
-                </div>
-              </div>
-
-              <div style="font-size:0.7rem; color:var(--text-muted); display:flex; justify-space-between;">
-                <span>Modo: <b style="color:var(--gold-primary);">${freqText}</b></span>
-                <span>Término: <b>${new Date(endDate).toLocaleDateString('pt-BR')}</b></span>
-              </div>
-
-              <div>
-                <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:var(--text-muted); margin-bottom:3px;">
-                  <span>Progresso do Ciclo</span>
-                  <b style="color: var(--gold-primary);">${progressPercent.toFixed(1)}%</b>
-                </div>
-                <div class="progress-bar-bg">
-                  <div class="progress-bar-fill" style="width: ${progressPercent}%;"></div>
-                </div>
+              <div class="metric-item">
+                <span class="metric-label">Retorno Total</span>
+                <span class="metric-value" style="color: var(--gold-primary);">$ ${(plan.totalReturn || 0).toFixed(2)}</span>
               </div>
             </div>
-          `;
-        });
+
+            <div style="font-size:0.7rem; color:var(--text-muted); display:flex; justify-content:space-between;">
+              <span>Modo: <b style="color:var(--gold-primary);">${freqText}</b></span>
+              <span>Término: <b>${new Date(endDate).toLocaleDateString('pt-BR')}</b></span>
+            </div>
+
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:var(--text-muted); margin-bottom:3px;">
+                <span>Progresso do Ciclo</span>
+                <b style="color: var(--gold-primary);">${progressPercent.toFixed(1)}%</b>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" style="width: ${progressPercent}%;"></div>
+              </div>
+            </div>
+          </div>
+        `;
       });
+
+      if (count === 0) {
+        container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 20px;">Nenhum investimento ${currentMyPlansFilter === 'ativos' ? 'ativo' : 'terminado'} no momento.</div>`;
+      }
     }
 
     window.uploadProfilePhoto = (event) => {
@@ -1095,14 +1197,73 @@
         const transQuery = query(collection(db, "transactions"), where("userId", "==", uid));
         onSnapshot(transQuery, (transSnap) => {
           let totalEarnings = 0;
+          const commissionItems = [];
+
           transSnap.forEach((tDoc) => {
             const tData = tDoc.data();
             if (tData.type === "comissao_afiliado") {
               totalEarnings += (tData.amount || 0);
+              commissionItems.push(tData);
             }
           });
+
           document.getElementById("affiliate-earnings-total").innerText = `$ ${totalEarnings.toFixed(2)}`;
+          
+          // Porcentagem e gráfico cartesiano de comissões
+          const commGrowth = totalEarnings > 0 ? 100 : 0;
+          document.getElementById("affiliate-growth-label").innerText = `+${commGrowth.toFixed(1)}% de ganhos acumulados`;
+
+          renderAffiliateCommissionChart(commissionItems);
         });
+      });
+    }
+
+    function renderAffiliateCommissionChart(commissions) {
+      const ctx = document.getElementById("affiliateCommissionCartesianChart").getContext("2d");
+      const sorted = [...commissions].sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0));
+
+      const labels = ["Início"];
+      const commHistory = [0];
+      let runningTotal = 0;
+
+      sorted.forEach(c => {
+        const dateStr = c.createdAt ? new Date(c.createdAt).toLocaleDateString("pt-BR", { day: '2-digit', month: '2-digit' }) : "";
+        runningTotal += (c.amount || 0);
+        labels.push(dateStr || "Comissão");
+        commHistory.push(runningTotal);
+      });
+
+      if (affiliateChartInstance) affiliateChartInstance.destroy();
+
+      const gradient = ctx.createLinearGradient(0, 0, 0, 160);
+      gradient.addColorStop(0, 'rgba(163, 230, 53, 0.35)');
+      gradient.addColorStop(1, 'rgba(163, 230, 53, 0.0)');
+
+      affiliateChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Comissão ($)',
+            data: commHistory,
+            borderColor: '#a3e635',
+            borderWidth: 2.5,
+            backgroundColor: gradient,
+            fill: true,
+            tension: 0.3,
+            pointBackgroundColor: '#a3e635',
+            pointRadius: 3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#8e8ea0', font: { size: 9 } } },
+            y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#8e8ea0', font: { size: 9 } } }
+          }
+        }
       });
     }
 
@@ -1136,19 +1297,12 @@
       const currentBal = currentUserData.balance || 0;
       let growthPercent = 0;
       if (totalDeposited > 0) {
-        growthPercent = ((currentBal - totalDeposited) / totalDeposited) * 100;
+        growthPercent = Math.max(0, ((currentBal - totalDeposited) / totalDeposited) * 100);
       } else if (currentBal > 0) {
         growthPercent = 100;
       }
 
-      const growthIndicator = document.getElementById("balance-growth-indicator");
-      if (growthPercent >= 0) {
-        growthIndicator.className = "balance-growth growth-positive";
-        growthIndicator.innerHTML = `<i class="fa-solid fa-arrow-trend-up"></i> <span>+${growthPercent.toFixed(1)}% de ganho</span>`;
-      } else {
-        growthIndicator.className = "balance-growth growth-negative";
-        growthIndicator.innerHTML = `<i class="fa-solid fa-arrow-trend-down"></i> <span>${growthPercent.toFixed(1)}% no período</span>`;
-      }
+      document.getElementById("growth-text-label").innerText = `+${growthPercent.toFixed(1)}% de crescimento`;
 
       if (yieldCartesianChartInstance) yieldCartesianChartInstance.destroy();
 
@@ -1204,64 +1358,71 @@
     };
 
     function loadAdminPlans() {
-      const plansContainer = document.getElementById("admin-plans-list");
-      
       onSnapshot(collection(db, "plans"), (snapshot) => {
-        plansContainer.innerHTML = "";
-        
-        if (snapshot.empty) {
-          plansContainer.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 15px;">Nenhuma carteira disponível no momento.</div>`;
-          return;
+        cachedAdminPlansList = [];
+        snapshot.forEach((docSnap) => {
+          cachedAdminPlansList.push({ id: docSnap.id, ...docSnap.data() });
+        });
+        renderAdminPlansList();
+      });
+    }
+
+    function renderAdminPlansList() {
+      const plansContainer = document.getElementById("admin-plans-list");
+      plansContainer.innerHTML = "";
+
+      const filtered = cachedAdminPlansList.filter(p => (p.frequency || 'diario') === currentHomePlansFreq);
+
+      if (filtered.length === 0) {
+        plansContainer.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 15px;">Nenhuma carteira ${currentHomePlansFreq} disponível no momento.</div>`;
+        return;
+      }
+
+      filtered.forEach((plan) => {
+        const planId = plan.id;
+        const price = plan.price || 0;
+        const durationDays = plan.durationDays || 30;
+        const totalReturn = plan.totalReturn || (price * 1.30);
+        const freq = plan.frequency || 'diario';
+        const profit = totalReturn - price;
+
+        let detailBadge = "";
+        if (freq === 'diario') {
+          const dailyVal = profit / durationDays;
+          detailBadge = `Rendimento de $${dailyVal.toFixed(2)}/dia`;
+        } else if (freq === 'semanal') {
+          const weeks = Math.max(1, Math.floor(durationDays / 7));
+          const weeklyVal = profit / weeks;
+          detailBadge = `Rendimento de $${weeklyVal.toFixed(2)}/semana`;
+        } else {
+          detailBadge = `Rendimento no término ($${profit.toFixed(2)})`;
         }
 
-        snapshot.forEach((docSnap) => {
-          const plan = docSnap.data();
-          const planId = docSnap.id;
-          
-          const price = plan.price || 0;
-          const durationDays = plan.durationDays || 30;
-          const totalReturn = plan.totalReturn || (price * 1.30);
-          const freq = plan.frequency || 'diario';
-          const profit = totalReturn - price;
-
-          let detailBadge = "";
-          if (freq === 'diario') {
-            const dailyVal = profit / durationDays;
-            detailBadge = `Ganho de $${dailyVal.toFixed(2)}/dia`;
-          } else if (freq === 'semanal') {
-            const weeks = Math.max(1, Math.floor(durationDays / 7));
-            const weeklyVal = profit / weeks;
-            detailBadge = `Ganho de $${weeklyVal.toFixed(2)}/semana`;
-          } else {
-            detailBadge = `Ganho no término ($${profit.toFixed(2)})`;
-          }
-
-          plansContainer.innerHTML += `
-            <div class="plan-card">
-              <div class="plan-header">
-                <div class="plan-title">${plan.title || 'Carteira Recomendada'}</div>
-                <div class="plan-duration"><i class="fa-solid fa-clock"></i> ${durationDays} Dias (${freq.toUpperCase()})</div>
-              </div>
-              
-              <div class="plan-metrics">
-                <div class="metric-item">
-                  <span class="metric-label">Aporte Inicial</span>
-                  <span class="metric-value" style="color: var(--text-main);">$ ${price.toFixed(2)}</span>
-                </div>
-                <div class="metric-item">
-                  <span class="metric-label">Retorno Previsto</span>
-                  <span class="metric-value" style="color: var(--gold-primary);">$ ${totalReturn.toFixed(2)}</span>
-                </div>
-              </div>
-
-              <div style="font-size:0.75rem; color:var(--gold-primary); font-weight:600; text-align:center; background:rgba(212,175,55,0.08); padding:6px; border-radius:8px;">
-                <i class="fa-solid fa-chart-line"></i> ${detailBadge}
-              </div>
-
-              <button class="btn btn-gold" onclick="buyPlan('${planId}', '${plan.title}', ${price}, ${durationDays}, ${totalReturn}, '${freq}')">Investir Agora</button>
+        plansContainer.innerHTML += `
+          <div class="plan-card">
+            <div class="plan-header">
+              <div class="plan-title">${plan.title || 'Carteira Recomendada'}</div>
+              <div class="plan-duration"><i class="fa-solid fa-clock"></i> ${durationDays} Dias (${freq.toUpperCase()})</div>
             </div>
-          `;
-        });
+            
+            <div class="plan-metrics">
+              <div class="metric-item">
+                <span class="metric-label">Aporte Inicial</span>
+                <span class="metric-value" style="color: var(--text-main);">$ ${price.toFixed(2)}</span>
+              </div>
+              <div class="metric-item">
+                <span class="metric-label">Retorno Previsto</span>
+                <span class="metric-value" style="color: var(--gold-primary);">$ ${totalReturn.toFixed(2)}</span>
+              </div>
+            </div>
+
+            <div style="font-size:0.75rem; color:var(--gold-primary); font-weight:600; text-align:center; background:rgba(212,175,55,0.08); padding:6px; border-radius:8px;">
+              <i class="fa-solid fa-chart-line"></i> ${detailBadge}
+            </div>
+
+            <button class="btn btn-gold" onclick="buyPlan('${planId}', '${plan.title}', ${price}, ${durationDays}, ${totalReturn}, '${freq}')">Investir Agora</button>
+          </div>
+        `;
       });
     }
 
