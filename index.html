@@ -4,9 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lá Plata - Investimentos</title>
-  <!-- Google Fonts & FontAwesome -->
+  <!-- Google Fonts, FontAwesome & Chart.js -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
   <style>
     :root {
@@ -43,7 +44,7 @@
 
     .hidden { display: none !important; }
 
-    /* LOGO & BANNER DO LEÃO VETORIAL (FIEL À SUA IMAGEM) */
+    /* LOGO & BANNER DO LEÃO VETORIAL */
     .auth-banner {
       width: 100%;
       height: 150px;
@@ -218,7 +219,7 @@
       border: 1px solid var(--border-gold);
       border-radius: 20px;
       padding: 22px;
-      margin-bottom: 22px;
+      margin-bottom: 18px;
       position: relative;
       overflow: hidden;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
@@ -226,6 +227,28 @@
     .balance-title { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
     .balance-value { font-size: 2.2rem; font-weight: 800; color: #ffffff; margin: 8px 0; }
     .balance-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--gold-primary); background: rgba(212, 175, 55, 0.1); padding: 4px 10px; border-radius: 20px; }
+
+    /* CARD DO GRÁFICO CARTESIANO DE RENDIMENTO */
+    .chart-card {
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 22px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+    }
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .chart-title { font-size: 0.9rem; font-weight: 700; color: var(--gold-primary); display: flex; align-items: center; gap: 8px; }
+    .chart-container-box {
+      position: relative;
+      width: 100%;
+      height: 200px;
+    }
 
     .section-header { font-size: 0.95rem; font-weight: 700; color: var(--gold-primary); margin: 24px 0 14px 0; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
 
@@ -317,7 +340,7 @@
       margin-bottom: 10px;
     }
 
-    /* MODAL DE ALERTA PERSONALIZADO LÁ PLATA */
+    /* MODAL DE ALERTA PERSONALIZADO */
     .custom-modal-overlay {
       position: fixed;
       inset: 0;
@@ -500,10 +523,23 @@
 
       <!-- ABA 1: INÍCIO -->
       <div id="tab-home" class="tab-content active">
+        
+        <!-- CARD DE PATRIMÔNIO -->
         <div class="balance-card">
           <div class="balance-title">Patrimônio Total</div>
           <div class="balance-value" id="user-balance">$ 0.00</div>
           <div class="balance-badge"><i class="fa-solid fa-chart-line"></i> Conta Verificada</div>
+        </div>
+
+        <!-- NOVO: GRÁFICO CARTESIANO DE RENDIMENTO -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title"><i class="fa-solid fa-chart-area"></i> Evolução do Patrimônio</div>
+            <span style="font-size: 0.75rem; color: var(--gold-primary); font-weight: 600;">Tempo Real</span>
+          </div>
+          <div class="chart-container-box">
+            <canvas id="userYieldCartesianChart"></canvas>
+          </div>
         </div>
 
         <!-- Depósito PIX -->
@@ -553,7 +589,7 @@
 
         <div class="balance-card">
           <div class="balance-title">Comissões Acumuladas</div>
-   <div class="balance-value" id="affiliate-earnings-total" style="color: var(--gold-primary);">$ 0.00</div>
+          <div class="balance-value" id="affiliate-earnings-total" style="color: var(--gold-primary);">$ 0.00</div>
         </div>
 
         <div class="section-header"><i class="fa-solid fa-user-check"></i> Seus Indicados (<span id="referrals-count">0</span>)</div>
@@ -660,8 +696,9 @@
 
     let isSignUp = true;
     let currentUserData = { balance: 0, refCode: "", referredBy: null };
+    let yieldCartesianChartInstance = null;
 
-    // --- SISTEMA DE MODAL DE ALERTA PERSONALIZADO ---
+    // --- MODAL DE ALERTA PERSONALIZADO ---
     window.showCustomAlert = (title, message, iconClass = "fa-circle-info") => {
       document.getElementById("modal-alert-title").innerText = title;
       document.getElementById("modal-alert-msg").innerText = message;
@@ -845,7 +882,6 @@
       }
     });
 
-    // CARREGAR E GARANTIR REFCODE ÚNICO DO USUÁRIO
     function loadUserData(uid) {
       onSnapshot(doc(db, "users", uid), async (snapshot) => {
         if (snapshot.exists()) {
@@ -854,7 +890,6 @@
           const name = data.name || "Investidor";
           const photoURL = data.photoURL || "";
           
-          // Se o usuário antigo não possuir refCode, gera e grava no Firestore na hora
           let refCode = data.refCode;
           if (!refCode) {
             refCode = "LAPLATA" + Math.floor(1000 + Math.random() * 9000);
@@ -867,7 +902,6 @@
           document.getElementById("profile-refcode").value = refCode;
           document.getElementById("user-balance").innerText = `$ ${(data.balance || 0).toFixed(2)}`;
 
-          // Geração dinâmica e limpa do Link de Afiliado
           const baseUrl = window.location.href.split('?')[0];
           const refLink = `${baseUrl}?ref=${refCode}`;
           document.getElementById("my-ref-link").value = refLink;
@@ -887,7 +921,83 @@
       });
     }
 
-    // CARREGAR AFILIADOS E GANHOS EM TEMPO REAL
+    // --- CÁLCULO E RENDERIZAÇÃO DO GRÁFICO CARTESIANO DE RENDIMENTO ---
+    function renderUserCartesianChart(transactions) {
+      const ctx = document.getElementById("userYieldCartesianChart").getContext("2d");
+
+      // Ordena transações em ordem cronológica (mais antigas primeiro)
+      const sorted = [...transactions].sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0));
+
+      const labels = [];
+      const balanceHistory = [];
+      let runningBalance = 0;
+
+      // Ponto de partida
+      labels.push("Início");
+      balanceHistory.push(0);
+
+      sorted.forEach(t => {
+        const dateStr = t.createdAt ? new Date(t.createdAt).toLocaleDateString("pt-BR", { day: '2-digit', month: '2-digit' }) : "";
+        
+        if (t.type === "deposito_pix") {
+          runningBalance += (t.amount || 0);
+        } else if (t.type === "saque" && t.status !== "rejeitado") {
+          runningBalance -= (t.amount || 0);
+        } else if (t.type === "produto_adquirido" && t.status === "concluido") {
+          runningBalance += (t.totalReturn || 0);
+        } else if (t.type === "comissao_afiliado") {
+          runningBalance += (t.amount || 0);
+        }
+
+        labels.push(dateStr || "Mov");
+        balanceHistory.push(Math.max(0, runningBalance));
+      });
+
+      if (yieldCartesianChartInstance) {
+        yieldCartesianChartInstance.destroy();
+      }
+
+      // Gradients dourados do gráfico
+      const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+      gradient.addColorStop(0, 'rgba(212, 175, 55, 0.35)');
+      gradient.addColorStop(1, 'rgba(212, 175, 55, 0.0)');
+
+      yieldCartesianChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Patrimônio ($)',
+            data: balanceHistory,
+            borderColor: '#d4af37',
+            borderWidth: 2.5,
+            backgroundColor: gradient,
+            fill: true,
+            tension: 0.3,
+            pointBackgroundColor: '#f3e5ab',
+            pointRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: { color: '#8e8ea0', font: { size: 10 } }
+            },
+            y: {
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: { color: '#8e8ea0', font: { size: 10 } }
+            }
+          }
+        }
+      });
+    }
+
     async function loadAffiliateData(user) {
       if (!currentUserData.refCode) return;
 
@@ -934,7 +1044,6 @@
       });
     }
 
-    // FUNÇÃO CORRIGIDA DE CÓPIA DE LINK
     window.copyRefLink = async () => {
       const copyInput = document.getElementById("my-ref-link");
       if (!copyInput.value) {
@@ -1191,6 +1300,9 @@
             items.push({ id: docSnap.id, ...data });
           }
         });
+
+        // Atualiza o gráfico cartesiano com as transações em tempo real
+        renderUserCartesianChart(items);
 
         if (items.length === 0) {
           list.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 20px;">Nenhum registro encontrado.</div>`;
