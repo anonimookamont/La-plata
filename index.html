@@ -21,9 +21,6 @@
       --gold-gradient: linear-gradient(135deg, #f3e5ab 0%, #d4af37 50%, #aa7c11 100%);
       --gold-gradient-button: linear-gradient(135deg, #e6c865 0%, #d4af37 100%);
       
-      --accent-green: #a3e635;
-      --accent-green-bg: rgba(163, 230, 53, 0.15);
-      
       --text-main: #f8fafc;
       --text-muted: #8e8ea0;
       --border-gold: rgba(212, 175, 55, 0.3);
@@ -50,6 +47,22 @@
     }
 
     .hidden { display: none !important; }
+
+    /* ANIMAÇÃO DE ENTRADA SUAVE (FADE-IN & SLIDE UP) */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-enter {
+      animation: fadeInUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
 
     /* AUTH / LOGIN SCREEN */
     .auth-banner {
@@ -206,7 +219,7 @@
     .greeting { font-size: 0.7rem; color: var(--text-muted); }
     .user-name-title { font-size: 0.9rem; font-weight: 700; color: var(--text-main); }
 
-    /* SELETOR DE ABAS SUPERIORES ESTILO PÍLULA (REFERÊNCIA VERDE) */
+    /* SELETOR DE ABAS SUPERIORES ESTILO PÍLULA (CORES DOURADAS DO SITE) */
     .pill-tabs-nav {
       display: flex;
       background: #14141c;
@@ -230,9 +243,9 @@
       text-align: center;
     }
     .pill-tab-btn.active {
-      background: var(--accent-green);
+      background: var(--gold-gradient-button);
       color: #000000;
-      box-shadow: 0 4px 12px rgba(163, 230, 53, 0.3);
+      box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
     }
 
     /* TABS SYSTEM */
@@ -251,7 +264,7 @@
     }
     .balance-title { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
     .balance-value { font-size: 2rem; font-weight: 800; color: #ffffff; margin: 6px 0 2px 0; }
-    .balance-growth { font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; margin-top: 4px; color: #10b981; }
+    .balance-growth { font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; margin-top: 4px; color: var(--gold-primary); }
 
     .chart-card {
       background: var(--bg-card);
@@ -285,7 +298,9 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
+      transition: transform 0.2s ease;
     }
+    .plan-card:active { transform: scale(0.99); }
     .plan-header { display: flex; justify-content: space-between; align-items: center; }
     .plan-title { font-size: 1rem; font-weight: 700; color: #fff; }
     .plan-duration { font-size: 0.7rem; background: rgba(212, 175, 55, 0.12); color: var(--gold-primary); padding: 3px 8px; border-radius: 20px; font-weight: 600; border: 1px solid rgba(212, 175, 55, 0.2); }
@@ -324,7 +339,7 @@
       height: 100%;
       background: var(--gold-gradient-button);
       width: 0%;
-      transition: width 0.4s ease;
+      transition: width 1s ease-in-out;
     }
 
     .affiliate-box {
@@ -505,7 +520,7 @@
 
       <!-- ABA 1: INÍCIO -->
       <div id="tab-home" class="tab-content active">
-        <div class="balance-card">
+        <div class="balance-card animate-enter">
           <div class="balance-title">Patrimônio Total</div>
           <div class="balance-value" id="user-balance">$ 0.00</div>
           <div id="balance-growth-indicator" class="balance-growth">
@@ -513,7 +528,7 @@
           </div>
         </div>
 
-        <div class="chart-card">
+        <div class="chart-card animate-enter">
           <div class="chart-header">
             <div class="chart-title"><i class="fa-solid fa-chart-area"></i> Evolução do Patrimônio</div>
             <span style="font-size: 0.7rem; color: var(--gold-primary); font-weight: 600;">Tempo Real</span>
@@ -523,7 +538,7 @@
           </div>
         </div>
 
-        <div class="action-card">
+        <div class="action-card animate-enter">
           <h3 style="color: var(--gold-primary);"><i class="fa-solid fa-qrcode"></i> Aporte via PIX</h3>
           <div class="form-group" style="margin-bottom: 8px;">
             <label>Valor do Depósito ($) - Mínimo: $80.00</label>
@@ -534,13 +549,13 @@
           </button>
         </div>
 
-        <div class="action-card">
+        <div class="action-card animate-enter">
           <h3 style="color: #d97706;"><i class="fa-solid fa-wallet"></i> Solicitar Resgate</h3>
           <div class="form-group" style="margin-bottom: 8px;">
             <label>Valor do Saque ($) - Mínimo: $150.00</label>
             <input type="number" id="withdraw-amount" class="form-control" placeholder="Ex: 150.00" min="150" step="0.01" oninput="calculateWithdrawFeePreview()">
           </div>
-          <button class="btn btn-gold" style="background: #1c1c26; border: 1px solid var(--border: 1px solid var(--border-gold); color: var(--gold-primary);" onclick="handleWithdrawRequest()">
+          <button class="btn btn-gold" style="background: #1c1c26; border: 1px solid var(--border-gold); color: var(--gold-primary);" onclick="handleWithdrawRequest()">
             <i class="fa-solid fa-paper-plane"></i> Pedir Saque
           </button>
           <div class="rule-notice" id="withdraw-fee-notice">
@@ -550,8 +565,8 @@
 
         <div class="section-header"><i class="fa-solid fa-cubes"></i> Carteiras Recomendadas</div>
         
-        <!-- SELETOR DE FREQUÊNCIA DOS PLANOS NA ABA INÍCIO (TIPO DA IMAGEM) -->
-        <div class="pill-tabs-nav">
+        <!-- SELETOR DE FREQUÊNCIA DOS PLANOS DOURADO -->
+        <div class="pill-tabs-nav animate-enter">
           <button class="pill-tab-btn active" id="btn-home-freq-diario" onclick="filterHomePlansByFreq('diario')">Diários</button>
           <button class="pill-tab-btn" id="btn-home-freq-semanal" onclick="filterHomePlansByFreq('semanal')">Semanais</button>
           <button class="pill-tab-btn" id="btn-home-freq-mensal" onclick="filterHomePlansByFreq('mensal')">Mensais</button>
@@ -562,12 +577,12 @@
         </div>
       </div>
 
-      <!-- ABA 2: MEUS PLANOS (COM SEPARAÇÃO ATIVOS X TERMINADOS) -->
+      <!-- ABA 2: MEUS PLANOS (ATIVOS X TERMINADOS) -->
       <div id="tab-myplans" class="tab-content">
         <div class="section-header"><i class="fa-solid fa-chart-pie"></i> Meus Investimentos</div>
         
-        <!-- SELETOR ATIVOS vs TERMINADOS ESTILO PÍLULA VERDE -->
-        <div class="pill-tabs-nav">
+        <!-- SELETOR ATIVOS vs TERMINADOS -->
+        <div class="pill-tabs-nav animate-enter">
           <button class="pill-tab-btn active" id="btn-myplans-ativos" onclick="switchMyPlansTab('ativos')">Planos Ativos</button>
           <button class="pill-tab-btn" id="btn-myplans-terminados" onclick="switchMyPlansTab('terminados')">Planos Terminados</button>
         </div>
@@ -577,11 +592,11 @@
         </div>
       </div>
 
-      <!-- ABA 3: AFILIADOS (COM EVOLUÇÃO PERCENTUAL E GRÁFICO CARTESIANO) -->
+      <!-- ABA 3: AFILIADOS -->
       <div id="tab-affiliates" class="tab-content">
         <div class="section-header"><i class="fa-solid fa-users"></i> Programa de Afiliados</div>
         
-        <div class="affiliate-box">
+        <div class="affiliate-box animate-enter">
           <h4 style="font-size: 0.9rem; color: var(--gold-primary); margin-bottom: 4px;">Comissão Automática sobre Planos</h4>
           <p style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.4;">Compartilhe seu link exclusivo. Quando um indicado concluir um investimento, a porcentagem de comissão configurada é creditada direto no seu saldo!</p>
           
@@ -591,18 +606,18 @@
           </div>
         </div>
 
-        <div class="balance-card">
+        <div class="balance-card animate-enter">
           <div class="balance-title">Comissões Acumuladas</div>
           <div class="balance-value" id="affiliate-earnings-total" style="color: var(--gold-primary);">$ 0.00</div>
-          <div class="balance-growth" style="color: #a3e635;">
+          <div class="balance-growth" style="color: var(--gold-primary);">
             <i class="fa-solid fa-arrow-trend-up"></i> <span id="affiliate-growth-label">+0.0% no período</span>
           </div>
         </div>
 
-        <div class="chart-card">
+        <div class="chart-card animate-enter">
           <div class="chart-header">
             <div class="chart-title"><i class="fa-solid fa-chart-line"></i> Evolução das Comissões</div>
-            <span style="font-size: 0.7rem; color: #a3e635; font-weight: 600;">Histórico</span>
+            <span style="font-size: 0.7rem; color: var(--gold-primary); font-weight: 600;">Histórico</span>
           </div>
           <div class="chart-container-box">
             <canvas id="affiliateCommissionCartesianChart"></canvas>
@@ -635,7 +650,7 @@
       <div id="tab-profile" class="tab-content">
         <div class="section-header"><i class="fa-solid fa-user-shield"></i> Perfil & Segurança</div>
         
-        <div class="profile-upload-container" style="text-align: center; margin-bottom: 20px;">
+        <div class="profile-upload-container animate-enter" style="text-align: center; margin-bottom: 20px;">
           <div class="avatar" id="profile-avatar-lg" style="width: 74px; height: 74px; margin: 0 auto 10px auto; font-size: 1.6rem;">
             <span id="profile-avatar-initials">U</span>
           </div>
@@ -813,6 +828,14 @@
       if (targetTab) {
         targetTab.classList.add('active');
         targetTab.style.setProperty('display', 'block', 'important');
+        
+        // Re-aplica animação de entrada em todos os filhos
+        const animatedElems = targetTab.querySelectorAll('.animate-enter');
+        animatedElems.forEach(el => {
+          el.style.animation = 'none';
+          el.offsetHeight; // Triggers reflow
+          el.style.animation = null;
+        });
       }
 
       const tabsOrder = ['home', 'myplans', 'affiliates', 'history', 'notifications', 'profile'];
@@ -822,7 +845,7 @@
       }
     };
 
-    // FILTRO DE CARTEIRAS RECOMENDADAS NA ABA INÍCIO (DIÁRIOS, SEMANAIS, MENSAIS)
+    // FILTRO DE CARTEIRAS RECOMENDADAS NA ABA INÍCIO
     window.filterHomePlansByFreq = (freq) => {
       currentHomePlansFreq = freq;
       document.getElementById('btn-home-freq-diario').classList.remove('active');
@@ -978,7 +1001,7 @@
           const referrerInput = document.getElementById("profile-referrer-input");
           if (data.referredBy) {
             referrerInput.value = data.referredBy;
-  referrerInput.disabled = true;
+            referrerInput.disabled = true;
           } else {
             referrerInput.value = "";
             referrerInput.disabled = false;
@@ -1093,47 +1116,54 @@
 
         const isConcluido = plan.status === "concluido" || progressPercent >= 100;
         
-        // Filtro estrito: Ativos x Terminados
         if (currentMyPlansFilter === "ativos" && isConcluido) return;
         if (currentMyPlansFilter === "terminados" && !isConcluido) return;
 
         count++;
         const freqText = (plan.frequency || 'diario').toUpperCase();
 
-        container.innerHTML += `
-          <div class="my-plan-card">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-              <b style="font-size:0.95rem; color:#fff;">${plan.description}</b>
-              <span class="badge ${isConcluido ? 'badge-concluido' : 'badge-ativo'}">${isConcluido ? 'TERMINADO' : 'EM ANDAMENTO'}</span>
+        const cardElem = document.createElement("div");
+        cardElem.className = "my-plan-card animate-enter";
+        cardElem.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <b style="font-size:0.95rem; color:#fff;">${plan.description}</b>
+            <span class="badge ${isConcluido ? 'badge-concluido' : 'badge-ativo'}">${isConcluido ? 'TERMINADO' : 'EM ANDAMENTO'}</span>
+          </div>
+          
+          <div class="plan-metrics" style="margin-top: 4px;">
+            <div class="metric-item">
+              <span class="metric-label">Aporte</span>
+              <span class="metric-value">$ ${(plan.amount || 0).toFixed(2)}</span>
             </div>
-            
-            <div class="plan-metrics" style="margin-top: 4px;">
-              <div class="metric-item">
-                <span class="metric-label">Aporte</span>
-                <span class="metric-value">$ ${(plan.amount || 0).toFixed(2)}</span>
-              </div>
-              <div class="metric-item">
-                <span class="metric-label">Retorno Total</span>
-                <span class="metric-value" style="color: var(--gold-primary);">$ ${(plan.totalReturn || 0).toFixed(2)}</span>
-              </div>
+            <div class="metric-item">
+              <span class="metric-label">Retorno Total</span>
+              <span class="metric-value" style="color: var(--gold-primary);">$ ${(plan.totalReturn || 0).toFixed(2)}</span>
             </div>
+          </div>
 
-            <div style="font-size:0.7rem; color:var(--text-muted); display:flex; justify-content:space-between;">
-              <span>Modo: <b style="color:var(--gold-primary);">${freqText}</b></span>
-              <span>Término: <b>${new Date(endDate).toLocaleDateString('pt-BR')}</b></span>
-            </div>
+          <div style="font-size:0.7rem; color:var(--text-muted); display:flex; justify-content:space-between;">
+            <span>Modo: <b style="color:var(--gold-primary);">${freqText}</b></span>
+            <span>Término: <b>${new Date(endDate).toLocaleDateString('pt-BR')}</b></span>
+          </div>
 
-            <div>
-              <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:var(--text-muted); margin-bottom:3px;">
-                <span>Progresso do Ciclo</span>
-                <b style="color: var(--gold-primary);">${progressPercent.toFixed(1)}%</b>
-              </div>
-              <div class="progress-bar-bg">
-                <div class="progress-bar-fill" style="width: ${progressPercent}%;"></div>
-              </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:var(--text-muted); margin-bottom:3px;">
+              <span>Progresso do Ciclo</span>
+              <b style="color: var(--gold-primary);">${progressPercent.toFixed(1)}%</b>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" id="bar-fill-${count}"></div>
             </div>
           </div>
         `;
+
+        container.appendChild(cardElem);
+
+        // Animação gradual de preenchimento da barra de progresso
+        setTimeout(() => {
+          const fillBar = document.getElementById(`bar-fill-${count}`);
+          if (fillBar) fillBar.style.width = `${progressPercent}%`;
+        }, 80);
       });
 
       if (count === 0) {
@@ -1183,7 +1213,7 @@
             const refUser = docSnap.data();
             const date = refUser.createdAt ? new Date(refUser.createdAt).toLocaleDateString("pt-BR") : "Recente";
             referralsListElem.innerHTML += `
-              <div class="data-card">
+              <div class="data-card animate-enter">
                 <div class="data-info">
                   <span class="data-title">${refUser.name}</span>
                   <span class="data-sub">Cadastrado em: ${date}</span>
@@ -1209,7 +1239,6 @@
 
           document.getElementById("affiliate-earnings-total").innerText = `$ ${totalEarnings.toFixed(2)}`;
           
-          // Porcentagem e gráfico cartesiano de comissões
           const commGrowth = totalEarnings > 0 ? 100 : 0;
           document.getElementById("affiliate-growth-label").innerText = `+${commGrowth.toFixed(1)}% de ganhos acumulados`;
 
@@ -1218,6 +1247,7 @@
       });
     }
 
+    // GRÁFICO DE COMISSÕES COM ANIMAÇÃO DOURADA
     function renderAffiliateCommissionChart(commissions) {
       const ctx = document.getElementById("affiliateCommissionCartesianChart").getContext("2d");
       const sorted = [...commissions].sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0));
@@ -1236,8 +1266,8 @@
       if (affiliateChartInstance) affiliateChartInstance.destroy();
 
       const gradient = ctx.createLinearGradient(0, 0, 0, 160);
-      gradient.addColorStop(0, 'rgba(163, 230, 53, 0.35)');
-      gradient.addColorStop(1, 'rgba(163, 230, 53, 0.0)');
+      gradient.addColorStop(0, 'rgba(212, 175, 55, 0.35)');
+      gradient.addColorStop(1, 'rgba(212, 175, 55, 0.0)');
 
       affiliateChartInstance = new Chart(ctx, {
         type: 'line',
@@ -1246,18 +1276,22 @@
           datasets: [{
             label: 'Comissão ($)',
             data: commHistory,
-            borderColor: '#a3e635',
+            borderColor: '#d4af37',
             borderWidth: 2.5,
             backgroundColor: gradient,
             fill: true,
-            tension: 0.3,
-            pointBackgroundColor: '#a3e635',
+            tension: 0.35,
+            pointBackgroundColor: '#f3e5ab',
             pointRadius: 3
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          animation: {
+            duration: 1200,
+            easing: 'easeInOutQuart'
+          },
           plugins: { legend: { display: false } },
           scales: {
             x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#8e8ea0', font: { size: 9 } } },
@@ -1267,6 +1301,7 @@
       });
     }
 
+    // GRÁFICO PRINCIPAL DE PATRIMÔNIO COM ANIMAÇÃO FLUIDA DE DESENHO
     function renderUserCartesianChart(transactions) {
       const ctx = document.getElementById("userYieldCartesianChart").getContext("2d");
       const sorted = [...transactions].sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0));
@@ -1321,7 +1356,7 @@
             borderWidth: 2.5,
             backgroundColor: gradient,
             fill: true,
-            tension: 0.3,
+            tension: 0.35,
             pointBackgroundColor: '#f3e5ab',
             pointRadius: 3
           }]
@@ -1329,6 +1364,10 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          animation: {
+            duration: 1200,
+            easing: 'easeInOutQuart'
+          },
           plugins: { legend: { display: false } },
           scales: {
             x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#8e8ea0', font: { size: 9 } } },
@@ -1399,7 +1438,7 @@
         }
 
         plansContainer.innerHTML += `
-          <div class="plan-card">
+          <div class="plan-card animate-enter">
             <div class="plan-header">
               <div class="plan-title">${plan.title || 'Carteira Recomendada'}</div>
               <div class="plan-duration"><i class="fa-solid fa-clock"></i> ${durationDays} Dias (${freq.toUpperCase()})</div>
@@ -1564,7 +1603,7 @@
           }
 
           list.innerHTML += `
-            <div class="data-card">
+            <div class="data-card animate-enter">
               <div class="data-info">
                 <span class="data-title">${t.description}</span>
                 <span class="data-sub">${date}</span>
@@ -1604,7 +1643,7 @@
         items.forEach(n => {
           const date = n.createdAt ? new Date(n.createdAt).toLocaleString("pt-BR") : "Recente";
           list.innerHTML += `
-            <div class="notification-card">
+            <div class="notification-card animate-enter">
               <div style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 3px;">${date}</div>
               <div style="font-size: 0.8rem; color: var(--text-main);">${n.description}</div>
             </div>
