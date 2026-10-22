@@ -43,10 +43,10 @@
 
     .hidden { display: none !important; }
 
-    /* LOGO & BANNER DO LEÃO */
+    /* LOGO & BANNER DO LEÃO VETORIAL (FIEL À SUA IMAGEM) */
     .auth-banner {
       width: 100%;
-      height: 140px;
+      height: 150px;
       border-radius: 16px;
       background: linear-gradient(135deg, #1f1a0e 0%, #0d0d12 100%);
       border: 1px solid var(--border-gold);
@@ -66,15 +66,16 @@
       height: 150px;
       background: rgba(212, 175, 55, 0.08);
       border-radius: 50%;
-      blur: 25px;
+      filter: blur(25px);
     }
-    .brand-lion-svg {
-      width: 50px;
-      height: 50px;
-      fill: var(--gold-primary);
+    
+    .lion-svg-icon {
+      width: 52px;
+      height: 52px;
+      margin-bottom: 6px;
       filter: drop-shadow(0px 2px 8px rgba(212, 175, 55, 0.4));
-      margin-bottom: 4px;
     }
+
     .brand-name {
       font-family: 'Cinzel', serif;
       font-size: 1.5rem;
@@ -92,7 +93,7 @@
       margin-top: -2px;
     }
 
-    /* --- TELA DE AUTENTICAÇÃO ESTILO AGROFARM --- */
+    /* --- TELA DE AUTENTICAÇÃO --- */
     .auth-container {
       padding: 30px 20px;
       display: flex;
@@ -316,6 +317,51 @@
       margin-bottom: 10px;
     }
 
+    /* MODAL DE ALERTA PERSONALIZADO LÁ PLATA */
+    .custom-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(5px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+    .custom-modal-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-gold);
+      border-radius: 20px;
+      padding: 24px;
+      width: 100%;
+      max-width: 360px;
+      text-align: center;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+      animation: modalFadeIn 0.25s ease-out;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.92); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .modal-icon {
+      font-size: 2.2rem;
+      color: var(--gold-primary);
+      margin-bottom: 12px;
+    }
+    .modal-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+    .modal-message {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin-bottom: 20px;
+    }
+
     /* BARRA INFERIOR DE NAVEGAÇÃO */
     .bottom-nav {
       position: fixed;
@@ -351,14 +397,25 @@
 
   <div class="app-viewport">
     
-    <!-- 1. TELA DE AUTENTICAÇÃO (INSPIRADA NO LAYOUT SOLICITADO) -->
+    <!-- MODAL DE ALERTA CUSTOMIZADO -->
+    <div id="custom-alert-modal" class="custom-modal-overlay hidden">
+      <div class="custom-modal-box">
+        <div class="modal-icon" id="modal-alert-icon">
+          <i class="fa-solid fa-circle-info"></i>
+        </div>
+        <div class="modal-title" id="modal-alert-title">Aviso</div>
+        <div class="modal-message" id="modal-alert-msg">Mensagem do sistema</div>
+        <button class="btn btn-gold" onclick="closeCustomAlert()">Entendido</button>
+      </div>
+    </div>
+
+    <!-- 1. TELA DE AUTENTICAÇÃO -->
     <div id="auth-section" class="auth-container">
       
-      <!-- Banner com Leão em Destaque -->
+      <!-- Banner com Leão Vetorial Ouro -->
       <div class="auth-banner">
-        <!-- SVG Vetorial do Leão -->
-        <svg class="brand-lion-svg" viewBox="0 0 24 24">
-          <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4C13.2,4 14.3,4.3 15.3,4.9C14.7,5.5 14,6.3 14,7.5C14,8.9 14.9,9.8 15.8,10.7C16.4,11.3 17,12 17,13C17,14.4 15.6,15.2 14.5,15.6C13.8,15.8 13,16 12,16C11,16 10.2,15.8 9.5,15.6C8.4,15.2 7,14.4 7,13C7,12 7.6,11.3 8.2,10.7C9.1,9.8 10,8.9 10,7.5C10,6.3 9.3,5.5 8.7,4.9C9.7,4.3 10.8,4 12,4Z"/>
+        <svg class="lion-svg-icon" viewBox="0 0 100 100">
+          <path fill="#d4af37" d="M50 10 C30 10, 15 25, 15 45 C15 58, 22 68, 30 75 C32 65, 38 55, 45 52 C42 48, 40 42, 42 36 C45 28, 55 28, 58 36 C60 42, 58 48, 55 52 C62 55, 68 65, 70 75 C78 68, 85 58, 85 45 C85 25, 70 10, 50 10 Z M50 22 C55 22, 58 26, 56 31 C54 36, 46 36, 44 31 C42 26, 45 22, 50 22 Z M50 85 C40 85, 32 80, 28 72 C35 68, 42 62, 50 62 C58 62, 65 68, 72 72 C68 80, 60 85, 50 85 Z"/>
         </svg>
         <span class="brand-name">LÁ PLATA</span>
         <span class="brand-sub">INVESTIMENTOS</span>
@@ -367,7 +424,6 @@
       <h1 class="auth-title" id="auth-main-title">Criar conta</h1>
       <p class="auth-subtitle" id="auth-main-subtitle">Comece a investir na plataforma em minutos</p>
 
-      <!-- Formulário -->
       <div class="form-group" id="name-group">
         <label>Nome completo</label>
         <div class="input-wrapper">
@@ -397,7 +453,6 @@
         </div>
       </div>
 
-      <!-- Código de indicação opcional -->
       <div id="ref-toggle-container">
         <button type="button" class="ref-toggle-btn" onclick="toggleRefInput()">
           <i class="fa-solid fa-tag"></i> Tenho um código de indicação
@@ -424,7 +479,7 @@
     <!-- 2. PAINEL PRINCIPAL DO INVESTIDOR -->
     <div id="dashboard-section" class="hidden">
       
-      <!-- Top Header -->
+      <!-- Top Header com Leão Dourado -->
       <div class="app-header">
         <div class="user-info-brief">
           <div class="avatar" id="avatar-container">
@@ -436,7 +491,10 @@
           </div>
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 0.95rem; font-weight: 700; color: var(--gold-primary); display: flex; align-items: center; gap: 6px;">
-          <i class="fa-solid fa-shield-cat"></i> LÁ PLATA
+          <svg style="width: 20px; height: 20px;" viewBox="0 0 100 100">
+            <path fill="#d4af37" d="M50 10 C30 10, 15 25, 15 45 C15 58, 22 68, 30 75 C32 65, 38 55, 45 52 C42 48, 40 42, 42 36 C45 28, 55 28, 58 36 C60 42, 58 48, 55 52 C62 55, 68 65, 70 75 C78 68, 85 58, 85 45 C85 25, 70 10, 50 10 Z"/>
+          </svg>
+          LÁ PLATA
         </div>
       </div>
 
@@ -488,14 +546,14 @@
           <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">Compartilhe o seu link exclusivo. Quando o plano de um indicado seu for finalizado com sucesso, você recebe 5% do valor na sua conta!</p>
           
           <div class="affiliate-link-container">
-            <input type="text" id="my-ref-link" class="affiliate-link-input" readonly>
-            <button class="btn btn-gold" style="width: auto; padding: 0 16px;" onclick="copyRefLink()"><i class="fa-solid fa-copy"></i></button>
+            <input type="text" id="my-ref-link" class="affiliate-link-input" readonly placeholder="Gerando seu link...">
+            <button class="btn btn-gold" style="width: auto; padding: 0 16px;" onclick="copyRefLink()"><i class="fa-solid fa-copy"></i> Copiar</button>
           </div>
         </div>
 
         <div class="balance-card">
           <div class="balance-title">Comissões Acumuladas</div>
-          <div class="balance-value" id="affiliate-earnings-total" style="color: var(--gold-primary);">$ 0.00</div>
+   <div class="balance-value" id="affiliate-earnings-total" style="color: var(--gold-primary);">$ 0.00</div>
         </div>
 
         <div class="section-header"><i class="fa-solid fa-user-check"></i> Seus Indicados (<span id="referrals-count">0</span>)</div>
@@ -600,8 +658,20 @@
       doc, setDoc, updateDoc, addDoc, collection, onSnapshot, query, where, increment, getDocs 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    let isSignUp = true; // Inicia em modo Cadastro idêntico à imagem
+    let isSignUp = true;
     let currentUserData = { balance: 0, refCode: "", referredBy: null };
+
+    // --- SISTEMA DE MODAL DE ALERTA PERSONALIZADO ---
+    window.showCustomAlert = (title, message, iconClass = "fa-circle-info") => {
+      document.getElementById("modal-alert-title").innerText = title;
+      document.getElementById("modal-alert-msg").innerText = message;
+      document.getElementById("modal-alert-icon").innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
+      document.getElementById("custom-alert-modal").classList.remove("hidden");
+    };
+
+    window.closeCustomAlert = () => {
+      document.getElementById("custom-alert-modal").classList.add("hidden");
+    };
 
     // MÁSCARA AUTOMÁTICA DE TELEFONE
     window.maskPhone = (input) => {
@@ -632,7 +702,6 @@
       }
     };
 
-    // EXIBIR CAMPO DE INDICAÇÃO
     window.toggleRefInput = () => {
       const refGroup = document.getElementById("ref-group");
       refGroup.classList.toggle("hidden");
@@ -694,7 +763,7 @@
       });
     }
 
-    // SUBMIT DO FORMULÁRIO DE AUTENTICAÇÃO
+    // AUTENTICAÇÃO E CADASTRO
     const btnSubmit = document.getElementById("btn-submit");
     if (btnSubmit) {
       btnSubmit.addEventListener("click", async () => {
@@ -705,25 +774,24 @@
         const refInput = document.getElementById("auth-ref").value.trim();
 
         if (!emailInput || !passwordInput) {
-          alert("Preencha o e-mail e a senha.");
+          showCustomAlert("Atenção", "Preencha o e-mail e a senha.", "fa-circle-exclamation");
           return;
         }
 
         try {
           if (isSignUp) {
             if (!nameInput) {
-              alert("Preencha o seu nome completo.");
+              showCustomAlert("Atenção", "Preencha o seu nome completo.", "fa-circle-exclamation");
               return;
             }
             if (!phoneInput) {
-              alert("Preencha o seu número de telefone.");
+              showCustomAlert("Atenção", "Preencha o seu número de telefone.", "fa-circle-exclamation");
               return;
             }
             
             const res = await createUserWithEmailAndPassword(auth, emailInput, passwordInput);
             const generatedRefCode = "LAPLATA" + Math.floor(1000 + Math.random() * 9000);
 
-            // GRAVAÇÃO COMPLETA NO FIRESTORE INCLUINDO TELEFONE
             await setDoc(doc(db, "users", res.user.uid), {
               uid: res.user.uid,
               name: nameInput,
@@ -745,12 +813,12 @@
               createdAt: new Date().getTime()
             });
 
-            alert("Conta criada com sucesso!");
+            showCustomAlert("Sucesso", "Sua conta foi criada com sucesso!", "fa-circle-check");
           } else {
             await signInWithEmailAndPassword(auth, emailInput, passwordInput);
           }
         } catch (error) {
-          alert("Erro de autenticação: " + error.message);
+          showCustomAlert("Erro de Autenticação", error.message, "fa-triangle-exclamation");
         }
       });
     }
@@ -777,21 +845,31 @@
       }
     });
 
+    // CARREGAR E GARANTIR REFCODE ÚNICO DO USUÁRIO
     function loadUserData(uid) {
-      onSnapshot(doc(db, "users", uid), (snapshot) => {
+      onSnapshot(doc(db, "users", uid), async (snapshot) => {
         if (snapshot.exists()) {
           const data = snapshot.data();
           currentUserData = data;
           const name = data.name || "Investidor";
           const photoURL = data.photoURL || "";
           
+          // Se o usuário antigo não possuir refCode, gera e grava no Firestore na hora
+          let refCode = data.refCode;
+          if (!refCode) {
+            refCode = "LAPLATA" + Math.floor(1000 + Math.random() * 9000);
+            await updateDoc(doc(db, "users", uid), { refCode: refCode });
+          }
+
           document.getElementById("user-name").innerText = name;
           document.getElementById("profile-name").value = name;
           document.getElementById("profile-phone").value = data.phone || "Não informado";
-          document.getElementById("profile-refcode").value = data.refCode || "";
+          document.getElementById("profile-refcode").value = refCode;
           document.getElementById("user-balance").innerText = `$ ${(data.balance || 0).toFixed(2)}`;
 
-          const refLink = `${window.location.origin}${window.location.pathname}?ref=${data.refCode}`;
+          // Geração dinâmica e limpa do Link de Afiliado
+          const baseUrl = window.location.href.split('?')[0];
+          const refLink = `${baseUrl}?ref=${refCode}`;
           document.getElementById("my-ref-link").value = refLink;
 
           const avatarContainer = document.getElementById("avatar-container");
@@ -809,7 +887,10 @@
       });
     }
 
+    // CARREGAR AFILIADOS E GANHOS EM TEMPO REAL
     async function loadAffiliateData(user) {
+      if (!currentUserData.refCode) return;
+
       const usersRef = collection(db, "users");
       const q = query(usersRef, where("referredBy", "==", currentUserData.refCode));
       
@@ -853,12 +934,28 @@
       });
     }
 
-    window.copyRefLink = () => {
-      const copyText = document.getElementById("my-ref-link");
-      copyText.select();
-      copyText.setSelectionRange(0, 99999);
-      navigator.clipboard.writeText(copyText.value);
-      alert("Link de afiliado copiado!");
+    // FUNÇÃO CORRIGIDA DE CÓPIA DE LINK
+    window.copyRefLink = async () => {
+      const copyInput = document.getElementById("my-ref-link");
+      if (!copyInput.value) {
+        showCustomAlert("Atenção", "Seu link de indicação ainda está sendo carregado...", "fa-circle-exclamation");
+        return;
+      }
+
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(copyInput.value);
+        } else {
+          copyInput.select();
+          copyInput.setSelectionRange(0, 99999);
+          document.execCommand("copy");
+        }
+        showCustomAlert("Sucesso", "Link de afiliado copiado para a área de transferência!", "fa-circle-check");
+      } catch (err) {
+        copyInput.select();
+        document.execCommand("copy");
+        showCustomAlert("Sucesso", "Link de afiliado copiado!", "fa-circle-check");
+      }
     };
 
     function loadAdminPlans() {
@@ -917,9 +1014,9 @@
 
         try {
           await updateDoc(doc(db, "users", user.uid), { photoURL: base64Image });
-          alert("Foto de perfil atualizada!");
+          showCustomAlert("Sucesso", "Foto de perfil atualizada!", "fa-circle-check");
         } catch (error) {
-          alert("Erro ao salvar foto: " + error.message);
+          showCustomAlert("Erro", "Erro ao salvar foto: " + error.message, "fa-circle-exclamation");
         }
       };
       reader.readAsDataURL(file);
@@ -927,12 +1024,10 @@
 
     window.handlePixDeposit = async () => {
       const user = auth.currentUser;
-      if (!user) return alert("Usuário não autenticado.");
+      if (!user) return showCustomAlert("Atenção", "Usuário não autenticado.");
 
       const amount = parseFloat(document.getElementById("pix-amount").value);
-      if (!amount || amount <= 0) return alert("Insira um valor válido.");
-
-      if (!confirm(`Confirmar registro de PIX no valor de $${amount.toFixed(2)}?`)) return;
+      if (!amount || amount <= 0) return showCustomAlert("Atenção", "Insira um valor válido para depósito.", "fa-circle-exclamation");
 
       try {
         await addDoc(collection(db, "transactions"), {
@@ -946,25 +1041,23 @@
 
         await updateDoc(doc(db, "users", user.uid), { balance: increment(amount) });
         document.getElementById("pix-amount").value = "";
-        alert(`Aporte PIX de $${amount.toFixed(2)} efetuado com sucesso!`);
+        showCustomAlert("Aporte Concluído", `Aporte PIX de $${amount.toFixed(2)} efetuado com sucesso!`, "fa-circle-check");
       } catch (error) {
-        alert("Erro ao processar PIX: " + error.message);
+        showCustomAlert("Erro PIX", error.message, "fa-triangle-exclamation");
       }
     };
 
     window.handleWithdrawRequest = async () => {
       const user = auth.currentUser;
-      if (!user) return alert("Usuário não autenticado.");
+      if (!user) return showCustomAlert("Atenção", "Usuário não autenticado.");
 
       const amount = parseFloat(document.getElementById("withdraw-amount").value);
-      if (!amount || amount <= 0) return alert("Insira um valor válido.");
+      if (!amount || amount <= 0) return showCustomAlert("Atenção", "Insira um valor válido para saque.", "fa-circle-exclamation");
 
       const currentBalance = currentUserData.balance || 0;
       if (amount > currentBalance) {
-        return alert(`Saldo insuficiente! Seu patrimônio atual é de $${currentBalance.toFixed(2)}.`);
+        return showCustomAlert("Saldo Insuficiente", `Seu patrimônio atual é de $${currentBalance.toFixed(2)}.`, "fa-circle-exclamation");
       }
-
-      if (!confirm(`Solicitar saque no valor de $${amount.toFixed(2)}?`)) return;
 
       try {
         await addDoc(collection(db, "transactions"), {
@@ -978,22 +1071,20 @@
 
         await updateDoc(doc(db, "users", user.uid), { balance: increment(-amount) });
         document.getElementById("withdraw-amount").value = "";
-        alert("Solicitação enviada com sucesso!");
+        showCustomAlert("Solicitação Enviada", "Solicitação de resgate registrada com sucesso!", "fa-circle-check");
       } catch (error) {
-        alert("Erro ao solicitar saque: " + error.message);
+        showCustomAlert("Erro ao Sacar", error.message, "fa-triangle-exclamation");
       }
     };
 
     window.buyPlan = async (planId, planTitle, planPrice, durationDays, totalReturn) => {
       const user = auth.currentUser;
-      if (!user) return alert("Usuário não autenticado.");
+      if (!user) return showCustomAlert("Atenção", "Usuário não autenticado.");
 
       const currentBalance = currentUserData.balance || 0;
       if (planPrice > currentBalance) {
-        return alert(`Saldo insuficiente para a carteira "${planTitle}" ($${planPrice.toFixed(2)}). Faça um aporte.`);
+        return showCustomAlert("Saldo Insuficiente", `Aporte necessário de $${planPrice.toFixed(2)} para esta carteira.`, "fa-circle-exclamation");
       }
-
-      if (!confirm(`Confirmar aplicação na carteira "${planTitle}" ($${planPrice.toFixed(2)}) com ciclo de ${durationDays} dias?`)) return;
 
       const now = new Date().getTime();
       const endDate = now + (durationDays * 24 * 60 * 60 * 1000);
@@ -1013,9 +1104,9 @@
 
         await updateDoc(doc(db, "users", user.uid), { balance: increment(-planPrice) });
 
-        alert(`Aplicação efetuada! O ciclo estará ativo por ${durationDays} dias. O retorno previsto será de $${totalReturn.toFixed(2)}.`);
+        showCustomAlert("Investimento Efetuado", `Sua aplicação em "${planTitle}" está ativa por ${durationDays} dias. Retorno previsto de $${totalReturn.toFixed(2)}.`, "fa-circle-check");
       } catch (error) {
-        alert("Erro ao efetuar aplicação: " + error.message);
+        showCustomAlert("Erro na Aplicação", error.message, "fa-triangle-exclamation");
       }
     };
 
