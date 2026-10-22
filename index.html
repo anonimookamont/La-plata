@@ -794,7 +794,7 @@
               photoURL: "",
               refCode: generatedRefCode,
               referredBy: refInput || null,
-              customCommission: 5, // Padrão 5%
+              customCommission: 5,
               createdAt: Date.now()
             }, { merge: true });
 
@@ -861,7 +861,6 @@
           document.getElementById("profile-refcode").value = refCode;
           document.getElementById("user-balance").innerText = `$ ${(data.balance || 0).toFixed(2)}`;
 
-          // Tratar exibição do campo de padrinho no perfil
           const referrerInput = document.getElementById("profile-referrer-input");
           if (data.referredBy) {
             referrerInput.value = data.referredBy;
@@ -899,7 +898,6 @@
 
       if (!refCodeInput) return showCustomAlert("Atenção", "Insira um código de padrinho válido.");
 
-      // Verificar se o código existe
       const q = query(collection(db, "users"), where("refCode", "==", refCodeInput));
       const snap = await getDocs(q);
 
@@ -932,7 +930,7 @@
           await deleteUser(user);
           showCustomAlert("Conta Excluída", "Sua conta foi removida com sucesso.");
         } catch (err) {
-          showCustomAlert("Erro", "Para sua segurança, faça login novamente antes de excluir a conta ou contate o suporte: " + err.message);
+          showCustomAlert("Erro", "Para sua segurança, faça login novamente antes de excluir a conta: " + err.message);
         }
       }
     };
@@ -1099,7 +1097,6 @@
         balanceHistory.push(Math.max(0, runningBalance));
       });
 
-      // Calcular crescimento percentual do patrimônio
       const currentBal = currentUserData.balance || 0;
       let growthPercent = 0;
       if (totalDeposited > 0) {
