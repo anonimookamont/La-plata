@@ -262,7 +262,7 @@
         </div>
       </div>
 
-      <!-- ABA 4: NOVO - ENVIAR AVISO GERAL -->
+      <!-- ABA 4: ENVIAR AVISO GERAL -->
       <div id="admin-tab-broadcast" class="hidden">
         <div class="admin-card">
           <div class="card-title"><i class="fa-solid fa-bullhorn"></i> Enviar Aviso Geral para TODOS os Clientes</div>
@@ -283,14 +283,14 @@
   <!-- MODAL DE DETALHES, GRÁFICO E PLANOS DO CLIENTE -->
   <div id="user-details-modal" class="modal-overlay hidden">
     <div class="modal-box">
-      <div class="modal-header"><i class="fa-solid fa-user-gear"></i> Detalhes do Cliente</div>
+      <div class="modal-header"><i class="fa-solid fa-user-gear"></i> Gestão do Cliente</div>
       
       <!-- GRÁFICO CARTESIANO DO CLIENTE -->
       <div class="chart-container">
         <canvas id="adminUserYieldCartesianChart"></canvas>
       </div>
 
-      <!-- EDICÃO DOS DADOS -->
+      <!-- EDIÇÃO DOS DADOS -->
       <input type="hidden" id="edit-user-id">
       
       <div class="form-group">
@@ -309,11 +309,20 @@
       </div>
 
       <div class="form-group">
-        <label>Código de Afiliado</label>
+        <label>Código de Afiliado (Deste Cliente)</label>
         <input type="text" id="edit-user-refcode" class="form-control">
       </div>
 
-      <button class="btn btn-gold" style="margin-bottom: 16px;" onclick="saveUserData()"><i class="fa-solid fa-check"></i> Salvar Dados do Cliente</button>
+      <!-- ALTERAR PADRINHO -->
+      <div class="form-group">
+        <label>Código do Padrinho (ReferredBy)</label>
+        <input type="text" id="edit-user-referredby" class="form-control" placeholder="Código de afiliado do Padrinho">
+      </div>
+
+      <button class="btn btn-gold" style="margin-bottom: 12px;" onclick="saveUserData()"><i class="fa-solid fa-check"></i> Salvar Dados do Cliente</button>
+      
+      <!-- EXCLUIR CLIENTE -->
+      <button class="btn btn-danger" style="margin-bottom: 20px;" onclick="deleteUser()"><i class="fa-solid fa-user-minus"></i> Excluir Cliente Definitivemente</button>
 
       <!-- GERENCIAR PLANOS ATIVOS DO CLIENTE -->
       <div class="card-title" style="font-size: 0.9rem; margin-bottom: 8px;"><i class="fa-solid fa-cubes"></i> Investimentos em Andamento</div>
@@ -344,7 +353,7 @@
   <script type="module">
     import { db } from "./Js/firebase-config.js";
     import { 
-      collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, query, where, getDocs, increment, getDoc 
+      collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, query, where, getDocs, increment, getDoc, setDoc
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const ADMIN_SECRET_PIN = "laplata123";
@@ -459,7 +468,7 @@
       }
     };
 
-    // --- ABRIR MODAL COMPLETO DO CLIENTE (COM PLANOS, HISTÓRICO E GRÁFICO) ---
+    // --- ABRIR MODAL COMPLETO DO CLIENTE ---
     window.openUserModal = async (uid) => {
       document.getElementById("edit-user-id").value = uid;
 
@@ -471,6 +480,7 @@
       document.getElementById("edit-user-email").value = userData.email || "";
       document.getElementById("edit-user-phone").value = userData.phone || "";
       document.getElementById("edit-user-refcode").value = userData.refCode || "";
+      document.getElementById("edit-user-referredby").value = userData.referredBy || "";
 
       // 1. Carregar Planos Ativos do Cliente
       loadUserActivePlans(uid);
@@ -509,7 +519,7 @@
       document.getElementById("user-details-modal").classList.remove("hidden");
     };
 
-    // CARREGAR E FINALIZAR/INICIAR PLANOS DO CLIENTE
+    // CARREGAR E FINALIZAR PLANOS DO CLIENTE
     async function loadUserActivePlans(uid) {
       const q = query(
         collection(db, "transactions"),
@@ -542,7 +552,7 @@
               Aporte: $${(plan.amount||0).toFixed(2)} | Retorno Previsto: <b style="color:var(--gold-primary);">$${(plan.totalReturn||0).toFixed(2)}</b>
             </div>
             ${isAtivo ? `
-              <button class="btn btn-success" style="padding:6px; font-size:0.75rem;" onclick="forceFinishUserPlan('${transId}', '${uid}',${plan.totalReturn || 0})">
+              <button class="btn btn-success" style="padding:6px; font-size:0.75rem;" onclick="forceFinishUserPlan('${transId}', '${uid}', ${plan.totalReturn || 0})">
                 <i class="fa-solid fa-flag-checkered"></i> Finalizar & Creditar Lucro Agora
               </button>
             ` : ''}
@@ -632,20 +642,56 @@
       });
     }
 
-    // SALVAR DADOS EDITADOS
+    // SALVAR DADOS EDITADOS DO CLIENTE (INCLUINDO ALTERAÇÃO DE PADRINHO)
     window.saveUserData = async () => {
       const uid = document.getElementById("edit-user-id").value;
       const name = document.getElementById("edit-user-name").value.trim();
       const email = document.getElementById("edit-user-email").value.trim();
       const phone = document.getElementById("edit-user-phone").value.trim();
       const refCode = document.getElementById("edit-user-refcode").value.trim();
+      const referredBy = document.getElementById("edit-user-referredby").value.trim();
 
       try {
-        await updateDoc(doc(db, "users", uid), { name, email, phone, refCode });
-        showModal("Dados do cliente atualizados com sucesso!");
+        let padrinhoUid = null;
+        
+        // Se foi informado um código de padrinho, busca o UID dele no Firestore
+        if (referredBy) {
+          const qPadrinho = query(collection(db, "users"), where("refCode", "==", referredBy));
+          const snapPadrinho = await getDocs(qPadrinho);
+          if (!snapPadrinho.empty) {
+            padrinhoUid = snapPadrinho.docs[0].id;
+          }
+        }
+
+        await updateDoc(doc(db, "users", uid), { 
+          name, 
+          email, 
+          phone, 
+          refCode,
+          referredBy: referredBy || null,
+          padrinhoUid: padrinhoUid
+        });
+
+        showModal("Dados e Padrinho do cliente atualizados!");
         closeUserModal();
       } catch (err) {
         showModal("Erro ao atualizar dados: " + err.message);
+      }
+    };
+
+    // EXCLUIR CLIENTE DEFINITIVAMENTE
+    window.deleteUser = async () => {
+      const uid = document.getElementById("edit-user-id").value;
+      const userName = document.getElementById("edit-user-name").value;
+
+      if (confirm(`Tem certeza de que deseja EXCLUIR o cliente "${userName}" permanentemente?Esta ação não pode ser desfeita.`)) {
+        try {
+          await deleteDoc(doc(db, "users", uid));
+          showModal("Cliente excluído com sucesso!");
+          closeUserModal();
+        } catch (err) {
+          showModal("Erro ao excluir cliente: " + err.message);
+        }
       }
     };
 
@@ -759,7 +805,7 @@
       showModal("Saque REJEITADO e valor estornado ao cliente!");
     };
 
-    // --- 4. NOVO: ENVIAR AVISO GERAL PARA TODOS OS CLIENTES ---
+    // --- 4. ENVIAR AVISO GERAL PARA TODOS OS CLIENTES ---
     window.sendBroadcastNotice = async () => {
       const msg = document.getElementById("broadcast-message").value.trim();
 
