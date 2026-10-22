@@ -171,6 +171,18 @@
 
     .history-list { display: flex; flex-direction: column; gap: 8px; max-height: 180px; overflow-y: auto; }
     .history-item { background: var(--bg-input); border-radius: 8px; padding: 10px; font-size: 0.8rem; display: flex; justify-content: space-between; align-items: center; }
+
+    .badge-freq {
+      font-size: 0.65rem; padding: 3px 8px; border-radius: 6px; font-weight: 700; text-transform: uppercase;
+    }
+    .freq-diario { background: rgba(56, 189, 248, 0.15); color: #38bdf8; }
+    .freq-semanal { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
+    .freq-mensal { background: rgba(212, 175, 55, 0.15); color: var(--gold-primary); }
+
+    .tax-notice-box {
+      background: rgba(212, 175, 55, 0.08); border: 1px solid var(--border-gold);
+      border-radius: 10px; padding: 10px; font-size: 0.75rem; color: #f3e5ab; margin-bottom: 14px; line-height: 1.4;
+    }
   </style>
 </head>
 <body>
@@ -206,7 +218,6 @@
       <div id="admin-tab-users">
         <div class="card-title"><i class="fa-solid fa-users-gear"></i> Gestão de Clientes</div>
         
-        <!-- CAMPO DE PESQUISA POR NOME -->
         <div class="form-group" style="margin-bottom: 16px;">
           <input type="text" id="admin-search-user" class="form-control" placeholder="🔍 Pesquisar cliente por nome..." oninput="filterAdminUsers()">
         </div>
@@ -218,29 +229,45 @@
 
       <div id="admin-tab-plans" class="hidden">
         <div class="admin-card">
-          <div class="card-title"><i class="fa-solid fa-plus-circle"></i> Nova Carteira de Investimento</div>
+          <div class="card-title"><i class="fa-solid fa-plus-circle"></i> Cadastrar / Editar Carteira de Investimento</div>
           
+          <input type="hidden" id="edit-plan-id">
+
           <div class="form-group">
             <label>Título do Plano</label>
-            <input type="text" id="plan-title" class="form-control" placeholder="Ex: Carteira Ouro - 10 Dias">
+            <input type="text" id="plan-title" class="form-control" placeholder="Ex: Carteira Ouro - Rendimento Diário">
           </div>
 
           <div class="form-group">
             <label>Aporte Inicial ($)</label>
-            <input type="number" id="plan-price" class="form-control" placeholder="Ex: 100.00" step="0.01">
+            <input type="number" id="plan-price" class="form-control" placeholder="Ex: 100.00" step="0.01" oninput="calculateYieldPreview()">
           </div>
 
           <div class="form-group">
-            <label>Prazo de Duração (Dias)</label>
-            <input type="number" id="plan-days" class="form-control" placeholder="Ex: 10">
+            <label>Prazo Total do Contrato (Dias)</label>
+            <input type="number" id="plan-days" class="form-control" placeholder="Ex: 30" oninput="calculateYieldPreview()">
           </div>
 
           <div class="form-group">
-            <label>Retorno Total ($ Capital + Lucro)</label>
-            <input type="number" id="plan-return" class="form-control" placeholder="Ex: 130.00" step="0.01">
+            <label>Frequência de Rendimento (Pagamento na Conta)</label>
+            <select id="plan-frequency" class="form-control" onchange="calculateYieldPreview()">
+              <option value="diario">Diário (Rendimento caindo todo dia)</option>
+              <option value="semanal">Semanal (Rendimento a cada 7 dias)</option>
+              <option value="mensal">Mensal (Rendimento creditado ao final do prazo)</option>
+            </select>
           </div>
 
-          <button class="btn btn-gold" onclick="createPlan()"><i class="fa-solid fa-save"></i> Criar Carteira</button>
+          <div class="form-group">
+            <label>Retorno Total ($ Capital + Lucro Bruto)</label>
+            <input type="number" id="plan-return" class="form-control" placeholder="Ex: 150.00" step="0.01" oninput="calculateYieldPreview()">
+          </div>
+
+          <div class="tax-notice-box" id="yield-preview-box">
+            <b>Estimativa de Rendimento:</b><br>
+            <span id="yield-preview-text">Preencha os dados acima para ver a projeção.</span>
+          </div>
+
+          <button class="btn btn-gold" onclick="savePlan()"><i class="fa-solid fa-save"></i> Salvar Carteira</button>
         </div>
 
         <div class="card-title"><i class="fa-solid fa-list"></i> Carteiras Ativas no App</div>
@@ -250,7 +277,12 @@
       </div>
 
       <div id="admin-tab-withdraws" class="hidden">
-        <div class="card-title"><i class="fa-solid fa-clock"></i> Solicitações de Resgate PENDENTES (Prazo de até 72h)</div>
+        <div class="card-title"><i class="fa-solid fa-clock"></i> Solicitações de Resgate PENDENTES (Com Taxa de 12%)</div>
+        
+        <div class="tax-notice-box">
+          <i class="fa-solid fa-percent"></i> <b>Regra de Saque Fixo:</b> Todos os saques possuem taxa administrativa de <b>12%</b> descontada automaticamente ao aprovar.
+        </div>
+
         <div id="withdraws-list-container">
           <div style="text-align: center; color: var(--text-muted); padding: 15px;">Nenhuma solicitação pendente.</div>
         </div>
@@ -308,7 +340,6 @@
         <input type="text" id="edit-user-referredby" class="form-control" placeholder="Ex: LAPLATA2190">
       </div>
 
-      <!-- COMISSÃO PERSONALIZADA (%) -->
       <div class="form-group">
         <label>Comissão de Afiliado deste Cliente (%)</label>
         <input type="number" id="edit-user-commission" class="form-control" placeholder="Ex: 5 (para 5%)" step="0.1">
@@ -343,7 +374,7 @@
   <script type="module">
     import { db } from "./Js/firebase-config.js";
     import { 
-      collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, query, where, getDocs, increment, getDoc 
+      collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, query, where, getDocs, increment, getDoc, setDoc 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const ADMIN_SECRET_PIN = "laplata123";
@@ -471,6 +502,184 @@
       }
     };
 
+    window.calculateYieldPreview = () => {
+      const price = parseFloat(document.getElementById("plan-price").value) || 0;
+      const days = parseInt(document.getElementById("plan-days").value) || 1;
+      const freq = document.getElementById("plan-frequency").value;
+      const totalReturn = parseFloat(document.getElementById("plan-return").value) || 0;
+
+      const profit = totalReturn - price;
+      const textElem = document.getElementById("yield-preview-text");
+
+      if (price <= 0 || totalReturn <= 0 || days <= 0) {
+        textElem.innerText = "Preencha os dados acima para ver a projeção.";
+        return;
+      }
+
+      if (freq === "diario") {
+        const dailyVal = profit / days;
+        textElem.innerHTML = `Rendimento Diário: <b style="color:var(--gold-primary);">$ ${dailyVal.toFixed(2)}/dia</b><br>Lucro total de <b>$ ${profit.toFixed(2)}</b> caindo todo dia por ${days} dias.`;
+      } else if (freq === "semanal") {
+        const weeks = Math.max(1, Math.floor(days / 7));
+        const weeklyVal = profit / weeks;
+        textElem.innerHTML = `Rendimento Semanal: <b style="color:var(--gold-primary);">$ ${weeklyVal.toFixed(2)}/semana</b><br>Lucro pago a cada 7 dias por ${weeks} semana(s).`;
+      } else {
+        textElem.innerHTML = `Rendimento Mensal/Final: <b style="color:var(--gold-primary);">$ ${profit.toFixed(2)} ao encerramento</b><br>Pago integralmente após os ${days} dias de contrato.`;
+      }
+    };
+
+    window.savePlan = async () => {
+      const id = document.getElementById("edit-plan-id").value;
+      const title = document.getElementById("plan-title").value.trim();
+      const price = parseFloat(document.getElementById("plan-price").value);
+      const days = parseInt(document.getElementById("plan-days").value);
+      const frequency = document.getElementById("plan-frequency").value;
+      const totalReturn = parseFloat(document.getElementById("plan-return").value);
+
+      if (!title || !price || !days || !totalReturn) {
+        return showModal("Preencha todos os campos da carteira!");
+      }
+
+      const planData = {
+        title,
+        price,
+        durationDays: days,
+        frequency, // 'diario', 'semanal', 'mensal'
+        totalReturn,
+        updatedAt: Date.now()
+      };
+
+      try {
+        if (id) {
+          await updateDoc(doc(db, "plans", id), planData);
+          showModal("Carteira atualizada com sucesso!");
+        } else {
+          planData.createdAt = Date.now();
+          await addDoc(collection(db, "plans"), planData);
+          showModal("Nova carteira criada com sucesso!");
+        }
+
+        resetPlanForm();
+      } catch (err) {
+        showModal("Erro ao salvar carteira: " + err.message);
+      }
+    };
+
+    function resetPlanForm() {
+      document.getElementById("edit-plan-id").value = "";
+      document.getElementById("plan-title").value = "";
+      document.getElementById("plan-price").value = "";
+      document.getElementById("plan-days").value = "";
+      document.getElementById("plan-return").value = "";
+      document.getElementById("plan-frequency").value = "diario";
+      document.getElementById("yield-preview-text").innerText = "Preencha os dados acima para ver a projeção.";
+    }
+
+    function loadPlans() {
+      onSnapshot(collection(db, "plans"), (snapshot) => {
+        const container = document.getElementById("plans-list-container");
+        container.innerHTML = "";
+
+        if (snapshot.empty) {
+          container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 15px;">Nenhuma carteira cadastrada.</div>`;
+          return;
+        }
+
+        snapshot.forEach((docSnap) => {
+          const plan = docSnap.data();
+          const id = docSnap.id;
+          const freq = plan.frequency || 'diario';
+
+          container.innerHTML += `
+            <div class="user-card">
+              <div class="user-card-header">
+                <span class="user-name">${plan.title}</span>
+                <span class="badge-freq freq-${freq}">${freq.toUpperCase()}</span>
+              </div>
+              <div class="user-details">
+                <span>Aporte: <b>$ ${(plan.price || 0).toFixed(2)}</b></span>
+                <span>Prazo: <b>${plan.durationDays} Dias</b></span>
+                <span>Frequência: <b>${freq}</b></span>
+                <span style="color:var(--gold-primary);">Retorno: <b>$ ${(plan.totalReturn || 0).toFixed(2)}</b></span>
+              </div>
+              <div style="display:flex; gap: 8px; margin-top: 4px;">
+                <button class="btn btn-gold" style="padding:6px; font-size:0.75rem;" onclick="editPlan('${id}', '${plan.title}', ${plan.price}, ${plan.durationDays}, '${freq}', ${plan.totalReturn})">Editar</button>
+                <button class="btn btn-danger" style="padding:6px; font-size:0.75rem;" onclick="deletePlan('${id}')">Excluir</button>
+              </div>
+            </div>
+          `;
+        });
+      });
+    }
+
+    window.editPlan = (id, title, price, days, freq, totalReturn) => {
+      document.getElementById("edit-plan-id").value = id;
+      document.getElementById("plan-title").value = title;
+      document.getElementById("plan-price").value = price;
+      document.getElementById("plan-days").value = days;
+      document.getElementById("plan-frequency").value = freq;
+      document.getElementById("plan-return").value = totalReturn;
+      calculateYieldPreview();
+    };
+
+    window.deletePlan = async (id) => {
+      if (confirm("Deseja realmente excluir esta carteira?")) {
+        await deleteDoc(doc(db, "plans", id));
+        showModal("Carteira excluída!");
+      }
+    };
+
+    function loadWithdraws() {
+      const q = query(collection(db, "transactions"), where("type", "==", "saque"), where("status", "==", "pendente"));
+      
+      onSnapshot(q, (snapshot) => {
+        const container = document.getElementById("withdraws-list-container");
+        container.innerHTML = "";
+
+        if (snapshot.empty) {
+          container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 15px;">Nenhuma solicitação pendente.</div>`;
+          return;
+        }
+
+        snapshot.forEach((docSnap) => {
+          const trans = docSnap.data();
+          const id = docSnap.id;
+          const gross = trans.amount || 0;
+          const tax = gross * 0.12;
+          const net = gross - tax;
+
+          container.innerHTML += `
+            <div class="user-card">
+              <div class="user-card-header">
+                <span class="user-balance-badge">$ ${gross.toFixed(2)}</span>
+                <span style="font-size: 0.75rem; color: #eab308; font-weight: 700;">PENDENTE</span>
+              </div>
+              <div style="font-size:0.78rem; color:var(--text-muted); line-height: 1.4;">
+                <span>Taxa Administrativa (12%): <b style="color:#ef4444;">- $ ${tax.toFixed(2)}</b></span><br>
+                <span>Valor Líquido no PIX: <b style="color:#10b981; font-size:0.9rem;">$ ${net.toFixed(2)}</b></span><br>
+                <span>UID Cliente: ${trans.userId}</span>
+              </div>
+              <div class="user-actions" style="display:flex; gap:8px;">
+                <button class="btn btn-success" onclick="approveWithdraw('${id}')"><i class="fa-solid fa-check"></i> Aprovar ($ ${net.toFixed(2)})</button>
+                <button class="btn btn-danger" onclick="rejectWithdraw('${id}', '${trans.userId}', ${gross})"><i class="fa-solid fa-times"></i> Rejeitar</button>
+              </div>
+            </div>
+          `;
+        });
+      });
+    }
+
+    window.approveWithdraw = async (transId) => {
+      await updateDoc(doc(db, "transactions", transId), { status: "concluido" });
+      showModal("Saque APROVADO! Lembre-se de transferir o valor líquido já com 12% descontados.");
+    };
+
+    window.rejectWithdraw = async (transId, userId, amount) => {
+      await updateDoc(doc(db, "transactions", transId), { status: "rejeitado" });
+      await updateDoc(doc(db, "users", userId), { balance: increment(amount) });
+      showModal("Saque REJEITADO e valor integral estornado ao saldo do cliente!");
+    };
+
     window.openUserModal = async (uid) => {
       document.getElementById("edit-user-id").value = uid;
 
@@ -560,7 +769,6 @@
       });
     }
 
-    // FINALIZAÇÃO DE PLANO PELO ADMIN COM COMISSÃO PERCENTUAL AO PADRINHO
     window.forceFinishUserPlan = async (transId, uid, investAmount, totalReturn) => {
       if (confirm("Deseja concluir este plano agora, creditar o retorno ao cliente e enviar a porcentagem correspondente ao padrinho?")) {
         try {
@@ -579,7 +787,6 @@
             createdAt: Date.now()
           });
 
-          // Pagar comissão percentual ao padrinho configurada
           if (clientData && clientData.referredBy) {
             const padrinhoQuery = query(collection(db, "users"), where("refCode", "==", clientData.referredBy));
             const padrinhoSnap = await getDocs(padrinhoQuery);
@@ -587,7 +794,7 @@
             if (!padrinhoSnap.empty) {
               const padrinhoDoc = padrinhoSnap.docs[0];
               const padrinhoUid = padrinhoDoc.id;
-              const commissionRate = clientData.customCommission ?? 5; // Usa a % personalizada do cliente ou 5%
+              const commissionRate = clientData.customCommission ?? 5;
               const commissionVal = investAmount * (commissionRate / 100);
 
               await updateDoc(doc(db, "users", padrinhoUid), { balance: increment(commissionVal) });
@@ -706,114 +913,6 @@
           showModal("Erro ao excluir cliente: " + err.message);
         }
       }
-    };
-
-    window.createPlan = async () => {
-      const title = document.getElementById("plan-title").value.trim();
-      const price = parseFloat(document.getElementById("plan-price").value);
-      const days = parseInt(document.getElementById("plan-days").value);
-      const totalReturn = parseFloat(document.getElementById("plan-return").value);
-
-      if (!title || !price || !days || !totalReturn) {
-        return showModal("Preencha todos os campos da carteira!");
-      }
-
-      try {
-        await addDoc(collection(db, "plans"), {
-          title, price, durationDays: days, totalReturn, createdAt: Date.now()
-        });
-
-        document.getElementById("plan-title").value = "";
-        document.getElementById("plan-price").value = "";
-        document.getElementById("plan-days").value = "";
-        document.getElementById("plan-return").value = "";
-
-        showModal("Carteira criada com sucesso!");
-      } catch (err) {
-        showModal("Erro ao criar carteira: " + err.message);
-      }
-    };
-
-    function loadPlans() {
-      onSnapshot(collection(db, "plans"), (snapshot) => {
-        const container = document.getElementById("plans-list-container");
-        container.innerHTML = "";
-
-        if (snapshot.empty) {
-          container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 15px;">Nenhuma carteira cadastrada.</div>`;
-          return;
-        }
-
-        snapshot.forEach((docSnap) => {
-          const plan = docSnap.data();
-          const id = docSnap.id;
-
-          container.innerHTML += `
-            <div class="user-card">
-              <div class="user-card-header">
-                <span class="user-name">${plan.title}</span>
-                <button class="btn btn-danger" style="width:auto;" onclick="deletePlan('${id}')"><i class="fa-solid fa-trash"></i> Excluir</button>
-              </div>
-              <div class="user-details">
-                <span>Aporte: <b>$ ${(plan.price || 0).toFixed(2)}</b></span>
-                <span>Prazo: <b>${plan.durationDays} Dias</b></span>
-                <span style="color:var(--gold-primary);">Retorno: <b>$ ${(plan.totalReturn || 0).toFixed(2)}</b></span>
-              </div>
-            </div>
-          `;
-        });
-      });
-    }
-
-    window.deletePlan = async (id) => {
-      if (confirm("Deseja realmente excluir esta carteira?")) {
-        await deleteDoc(doc(db, "plans", id));
-        showModal("Carteira excluída!");
-      }
-    };
-
-    function loadWithdraws() {
-      const q = query(collection(db, "transactions"), where("type", "==", "saque"), where("status", "==", "pendente"));
-      
-      onSnapshot(q, (snapshot) => {
-        const container = document.getElementById("withdraws-list-container");
-        container.innerHTML = "";
-
-        if (snapshot.empty) {
-          container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 15px;">Nenhuma solicitação pendente.</div>`;
-          return;
-        }
-
-        snapshot.forEach((docSnap) => {
-          const trans = docSnap.data();
-          const id = docSnap.id;
-
-          container.innerHTML += `
-            <div class="user-card">
-              <div class="user-card-header">
-                <span class="user-balance-badge">$ ${(trans.amount || 0).toFixed(2)}</span>
-                <span style="font-size: 0.75rem; color: #eab308; font-weight: 700;">PENDENTE (72h)</span>
-              </div>
-              <div style="font-size:0.78rem; color:var(--text-muted);">UID: ${trans.userId}</div>
-              <div class="user-actions">
-                <button class="btn btn-success" onclick="approveWithdraw('${id}')"><i class="fa-solid fa-check"></i> Aprovar</button>
-                <button class="btn btn-danger" onclick="rejectWithdraw('${id}', '${trans.userId}', ${trans.amount})"><i class="fa-solid fa-times"></i> Rejeitar & Estornar</button>
-              </div>
-            </div>
-          `;
-        });
-      });
-    }
-
-    window.approveWithdraw = async (transId) => {
-      await updateDoc(doc(db, "transactions", transId), { status: "concluido" });
-      showModal("Saque APROVADO com sucesso!");
-    };
-
-    window.rejectWithdraw = async (transId, userId, amount) => {
-      await updateDoc(doc(db, "transactions", transId), { status: "rejeitado" });
-      await updateDoc(doc(db, "users", userId), { balance: increment(amount) });
-      showModal("Saque REJEITADO e valor estornado ao cliente!");
     };
 
     window.sendBroadcastNotice = async () => {
