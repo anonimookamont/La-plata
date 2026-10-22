@@ -41,7 +41,6 @@
 
     .hidden { display: none !important; }
 
-    /* HEADER */
     .admin-header {
       text-align: center;
       margin-bottom: 24px;
@@ -75,7 +74,6 @@
       margin-top: 4px;
     }
 
-    /* FORMULÁRIOS & CARDS */
     .admin-card {
       background: var(--bg-card);
       border: 1px solid var(--bg-card-border);
@@ -125,7 +123,6 @@
     .btn-success { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
     .btn-secondary { background: #1c1c26; color: var(--text-muted); border: 1px solid var(--bg-card-border); }
 
-    /* ABAS DE NAVEGAÇÃO ADMIN */
     .admin-tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
     .admin-tab-btn {
       flex: 1 1 22%; padding: 10px 6px; background: var(--bg-card); border: 1px solid var(--bg-card-border);
@@ -133,7 +130,6 @@
     }
     .admin-tab-btn.active { background: rgba(212, 175, 55, 0.12); color: var(--gold-primary); border-color: var(--border-gold); }
 
-    /* LISTAS */
     .user-card {
       background: var(--bg-card);
       border: 1px solid var(--bg-card-border);
@@ -159,7 +155,6 @@
       align-items: center;
     }
 
-    /* MODAIS */
     .modal-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,0.88);
       display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px;
@@ -182,16 +177,14 @@
 
   <div class="admin-container">
     
-    <!-- HEADER DA APLICAÇÃO ADMIN -->
     <div class="admin-header">
       <svg class="lion-svg-icon" viewBox="0 0 100 100">
-        <path fill="#d4af37" d="M50 10 C30 10, 15 25, 15 45 C15 58, 22 68, 30 75 C32 65, 38 55, 45 52 C42 48, 40 42, 42 36 C45 28, 55 28, 58 36 C60 42, 58 48, 55 52 C62 55, 68 65, 70 75 C78 68, 85 58, 85 45 C85 25, 70 10, 50 10 Z"/>
+        <path fill="#d4af37" d="M50 10 C30 10, 15 25, 15 45 C15 58, 22 68, 30 75 C32 65, 38 55, 45 52 C42 48, 40 42, 42 36 C45 28, 55 28, 58 36 C60 42, 58 48, 55 52 C62 55, 68 65, 70 75 C78 68, 80 85, 50 85 Z"/>
       </svg>
       <div class="brand-name">LÁ PLATA</div>
       <span class="admin-badge">Painel de Controle Admin</span>
     </div>
 
-    <!-- TELA DE AUTENTICAÇÃO PIN ADMIN -->
     <div id="admin-login-section" class="admin-card">
       <div class="card-title"><i class="fa-solid fa-lock"></i> Acesso Restrito</div>
       <div class="form-group">
@@ -201,10 +194,8 @@
       <button class="btn btn-gold" onclick="loginAdmin()">Entrar no Painel</button>
     </div>
 
-    <!-- ÁREA PRINCIPAL DO ADMIN -->
     <div id="admin-dashboard" class="hidden">
       
-      <!-- MENU DE ABAS ADMIN -->
       <div class="admin-tabs">
         <button class="admin-tab-btn active" onclick="switchAdminTab('users')"><i class="fa-solid fa-users"></i> Clientes</button>
         <button class="admin-tab-btn" onclick="switchAdminTab('plans')"><i class="fa-solid fa-cubes"></i> Carteiras</button>
@@ -212,7 +203,6 @@
         <button class="admin-tab-btn" onclick="switchAdminTab('broadcast')"><i class="fa-solid fa-bullhorn"></i> Avisos Gerais</button>
       </div>
 
-      <!-- ABA 1: LISTA DE CLIENTES -->
       <div id="admin-tab-users">
         <div class="card-title"><i class="fa-solid fa-users-gear"></i> Gestão de Clientes</div>
         <div id="users-list-container">
@@ -220,7 +210,6 @@
         </div>
       </div>
 
-      <!-- ABA 2: GERENCIAR CARTEIRAS / PLANOS -->
       <div id="admin-tab-plans" class="hidden">
         <div class="admin-card">
           <div class="card-title"><i class="fa-solid fa-plus-circle"></i> Nova Carteira de Investimento</div>
@@ -254,7 +243,6 @@
         </div>
       </div>
 
-      <!-- ABA 3: APROVAR SAQUES -->
       <div id="admin-tab-withdraws" class="hidden">
         <div class="card-title"><i class="fa-solid fa-clock"></i> Solicitações de Resgate PENDENTES</div>
         <div id="withdraws-list-container">
@@ -262,7 +250,6 @@
         </div>
       </div>
 
-      <!-- ABA 4: ENVIAR AVISO GERAL -->
       <div id="admin-tab-broadcast" class="hidden">
         <div class="admin-card">
           <div class="card-title"><i class="fa-solid fa-bullhorn"></i> Enviar Aviso Geral para TODOS os Clientes</div>
@@ -280,17 +267,14 @@
 
   </div>
 
-  <!-- MODAL DE DETALHES, GRÁFICO E PLANOS DO CLIENTE -->
   <div id="user-details-modal" class="modal-overlay hidden">
     <div class="modal-box">
       <div class="modal-header"><i class="fa-solid fa-user-gear"></i> Gestão do Cliente</div>
       
-      <!-- GRÁFICO CARTESIANO DO CLIENTE -->
       <div class="chart-container">
         <canvas id="adminUserYieldCartesianChart"></canvas>
       </div>
 
-      <!-- EDIÇÃO DOS DADOS -->
       <input type="hidden" id="edit-user-id">
       
       <div class="form-group">
@@ -313,24 +297,20 @@
         <input type="text" id="edit-user-refcode" class="form-control">
       </div>
 
-      <!-- ALTERAR PADRINHO -->
       <div class="form-group">
         <label>Código do Padrinho (ReferredBy)</label>
-        <input type="text" id="edit-user-referredby" class="form-control" placeholder="Código de afiliado do Padrinho">
+        <input type="text" id="edit-user-referredby" class="form-control" placeholder="Ex: LAPLATA2190">
       </div>
 
       <button class="btn btn-gold" style="margin-bottom: 12px;" onclick="saveUserData()"><i class="fa-solid fa-check"></i> Salvar Dados do Cliente</button>
       
-      <!-- EXCLUIR CLIENTE -->
-      <button class="btn btn-danger" style="margin-bottom: 20px;" onclick="deleteUser()"><i class="fa-solid fa-user-minus"></i> Excluir Cliente Definitivemente</button>
+      <button class="btn btn-danger" style="margin-bottom: 20px;" onclick="deleteUser()"><i class="fa-solid fa-user-minus"></i> Excluir Cliente Definitivamente</button>
 
-      <!-- GERENCIAR PLANOS ATIVOS DO CLIENTE -->
       <div class="card-title" style="font-size: 0.9rem; margin-bottom: 8px;"><i class="fa-solid fa-cubes"></i> Investimentos em Andamento</div>
       <div id="user-active-plans-container" style="margin-bottom: 16px;">
         <div style="text-align:center; color:var(--text-muted); font-size: 0.8rem;">Carregando investimentos...</div>
       </div>
 
-      <!-- HISTÓRICO COMPLETO DO CLIENTE -->
       <div class="card-title" style="font-size: 0.9rem; margin-bottom: 8px;"><i class="fa-solid fa-receipt"></i> Histórico de Movimentações</div>
       <div class="history-list" id="user-history-container">
         <div style="text-align:center; color:var(--text-muted); font-size: 0.8rem;">Carregando histórico...</div>
@@ -340,7 +320,6 @@
     </div>
   </div>
 
-  <!-- MODAL DE ALERTA GERAL -->
   <div id="admin-modal" class="modal-overlay hidden">
     <div class="modal-box" style="text-align: center;">
       <div style="font-size: 2rem; color: var(--gold-primary); margin-bottom: 10px;"><i class="fa-solid fa-circle-info"></i></div>
@@ -349,11 +328,10 @@
     </div>
   </div>
 
-  <!-- SCRIPT MODULAR ADMIN -->
   <script type="module">
     import { db } from "./Js/firebase-config.js";
     import { 
-      collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, query, where, getDocs, increment, getDoc, setDoc
+      collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, query, where, getDocs, increment, getDoc 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const ADMIN_SECRET_PIN = "laplata123";
@@ -396,7 +374,6 @@
       loadWithdraws();
     }
 
-    // --- 1. LISTA DE CLIENTES E SALDO ---
     function loadUsers() {
       onSnapshot(collection(db, "users"), (snapshot) => {
         const container = document.getElementById("users-list-container");
@@ -468,7 +445,6 @@
       }
     };
 
-    // --- ABRIR MODAL COMPLETO DO CLIENTE ---
     window.openUserModal = async (uid) => {
       document.getElementById("edit-user-id").value = uid;
 
@@ -482,10 +458,8 @@
       document.getElementById("edit-user-refcode").value = userData.refCode || "";
       document.getElementById("edit-user-referredby").value = userData.referredBy || "";
 
-      // 1. Carregar Planos Ativos do Cliente
       loadUserActivePlans(uid);
 
-      // 2. Carregar Histórico e Gerar Gráfico Cartesiano
       const transQuery = query(collection(db, "transactions"), where("userId", "==", uid));
       const transSnap = await getDocs(transQuery);
       
@@ -519,7 +493,6 @@
       document.getElementById("user-details-modal").classList.remove("hidden");
     };
 
-    // CARREGAR E FINALIZAR PLANOS DO CLIENTE
     async function loadUserActivePlans(uid) {
       const q = query(
         collection(db, "transactions"),
@@ -539,7 +512,6 @@
       snapshot.forEach(docSnap => {
         const plan = docSnap.data();
         const transId = docSnap.id;
-
         const isAtivo = plan.status === "ativo";
 
         container.innerHTML += `
@@ -552,7 +524,7 @@
               Aporte: $${(plan.amount||0).toFixed(2)} | Retorno Previsto: <b style="color:var(--gold-primary);">$${(plan.totalReturn||0).toFixed(2)}</b>
             </div>
             ${isAtivo ? `
-              <button class="btn btn-success" style="padding:6px; font-size:0.75rem;" onclick="forceFinishUserPlan('${transId}', '${uid}', ${plan.totalReturn || 0})">
+              <button class="btn btn-success" style="padding:6px; font-size:0.75rem;" onclick="forceFinishUserPlan('${transId}', '${uid}', ${plan.amount || 0}, ${plan.totalReturn || 0})">
                 <i class="fa-solid fa-flag-checkered"></i> Finalizar & Creditar Lucro Agora
               </button>
             ` : ''}
@@ -561,23 +533,61 @@
       });
     }
 
-    // FINALIZAR PLANO ANTECIPADAMENTE
-    window.forceFinishUserPlan = async (transId, uid, totalReturn) => {
-      if (confirm("Deseja encerrar este plano agora e creditar o valor final no saldo do cliente?")) {
+    // FINALIZAÇÃO DE PLANO PELO ADMIN COM CRÉDITO DIRETO DE LUCRO E COMISSÃO AO PADRINHO
+    window.forceFinishUserPlan = async (transId, uid, investAmount, totalReturn) => {
+      if (confirm("Deseja encerrar este plano agora e creditar o valor no cliente e a comissão ao padrinho?")) {
         try {
+          // 1. Conclui a aplicação
           await updateDoc(doc(db, "transactions", transId), { status: "concluido" });
+          
+          // 2. Credita o lucro previsto no saldo do cliente
           await updateDoc(doc(db, "users", uid), { balance: increment(totalReturn) });
+
+          const clientSnap = await getDoc(doc(db, "users", uid));
+          const clientData = clientSnap.data();
 
           await addDoc(collection(db, "transactions"), {
             userId: uid,
             type: "notificacao",
-            description: `Seu investimento foi concluído com sucesso pelo administrador! $${totalReturn.toFixed(2)} creditados.`,
+            description: `Seu investimento foi concluído com sucesso pelo administrador! $${totalReturn.toFixed(2)} creditados no seu saldo.`,
             amount: 0.00,
             status: "concluido",
             createdAt: Date.now()
           });
 
-          showModal("Investimento finalizado e lucro creditado!");
+          // 3. Paga os 5% de comissão para o Padrinho cadastrado em referredBy
+          if (clientData && clientData.referredBy) {
+            const padrinhoQuery = query(collection(db, "users"), where("refCode", "==", clientData.referredBy));
+            const padrinhoSnap = await getDocs(padrinhoQuery);
+
+            if (!padrinhoSnap.empty) {
+              const padrinhoDoc = padrinhoSnap.docs[0];
+              const padrinhoUid = padrinhoDoc.id;
+              const commissionVal = investAmount * 0.05;
+
+              await updateDoc(doc(db, "users", padrinhoUid), { balance: increment(commissionVal) });
+
+              await addDoc(collection(db, "transactions"), {
+                userId: padrinhoUid,
+                type: "comissao_afiliado",
+                description: `Comissão 5% - Finalização de plano do indicado (${clientData.name})`,
+                amount: commissionVal,
+                status: "concluido",
+                createdAt: Date.now()
+              });
+
+              await addDoc(collection(db, "transactions"), {
+                userId: padrinhoUid,
+                type: "notificacao",
+                description: `Você recebeu $${commissionVal.toFixed(2)} de comissão do seu indicado (${clientData.name})!`,
+                amount: 0.00,
+                status: "concluido",
+                createdAt: Date.now()
+              });
+            }
+          }
+
+          showModal("Investimento finalizado, saldo do cliente atualizado e comissão creditada!");
           loadUserActivePlans(uid);
         } catch (err) {
           showModal("Erro ao finalizar plano: " + err.message);
@@ -589,7 +599,6 @@
       document.getElementById("user-details-modal").classList.add("hidden");
     };
 
-    // RENDERIZAR GRÁFICO CARTESIANO DE RENDIMENTO NO ADMIN
     function renderAdminCartesianChart(transactions) {
       const ctx = document.getElementById("adminUserYieldCartesianChart").getContext("2d");
       const sorted = [...transactions].sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0));
@@ -642,49 +651,35 @@
       });
     }
 
-    // SALVAR DADOS EDITADOS DO CLIENTE (INCLUINDO ALTERAÇÃO DE PADRINHO)
     window.saveUserData = async () => {
       const uid = document.getElementById("edit-user-id").value;
       const name = document.getElementById("edit-user-name").value.trim();
       const email = document.getElementById("edit-user-email").value.trim();
       const phone = document.getElementById("edit-user-phone").value.trim();
-      const refCode = document.getElementById("edit-user-refcode").value.trim();
-      const referredBy = document.getElementById("edit-user-referredby").value.trim();
+      const refCode = document.getElementById("edit-user-refcode").value.trim().toUpperCase();
+      const referredBy = document.getElementById("edit-user-referredby").value.trim().toUpperCase();
 
       try {
-        let padrinhoUid = null;
-        
-        // Se foi informado um código de padrinho, busca o UID dele no Firestore
-        if (referredBy) {
-          const qPadrinho = query(collection(db, "users"), where("refCode", "==", referredBy));
-          const snapPadrinho = await getDocs(qPadrinho);
-          if (!snapPadrinho.empty) {
-            padrinhoUid = snapPadrinho.docs[0].id;
-          }
-        }
-
         await updateDoc(doc(db, "users", uid), { 
           name, 
           email, 
           phone, 
           refCode,
-          referredBy: referredBy || null,
-          padrinhoUid: padrinhoUid
+          referredBy: referredBy || null
         });
 
-        showModal("Dados e Padrinho do cliente atualizados!");
+        showModal("Dados e Padrinho atualizados com sucesso!");
         closeUserModal();
       } catch (err) {
         showModal("Erro ao atualizar dados: " + err.message);
       }
     };
 
-    // EXCLUIR CLIENTE DEFINITIVAMENTE
     window.deleteUser = async () => {
       const uid = document.getElementById("edit-user-id").value;
       const userName = document.getElementById("edit-user-name").value;
 
-      if (confirm(`Tem certeza de que deseja EXCLUIR o cliente "${userName}" permanentemente?Esta ação não pode ser desfeita.`)) {
+      if (confirm(`Tem certeza de que deseja EXCLUIR o cliente "${userName}" permanentemente?`)) {
         try {
           await deleteDoc(doc(db, "users", uid));
           showModal("Cliente excluído com sucesso!");
@@ -695,7 +690,6 @@
       }
     };
 
-    // --- 2. GERENCIAR CARTEIRAS DA PLATAFORMA ---
     window.createPlan = async () => {
       const title = document.getElementById("plan-title").value.trim();
       const price = parseFloat(document.getElementById("plan-price").value);
@@ -760,7 +754,6 @@
       }
     };
 
-    // --- 3. APROVAÇÃO DE SAQUES ---
     function loadWithdraws() {
       const q = query(collection(db, "transactions"), where("type", "==", "saque"), where("status", "==", "pendente"));
       
@@ -805,7 +798,6 @@
       showModal("Saque REJEITADO e valor estornado ao cliente!");
     };
 
-    // --- 4. ENVIAR AVISO GERAL PARA TODOS OS CLIENTES ---
     window.sendBroadcastNotice = async () => {
       const msg = document.getElementById("broadcast-message").value.trim();
 
