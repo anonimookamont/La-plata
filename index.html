@@ -44,7 +44,7 @@
 
     .hidden { display: none !important; }
 
-    /* LOGO & BANNER DO LEÃO VETORIAL */
+    /* BANNER COM LEÃO VETORIAL OURO */
     .auth-banner {
       width: 100%;
       height: 150px;
@@ -94,7 +94,7 @@
       margin-top: -2px;
     }
 
-    /* --- TELA DE AUTENTICAÇÃO --- */
+    /* TELA DE AUTENTICAÇÃO */
     .auth-container {
       padding: 30px 20px;
       display: flex;
@@ -177,7 +177,7 @@
       text-decoration: none;
     }
 
-    /* --- APP HEADER --- */
+    /* APP HEADER */
     .app-header {
       padding: 18px 20px 14px 20px;
       display: flex;
@@ -209,11 +209,11 @@
     .greeting { font-size: 0.75rem; color: var(--text-muted); }
     .user-name-title { font-size: 0.95rem; font-weight: 700; color: var(--text-main); }
 
-    /* --- ABAS DE NAVEGAÇÃO --- */
+    /* ABAS DE NAVEGAÇÃO */
     .tab-content { padding: 20px; display: none; }
     .tab-content.active { display: block; }
 
-    /* --- CARDS & SALDO --- */
+    /* CARDS & SALDO */
     .balance-card {
       background: linear-gradient(135deg, #181822 0%, #0d0d12 100%);
       border: 1px solid var(--border-gold);
@@ -228,7 +228,7 @@
     .balance-value { font-size: 2.2rem; font-weight: 800; color: #ffffff; margin: 8px 0; }
     .balance-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--gold-primary); background: rgba(212, 175, 55, 0.1); padding: 4px 10px; border-radius: 20px; }
 
-    /* CARD DO GRÁFICO CARTESIANO DE RENDIMENTO */
+    /* GRÁFICO CARTESIANO DE RENDIMENTO */
     .chart-card {
       background: var(--bg-card);
       border: 1px solid var(--bg-card-border);
@@ -237,18 +237,9 @@
       margin-bottom: 22px;
       box-shadow: 0 8px 25px rgba(0,0,0,0.4);
     }
-    .chart-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-    }
+    .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
     .chart-title { font-size: 0.9rem; font-weight: 700; color: var(--gold-primary); display: flex; align-items: center; gap: 8px; }
-    .chart-container-box {
-      position: relative;
-      width: 100%;
-      height: 200px;
-    }
+    .chart-container-box { position: relative; width: 100%; height: 180px; }
 
     .section-header { font-size: 0.95rem; font-weight: 700; color: var(--gold-primary); margin: 24px 0 14px 0; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
 
@@ -261,7 +252,7 @@
     }
     .action-card h3 { font-size: 0.95rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; font-weight: 700; }
 
-    /* PLANOS DE INVESTIMENTO */
+    /* CARTEIRAS DA LOJA */
     .plans-grid { display: flex; flex-direction: column; gap: 14px; }
     .plan-card {
       background: var(--bg-card);
@@ -271,9 +262,7 @@
       display: flex;
       flex-direction: column;
       gap: 14px;
-      transition: border-color 0.2s;
     }
-    .plan-card:hover { border-color: var(--border-gold); }
     .plan-header { display: flex; justify-content: space-between; align-items: center; }
     .plan-title { font-size: 1.1rem; font-weight: 700; color: #fff; }
     .plan-duration { font-size: 0.75rem; background: rgba(212, 175, 55, 0.12); color: var(--gold-primary); padding: 4px 10px; border-radius: 20px; font-weight: 600; border: 1px solid rgba(212, 175, 55, 0.2); }
@@ -289,6 +278,32 @@
     .metric-item { display: flex; flex-direction: column; gap: 3px; }
     .metric-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; }
     .metric-value { font-size: 1rem; font-weight: 700; }
+
+    /* CARD DE PLANO ADQUIRIDO (COM BARRA DE PROGRESSO EM %) */
+    .my-plan-card {
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-input);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--bg-card-border);
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--gold-gradient-button);
+      width: 0%;
+      transition: width 0.4s ease;
+    }
 
     /* AFILIADOS */
     .affiliate-box {
@@ -340,79 +355,31 @@
       margin-bottom: 10px;
     }
 
-    /* MODAL DE ALERTA PERSONALIZADO */
+    /* MODAL DE ALERTA */
     .custom-modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(5px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      padding: 20px;
+      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px);
+      display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px;
     }
     .custom-modal-box {
-      background: var(--bg-card);
-      border: 1px solid var(--border-gold);
-      border-radius: 20px;
-      padding: 24px;
-      width: 100%;
-      max-width: 360px;
-      text-align: center;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.8);
-      animation: modalFadeIn 0.25s ease-out;
+      background: var(--bg-card); border: 1px solid var(--border-gold);
+      border-radius: 20px; padding: 24px; width: 100%; max-width: 360px; text-align: center;
     }
-    @keyframes modalFadeIn {
-      from { opacity: 0; transform: scale(0.92); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    .modal-icon {
-      font-size: 2.2rem;
-      color: var(--gold-primary);
-      margin-bottom: 12px;
-    }
-    .modal-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--text-main);
-      margin-bottom: 8px;
-    }
-    .modal-message {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      line-height: 1.4;
-      margin-bottom: 20px;
-    }
+    .modal-icon { font-size: 2.2rem; color: var(--gold-primary); margin-bottom: 12px; }
+    .modal-title { font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
+    .modal-message { font-size: 0.88rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 20px; }
 
-    /* BARRA INFERIOR DE NAVEGAÇÃO */
+    /* BARRA INFERIOR DE NAVEGAÇÃO AJUSTADA COM ABA PLANOS */
     .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      max-width: 480px;
-      height: var(--nav-height);
-      background: #0d0d12;
-      border-top: 1px solid #1c1c26;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      z-index: 100;
+      position: fixed; bottom: 0; width: 100%; max-width: 480px; height: var(--nav-height);
+      background: #0d0d12; border-top: 1px solid #1c1c26; display: flex; justify-content: space-around;
+      align-items: center; z-index: 100;
     }
     .nav-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 0.65rem;
-      font-weight: 600;
-      cursor: pointer;
-      width: 20%;
-      transition: all 0.2s;
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      color: var(--text-muted); text-decoration: none; font-size: 0.6rem; font-weight: 600;
+      cursor: pointer; width: 16%; transition: all 0.2s;
     }
-    .nav-item i { font-size: 1.15rem; }
+    .nav-item i { font-size: 1.05rem; }
     .nav-item.active { color: var(--gold-primary); }
   </style>
 </head>
@@ -423,9 +390,7 @@
     <!-- MODAL DE ALERTA CUSTOMIZADO -->
     <div id="custom-alert-modal" class="custom-modal-overlay hidden">
       <div class="custom-modal-box">
-        <div class="modal-icon" id="modal-alert-icon">
-          <i class="fa-solid fa-circle-info"></i>
-        </div>
+        <div class="modal-icon" id="modal-alert-icon"><i class="fa-solid fa-circle-info"></i></div>
         <div class="modal-title" id="modal-alert-title">Aviso</div>
         <div class="modal-message" id="modal-alert-msg">Mensagem do sistema</div>
         <button class="btn btn-gold" onclick="closeCustomAlert()">Entendido</button>
@@ -435,7 +400,6 @@
     <!-- 1. TELA DE AUTENTICAÇÃO -->
     <div id="auth-section" class="auth-container">
       
-      <!-- Banner com Leão Vetorial Ouro -->
       <div class="auth-banner">
         <svg class="lion-svg-icon" viewBox="0 0 100 100">
           <path fill="#d4af37" d="M50 10 C30 10, 15 25, 15 45 C15 58, 22 68, 30 75 C32 65, 38 55, 45 52 C42 48, 40 42, 42 36 C45 28, 55 28, 58 36 C60 42, 58 48, 55 52 C62 55, 68 65, 70 75 C78 68, 85 58, 85 45 C85 25, 70 10, 50 10 Z M50 22 C55 22, 58 26, 56 31 C54 36, 46 36, 44 31 C42 26, 45 22, 50 22 Z M50 85 C40 85, 32 80, 28 72 C35 68, 42 62, 50 62 C58 62, 65 68, 72 72 C68 80, 60 85, 50 85 Z"/>
@@ -502,7 +466,7 @@
     <!-- 2. PAINEL PRINCIPAL DO INVESTIDOR -->
     <div id="dashboard-section" class="hidden">
       
-      <!-- Top Header com Leão Dourado -->
+      <!-- Top Header -->
       <div class="app-header">
         <div class="user-info-brief">
           <div class="avatar" id="avatar-container">
@@ -523,15 +487,13 @@
 
       <!-- ABA 1: INÍCIO -->
       <div id="tab-home" class="tab-content active">
-        
-        <!-- CARD DE PATRIMÔNIO -->
         <div class="balance-card">
           <div class="balance-title">Patrimônio Total</div>
           <div class="balance-value" id="user-balance">$ 0.00</div>
           <div class="balance-badge"><i class="fa-solid fa-chart-line"></i> Conta Verificada</div>
         </div>
 
-        <!-- NOVO: GRÁFICO CARTESIANO DE RENDIMENTO -->
+        <!-- GRÁFICO CARTESIANO DE RENDIMENTO -->
         <div class="chart-card">
           <div class="chart-header">
             <div class="chart-title"><i class="fa-solid fa-chart-area"></i> Evolução do Patrimônio</div>
@@ -567,13 +529,21 @@
         </div>
 
         <!-- Carteiras de Investimento do Admin -->
-        <div class="section-header"><i class="fa-solid fa-cubes"></i> Carteiras de Investimento</div>
+        <div class="section-header"><i class="fa-solid fa-cubes"></i> Carteiras Recomendadas</div>
         <div class="plans-grid" id="admin-plans-list">
           <div style="text-align: center; color: var(--text-muted); padding: 15px;">A carregar carteiras...</div>
         </div>
       </div>
 
-      <!-- ABA 2: AFILIADOS -->
+      <!-- NOVO: ABA 2: MEUS PLANOS / CARTEIRAS ADQUIRIDAS COM PROGRESSO EM % -->
+      <div id="tab-myplans" class="tab-content">
+        <div class="section-header"><i class="fa-solid fa-chart-pie"></i> Meus Investimentos Ativos</div>
+        <div id="my-active-plans-list">
+          <div style="text-align: center; color: var(--text-muted); padding: 20px;">Carregando seus investimentos...</div>
+        </div>
+      </div>
+
+      <!-- ABA 3: AFILIADOS -->
       <div id="tab-affiliates" class="tab-content">
         <div class="section-header"><i class="fa-solid fa-users"></i> Programa de Afiliados</div>
         
@@ -598,7 +568,7 @@
         </div>
       </div>
 
-      <!-- ABA 3: EXTRATO -->
+      <!-- ABA 4: EXTRATO -->
       <div id="tab-history" class="tab-content">
         <div class="section-header"><i class="fa-solid fa-receipt"></i> Histórico & Movimentações</div>
         <div class="data-list" id="transactions-list">
@@ -606,7 +576,7 @@
         </div>
       </div>
 
-      <!-- ABA 4: AVISOS -->
+      <!-- ABA 5: AVISOS -->
       <div id="tab-notifications" class="tab-content">
         <div class="section-header"><i class="fa-solid fa-bell"></i> Notificações</div>
         <div id="notifications-list">
@@ -614,7 +584,7 @@
         </div>
       </div>
 
-      <!-- ABA 5: PERFIL -->
+      <!-- ABA 6: PERFIL -->
       <div id="tab-profile" class="tab-content">
         <div class="section-header"><i class="fa-solid fa-user-shield"></i> Perfil & Segurança</div>
         
@@ -659,6 +629,10 @@
           <i class="fa-solid fa-house"></i>
           <span>Início</span>
         </div>
+        <div class="nav-item" onclick="switchTab('myplans')">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Planos</span>
+        </div>
         <div class="nav-item" onclick="switchTab('affiliates')">
           <i class="fa-solid fa-users"></i>
           <span>Afiliados</span>
@@ -691,14 +665,14 @@
       signOut 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { 
-      doc, setDoc, updateDoc, addDoc, collection, onSnapshot, query, where, increment, getDocs 
+      doc, setDoc, updateDoc, addDoc, collection, onSnapshot, query, where, increment, getDocs, getDoc 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     let isSignUp = true;
     let currentUserData = { balance: 0, refCode: "", referredBy: null };
     let yieldCartesianChartInstance = null;
 
-    // --- MODAL DE ALERTA PERSONALIZADO ---
+    // MODAL DE ALERTA PERSONALIZADO
     window.showCustomAlert = (title, message, iconClass = "fa-circle-info") => {
       document.getElementById("modal-alert-title").innerText = title;
       document.getElementById("modal-alert-msg").innerText = message;
@@ -726,7 +700,6 @@
       }
     };
 
-    // MOSTRAR/OCULTAR SENHA
     window.togglePasswordVisibility = () => {
       const passInput = document.getElementById("auth-password");
       const toggleBtn = document.getElementById("btn-toggle-password");
@@ -760,14 +733,13 @@
       const targetTab = document.getElementById(`tab-${tabName}`);
       if (targetTab) targetTab.classList.add('active');
 
-      const tabsOrder = ['home', 'affiliates', 'history', 'notifications', 'profile'];
+      const tabsOrder = ['home', 'myplans', 'affiliates', 'history', 'notifications', 'profile'];
       const activeNavIndex = tabsOrder.indexOf(tabName);
       if (activeNavIndex !== -1) {
         document.querySelectorAll('.nav-item')[activeNavIndex].classList.add('active');
       }
     };
 
-    // ALTERNAR ENTRE CRIAR CONTA E ENTRAR
     const btnToggleMode = document.getElementById("btn-toggle-mode");
     const nameGroup = document.getElementById("name-group");
     const phoneGroup = document.getElementById("phone-group");
@@ -839,7 +811,7 @@
               refCode: generatedRefCode,
               referredBy: refInput || null,
               createdAt: new Date().getTime()
-            });
+            }, { merge: true });
 
             await addDoc(collection(db, "transactions"), {
               userId: res.user.uid,
@@ -872,6 +844,7 @@
 
         loadUserData(user.uid);
         loadTransactions(user.uid);
+        loadUserActivePlans(user.uid);
         loadNotifications(user.uid);
         loadAdminPlans();
         loadAffiliateData(user);
@@ -893,7 +866,7 @@
           let refCode = data.refCode;
           if (!refCode) {
             refCode = "LAPLATA" + Math.floor(1000 + Math.random() * 9000);
-            await updateDoc(doc(db, "users", uid), { refCode: refCode });
+            await setDoc(doc(db, "users", uid), { refCode: refCode }, { merge: true });
           }
 
           document.getElementById("user-name").innerText = name;
@@ -921,20 +894,156 @@
       });
     }
 
-    // --- CÁLCULO E RENDERIZAÇÃO DO GRÁFICO CARTESIANO DE RENDIMENTO ---
+    // CARREGAR MINHAS CARTEIRAS E PROGRESSO
+    function loadUserActivePlans(uid) {
+      const q = query(
+        collection(db, "transactions"),
+        where("userId", "==", uid),
+        where("type", "==", "produto_adquirido")
+      );
+
+      onSnapshot(q, (snapshot) => {
+        const container = document.getElementById("my-active-plans-list");
+        container.innerHTML = "";
+
+        if (snapshot.empty) {
+          container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 20px;">Você ainda não possui carteiras de investimento ativas.</div>`;
+          return;
+        }
+
+        const now = Date.now();
+
+        snapshot.forEach((docSnap) => {
+          const plan = docSnap.data();
+          const startDate = plan.startDate || plan.createdAt || now;
+          const endDate = plan.endDate || (startDate + 7 * 24 * 60 * 60 * 1000);
+
+          const totalTime = endDate - startDate;
+          const elapsedTime = now - startDate;
+          
+          let progressPercent = 0;
+          if (plan.status === "concluido") {
+            progressPercent = 100;
+          } else {
+            progressPercent = Math.min(100, Math.max(0, (elapsedTime / totalTime) * 100));
+          }
+
+          const isConcluido = plan.status === "concluido" || progressPercent >= 100;
+
+          container.innerHTML += `
+            <div class="my-plan-card">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <b style="font-size:1rem; color:#fff;">${plan.description}</b>
+                <span class="badge ${isConcluido ? 'badge-concluido' : 'badge-ativo'}">${isConcluido ? 'CONCLUÍDO' : 'EM ANDAMENTO'}</span>
+              </div>
+              
+              <div class="plan-metrics" style="margin-top: 4px;">
+                <div class="metric-item">
+                  <span class="metric-label">Valor Aplicado</span>
+                  <span class="metric-value">$ ${(plan.amount || 0).toFixed(2)}</span>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-label">Retorno Previsto</span>
+                  <span class="metric-value" style="color: var(--gold-primary);">$ ${(plan.totalReturn || 0).toFixed(2)}</span>
+                </div>
+              </div>
+
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-bottom:4px;">
+                  <span>Progresso do Ciclo</span>
+                  <b style="color: var(--gold-primary);">${progressPercent.toFixed(1)}%</b>
+                </div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill" style="width: ${progressPercent}%;"></div>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+      });
+    }
+
+    // CORREÇÃO DEFINITIVA DA FOTO DE PERFIL (SOLUÇÃO DO NO DOCUMENT TO UPDATE)
+    window.uploadProfilePhoto = (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        const base64Image = e.target.result;
+        const user = auth.currentUser;
+        if (!user) return;
+
+        try {
+          // Usa setDoc com merge: true para garantir que o documento exista no Firestore
+          await setDoc(doc(db, "users", user.uid), { 
+            photoURL: base64Image 
+          }, { merge: true });
+
+          showCustomAlert("Sucesso", "Foto de perfil atualizada!", "fa-circle-check");
+        } catch (error) {
+          showCustomAlert("Erro", "Erro ao salvar foto: " + error.message, "fa-circle-exclamation");
+        }
+      };
+      reader.readAsDataURL(file);
+    };
+  
+    // CORREÇÃO DEFINITIVA DO PROGRAMA DE AFILIADOS E COMISSÕES
+    async function loadAffiliateData(user) {
+      if (!currentUserData.refCode) return;
+
+      // Busca todos os usuários cujo referredBy corresponde ao refCode DO USUÁRIO LOGADO
+      const usersRef = collection(db, "users");
+      const q = query(usersRef, where("referredBy", "==", currentUserData.refCode));
+      
+      onSnapshot(q, async (snapshot) => {
+        const referralsListElem = document.getElementById("referrals-list");
+        const referralsCountElem = document.getElementById("referrals-count");
+        referralsListElem.innerHTML = "";
+        
+        referralsCountElem.innerText = snapshot.size;
+
+        if (snapshot.empty) {
+          referralsListElem.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 15px;">Nenhum indicado cadastrado ainda.</div>`;
+        } else {
+          snapshot.forEach((docSnap) => {
+            const refUser = docSnap.data();
+            const date = refUser.createdAt ? new Date(refUser.createdAt).toLocaleDateString("pt-BR") : "Recente";
+            referralsListElem.innerHTML += `
+              <div class="data-card">
+                <div class="data-info">
+                  <span class="data-title">${refUser.name}</span>
+                  <span class="data-sub">Cadastrado em: ${date}</span>
+                </div>
+                <span class="badge badge-ativo">Ativo</span>
+              </div>
+            `;
+          });
+        }
+
+        // Calcula comissões acumuladas recebidas pelo usuário logado
+        const transQuery = query(collection(db, "transactions"), where("userId", "==", user.uid));
+        onSnapshot(transQuery, (transSnap) => {
+          let totalEarnings = 0;
+          transSnap.forEach((tDoc) => {
+            const tData = tDoc.data();
+            if (tData.type === "comissao_afiliado") {
+              totalEarnings += (tData.amount || 0);
+            }
+          });
+          document.getElementById("affiliate-earnings-total").innerText = `$ ${totalEarnings.toFixed(2)}`;
+        });
+      });
+    }
+
+    // RENDERIZAR GRÁFICO CARTESIANO DE RENDIMENTO DO INVESTIDOR
     function renderUserCartesianChart(transactions) {
       const ctx = document.getElementById("userYieldCartesianChart").getContext("2d");
-
-      // Ordena transações em ordem cronológica (mais antigas primeiro)
       const sorted = [...transactions].sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0));
 
-      const labels = [];
-      const balanceHistory = [];
+      const labels = ["Início"];
+      const balanceHistory = [0];
       let runningBalance = 0;
-
-      // Ponto de partida
-      labels.push("Início");
-      balanceHistory.push(0);
 
       sorted.forEach(t => {
         const dateStr = t.createdAt ? new Date(t.createdAt).toLocaleDateString("pt-BR", { day: '2-digit', month: '2-digit' }) : "";
@@ -953,12 +1062,9 @@
         balanceHistory.push(Math.max(0, runningBalance));
       });
 
-      if (yieldCartesianChartInstance) {
-        yieldCartesianChartInstance.destroy();
-      }
+      if (yieldCartesianChartInstance) yieldCartesianChartInstance.destroy();
 
-      // Gradients dourados do gráfico
-      const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+      const gradient = ctx.createLinearGradient(0, 0, 0, 180);
       gradient.addColorStop(0, 'rgba(212, 175, 55, 0.35)');
       gradient.addColorStop(1, 'rgba(212, 175, 55, 0.0)');
 
@@ -981,89 +1087,31 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          },
+          plugins: { legend: { display: false } },
           scales: {
-            x: {
-              grid: { color: 'rgba(255, 255, 255, 0.05)' },
-              ticks: { color: '#8e8ea0', font: { size: 10 } }
-            },
-            y: {
-              grid: { color: 'rgba(255, 255, 255, 0.05)' },
-              ticks: { color: '#8e8ea0', font: { size: 10 } }
-            }
+            x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#8e8ea0', font: { size: 10 } } },
+            y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#8e8ea0', font: { size: 10 } } }
           }
         }
       });
     }
 
-    async function loadAffiliateData(user) {
-      if (!currentUserData.refCode) return;
-
-      const usersRef = collection(db, "users");
-      const q = query(usersRef, where("referredBy", "==", currentUserData.refCode));
-      
-      onSnapshot(q, async (snapshot) => {
-        const referralsListElem = document.getElementById("referrals-list");
-        const referralsCountElem = document.getElementById("referrals-count");
-        referralsListElem.innerHTML = "";
-        
-        referralsCountElem.innerText = snapshot.size;
-
-        if (snapshot.empty) {
-          referralsListElem.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 15px;">Nenhum indicado cadastrado ainda.</div>`;
-          return;
-        }
-
-        snapshot.forEach((docSnap) => {
-          const refUser = docSnap.data();
-          const date = refUser.createdAt ? new Date(refUser.createdAt).toLocaleDateString("pt-BR") : "Recente";
-          referralsListElem.innerHTML += `
-            <div class="data-card">
-              <div class="data-info">
-                <span class="data-title">${refUser.name}</span>
-                <span class="data-sub">Cadastrado em: ${date}</span>
-              </div>
-              <span class="badge badge-ativo">Ativo</span>
-            </div>
-          `;
-        });
-
-        const transQuery = query(collection(db, "transactions"), where("userId", "==", user.uid));
-        onSnapshot(transQuery, (transSnap) => {
-          let totalEarnings = 0;
-          transSnap.forEach((tDoc) => {
-            const tData = tDoc.data();
-            if (tData.type === "comissao_afiliado") {
-              totalEarnings += (tData.amount || 0);
-            }
-          });
-          document.getElementById("affiliate-earnings-total").innerText = `$ ${totalEarnings.toFixed(2)}`;
-        });
-      });
-    }
-
     window.copyRefLink = async () => {
       const copyInput = document.getElementById("my-ref-link");
-      if (!copyInput.value) {
-        showCustomAlert("Atenção", "Seu link de indicação ainda está sendo carregado...", "fa-circle-exclamation");
-        return;
-      }
+      if (!copyInput.value) return showCustomAlert("Atenção", "Gerando link...");
 
       try {
         if (navigator.clipboard && window.isSecureContext) {
           await navigator.clipboard.writeText(copyInput.value);
         } else {
           copyInput.select();
-          copyInput.setSelectionRange(0, 99999);
           document.execCommand("copy");
         }
-        showCustomAlert("Sucesso", "Link de afiliado copiado para a área de transferência!", "fa-circle-check");
+        showCustomAlert("Sucesso", "Link de afiliado copiado!", "fa-circle-check");
       } catch (err) {
         copyInput.select();
         document.execCommand("copy");
-        showCustomAlert("Sucesso", "Link de afiliado copiado!", "fa-circle-check");
+        showCustomAlert("Sucesso", "Link copiado!", "fa-circle-check");
       }
     };
 
@@ -1110,26 +1158,6 @@
         });
       });
     }
-
-    window.uploadProfilePhoto = (event) => {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = async function(e) {
-        const base64Image = e.target.result;
-        const user = auth.currentUser;
-        if (!user) return;
-
-        try {
-          await updateDoc(doc(db, "users", user.uid), { photoURL: base64Image });
-          showCustomAlert("Sucesso", "Foto de perfil atualizada!", "fa-circle-check");
-        } catch (error) {
-          showCustomAlert("Erro", "Erro ao salvar foto: " + error.message, "fa-circle-exclamation");
-        }
-      };
-      reader.readAsDataURL(file);
-    };
 
     window.handlePixDeposit = async () => {
       const user = auth.currentUser;
@@ -1213,12 +1241,13 @@
 
         await updateDoc(doc(db, "users", user.uid), { balance: increment(-planPrice) });
 
-        showCustomAlert("Investimento Efetuado", `Sua aplicação em "${planTitle}" está ativa por ${durationDays} dias. Retorno previsto de $${totalReturn.toFixed(2)}.`, "fa-circle-check");
+        showCustomAlert("Investimento Efetuado", `Sua aplicação em "${planTitle}" está ativa por ${durationDays} dias. Acompanhe em "Planos".`, "fa-circle-check");
       } catch (error) {
         showCustomAlert("Erro na Aplicação", error.message, "fa-triangle-exclamation");
       }
     };
 
+    // EXECUÇÃO DA AUTOMAÇÃO DE CONCLUIR PLANO E PAGAR 5% AO PADRINHO
     async function checkAndCompleteInvestments(uid) {
       const q = query(
         collection(db, "transactions"),
@@ -1244,12 +1273,13 @@
           await addDoc(collection(db, "transactions"), {
             userId: uid,
             type: "notificacao",
-            description: `Sua aplicação (${trans.description}) foi finalizada! O valor de $${(trans.totalReturn).toFixed(2)} foi creditado no seu saldo.`,
+            description: `Sua aplicação (${trans.description}) foi finalizada! $${(trans.totalReturn).toFixed(2)} creditados.`,
             amount: 0.00,
             status: "concluido",
             createdAt: now
           });
 
+          // PAGA OS 5% DE COMISSÃO AO PADRINHO QUANDO O INDICADO CONCLUI O PLANO
           if (currentUserData.referredBy) {
             const usersQuery = query(collection(db, "users"), where("refCode", "==", currentUserData.referredBy));
             const userSnapshots = await getDocs(usersQuery);
@@ -1266,7 +1296,7 @@
               await addDoc(collection(db, "transactions"), {
                 userId: referrerId,
                 type: "comissao_afiliado",
-                description: `Comissão de 5% - Finalização do indicado (${currentUserData.name})`,
+                description: `Comissão 5% - Finalização de plano do indicado (${currentUserData.name})`,
                 amount: commissionAmount,
                 status: "concluido",
                 createdAt: now
@@ -1275,7 +1305,7 @@
               await addDoc(collection(db, "transactions"), {
                 userId: referrerId,
                 type: "notificacao",
-                description: `Você recebeu $${commissionAmount.toFixed(2)} de comissão referente à finalização de uma aplicação do seu indicado!`,
+                description: `Você recebeu $${commissionAmount.toFixed(2)} de comissão de afiliado!`,
                 amount: 0.00,
                 status: "concluido",
                 createdAt: now
@@ -1301,7 +1331,6 @@
           }
         });
 
-        // Atualiza o gráfico cartesiano com as transações em tempo real
         renderUserCartesianChart(items);
 
         if (items.length === 0) {
