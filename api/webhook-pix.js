@@ -1,0 +1,33 @@
+import { services, providerJson, fail } from './_firebase.js';
+import { FieldValue } from 'firebase-admin/firestore';
+export default async function handler(req,res) {
+  if(req.method !== 'POST') return res.status(405).json({error:'Método não permitido'});
+  try {
+    // Segredo configurado no painel da PushinPay como header customizado X-Webhook-Secret.
+    // Caso seu plano não permita header customizado, adapte para assinatura oficial antes de publicar.
+    const expected = process.env.PUSHINPAY_WEBHOOK_SECRET;
+    if(!expected || req.headers['x-webhook-secret'] !== expected) return res.status(401).json({error:'Webhook não autorizado'});
+    const id = String(req.body?.id || '');
+    if(!/^[a-zA-Z0-9-]{10,100}$/.test(id)) return res.status(400).json({error:'ID inválido'});
+    const token = process.env.PUSHINPAY_TOKEN;
+    const base = process.env.PUSHINPAY_API_BASE || 'https://api-sandbox.pushinpay.com.br/api';
+    // Nunca confiar somente no payload do webhook: consultar o provedor.
+    const payment = await providerJson(`${base}/transactions/${encodeURIComponent(id)}`,{headers:{Authorization:`Bearer ${token}`,Accept:'application/json'}});
+    if(payment.status !== 'paid') return res.status(200).json({received:true,credited:false});
+    const {db}=services();
+    await db.runTransaction(async tx => {
+      const depRef=db.collection('pix_deposits').doc(id);
+      const dep=await tx.get(depRef);
+      if(!dep.exists) throw Object.assign(new Error('Depósito desconhecido'),{status:404});
+      const d=dep.data();
+      if(d.status==='paid') return;
+      if(Number(payment.value)!==d.amountCents) throw Object.assign(new Error('Valor divergente'),{status:409});
+      const userRef=db.collection('users').doc(d.userId);
+      const u=await tx.get(userRef);
+      if(!u.exists) throw Object.assign(new Error('Usuário não encontrado'),{status:404});
+      tx.update(userRef,{balance:FieldValue.increment(d.amountCents/100)});
+      tx.update(depRef,{status:'paid',paidAt:Date.now()});
+    });
+    return res.status(200).json({received:true});
+  } catch(error) {return fail(res,error);}
+}
