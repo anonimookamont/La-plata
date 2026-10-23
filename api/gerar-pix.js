@@ -16,16 +16,17 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Trata o corpo da requisição independentemente de como o front-end o envia
-    const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
-    
-    // Aceita 'valor', 'amount' ou 'value' enviados pelo front-end
-    const rawValor = body.valor || body.amount || body.value;
-    const userId = body.userId;
+    let body = req.body;
+    if (typeof body === 'string') {
+      try { body = JSON.parse(body); } catch(e) { body = {}; }
+    }
+    body = body || {};
 
+    const rawValor = body.valor !== undefined ? body.valor : (body.amount !== undefined ? body.amount : body.value);
     const valorNumerico = Number(rawValor);
-    if (!rawValor || isNaN(valorNumerico) || valorNumerico <= 0) {
-      return res.status(400).json({ error: 'Valor inválido para depósito.' });
+
+    if (isNaN(valorNumerico) || valorNumerico <= 0) {
+      return res.status(400).json({ error: 'Valor inválido para depósito.', recebido: rawValor });
     }
 
     const pushinPayToken = process.env.PUSHINPAY_TOKEN;
@@ -33,13 +34,12 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Token da PushinPay não configurado na Vercel.' });
     }
 
-    // Converte o valor para centavos exigidos pela PushinPay
     const valorEmCentavos = Math.round(valorNumerico * 100);
 
     const response = await fetch('https://api.pushinpay.com.br/api/v1/pix/cash-in', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${pushinPayToken}`,
+        'Authorization': `Bearer ${pushinPayToken.trim()}`,
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
