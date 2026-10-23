@@ -8,15 +8,24 @@ function getFirebaseAdmin() {
     let privateKey = process.env.FIREBASE_PRIVATE_KEY;
 
     if (!projectId || !clientEmail || !privateKey) {
-      throw new Error("As credenciais do Firebase Admin não estão configuradas corretamente nas variáveis de ambiente da Vercel.");
+      throw new Error("As credenciais do Firebase Admin não estão configuradas nas variáveis de ambiente da Vercel.");
     }
 
-    // Limpeza profunda de carateres de controlo, aspas e retornos de carro (\r)
+    privateKey = privateKey.trim();
+    
+    // Se a chave não contiver o cabeçalho PEM, tenta decodificar de Base64 automaticamente
+    if (!privateKey.includes('BEGIN PRIVATE KEY')) {
+      try {
+        privateKey = Buffer.from(privateKey, 'base64').toString('utf8');
+      } catch (e) {}
+    }
+
+    // Limpeza profunda de aspas e quebras de linha
     privateKey = privateKey
-      .trim()
       .replace(/^["']|["']$/g, '')
-      .replace(/\r\n/g, '\n')
-      .replace(/\\n/g, '\n');
+      .replace(/\\n/g, '\n')
+      .replace(/\\\\n/g, '\n')
+      .replace(/\r\n/g, '\n');
 
     initializeApp({
       credential: cert({
@@ -106,3 +115,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: error.message });
   }
 }
+  
