@@ -1,5 +1,3 @@
-import crypto from 'crypto';
-
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -18,52 +16,50 @@ export default async function handler(req, res) {
   }
 
   try {
-    const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-    const { transaction_amount, description, email, userId } = body;
+    const { valor, userId } = req.body;
 
-    const valorFinal = Number(transaction_amount) >= 1 ? Number(transaction_amount) : 5.00;
-    const emailFinal = email && email.includes('@') ? email : 'cliente@email.com';
+    if (!valor || valor <= 0) {
+      return res.status(400).json({ error: 'Valor inválido para depósito.' });
+    }
 
-    // Gera a chave de idempotência única exigida pelo Mercado Pago
-    const idempotencyKey = crypto.randomUUID();
+    const pushinPayToken = process.env.PUSHINPAY_TOKEN;
+    if (!pushinPayToken) {
+      return res.status(500).json({ error: 'Token da PushinPay não configurado na Vercel.' });
+    }
 
-    const response = await fetch('https://api.mercadopago.com/v1/payments', {
+    // O valor na PushinPay normalmente é enviado em centavos (ex: R$ 10,00 = 1000)
+    // Se o seu painel enviar em reais, ajuste conforme a documentação deles.
+    const valorEmCentavos = Math.round(Number(valor) * 100);
+
+    const response = await fetch('https://api.pushinpay.com.br/api/v1/pix/cash-in', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.MERCADO_PAGO_TOKEN}`,
-        'X-Idempotency-Key': idempotencyKey
+        'Authorization': `Bearer ${pushinPayToken}`,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        transaction_amount: valorFinal,
-        description: description || 'Aporte La Plata',
-        payment_method_id: 'pix',
-        external_reference: userId || 'sem_id',
-        notification_url: 'https://laplata-five.vercel.app/api/webhook-pix',
-        payer: {
-          email: emailFinal
-        }
+        value: valorEmCentavos,
+        webhook_url: "" // Insira o seu webhook se necessário
       })
     });
 
     const data = await response.json();
 
     if (!response.ok) {
-      console.error('Erro Mercado Pago:', data);
-      return res.status(response.status).json({ 
-        error: data.message || data.error || 'bad_request',
-        details: data 
-      });
+      throw new Error(data.message || 'Erro ao gerar PIX na PushinPay.');
     }
 
+    // Retorna os dados do PIX para o front-end (QR Code e copia e cola)
     return res.status(200).json({
-      id: data.id,
-      qr_code: data.point_of_interaction.transaction_data.qr_code,
-      qr_code_base64: data.point_of_interaction.transaction_data.qr_code_base64,
-      ticket_url: data.point_of_interaction.transaction_data.ticket_url
+      success: true,
+      idTransacao: data.id || data.transaction_id,
+      qrCode: data.qr_code_base64 || data.qr_code,
+      copiaECola: data.qr_code || data.emv
     });
 
   } catch (error) {
+    console.error('Erro no gerar-pix:', error);
     return res.status(500).json({ error: error.message });
   }
 }
