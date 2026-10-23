@@ -189,15 +189,21 @@
       color: #000; font-size: 0.6rem; font-weight: 800; padding: 2px 6px; border-radius: 4px;
     }
   </style>
+  <link rel="icon" type="image/svg+xml" href="/assets/lion.svg">
+  <link rel="stylesheet" href="/assets/support.css">
 </head>
 <body>
 
   <div class="admin-container">
     
     <div class="admin-header">
-      <svg class="lion-svg-icon" viewBox="0 0 100 100">
-        <path fill="#d4af37" d="M50 10 C30 10, 15 25, 15 45 C15 58, 22 68, 30 75 C32 65, 38 55, 45 52 C42 48, 40 42, 42 36 C45 28, 55 28, 58 36 C60 42, 58 48, 55 52 C62 55, 68 65, 70 75 C78 68, 85 58, 85 45 C85 25, 70 10, 50 10 Z"/>
-      </svg>
+      <svg  class="lion-svg-icon"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Leão La Plata">
+  <path fill="#d4af37" d="M50 4 60 10 72 9 78 20 89 25 88 38 96 49 89 60 89 73 77 79 71 91 59 90 50 98 41 90 29 91 23 79 11 73 11 60 4 49 12 38 11 25 22 20 28 9 40 10Z"/>
+  <path fill="#0a0a0c" d="M28 29Q23 18 31 19L41 28Q50 23 59 28L69 19Q77 18 72 29L74 45Q72 70 50 84 28 70 26 45Z"/>
+  <path fill="#d4af37" d="M33 33 39 36Q50 29 61 36L67 33 66 49 62 60 57 65 50 75 43 65 38 60 34 49Z"/>
+  <path fill="#0a0a0c" d="m35 41 10 3-2 5-6-2Zm30 0-10 3 2 5 6-2ZM43 54Q50 50 57 54L53 59H47Z"/>
+  <path d="M50 58v7m0 0q-7 5-12-1m12 1q7 5 12-1" fill="none" stroke="#0a0a0c" stroke-width="3" stroke-linecap="round"/>
+</svg>
       <div class="brand-name">LA PLATA</div>
       <span class="admin-badge">Painel de Controle Admin</span>
     </div>
@@ -217,6 +223,7 @@
         <button class="admin-tab-btn active" onclick="switchAdminTab('users')"><i class="fa-solid fa-users"></i> Clientes</button>
         <button class="admin-tab-btn" onclick="switchAdminTab('plans')"><i class="fa-solid fa-cubes"></i> Carteiras</button>
         <button class="admin-tab-btn" onclick="switchAdminTab('withdraws')"><i class="fa-solid fa-wallet"></i> Saques</button>
+        <button class="admin-tab-btn" onclick="switchAdminTab('support')"><i class="fa-solid fa-headset"></i> Atendimento</button>
         <button class="admin-tab-btn" onclick="switchAdminTab('broadcast')"><i class="fa-solid fa-bullhorn"></i> Avisos Gerais</button>
       </div>
 
@@ -269,8 +276,8 @@
 
           <!-- CAMPO LIMITE DE PLANOS POR PESSOA -->
           <div class="form-group">
-            <label>Limite de Compras por Cliente (0 = Infinito)</label>
-            <input type="number" id="plan-limit-user" class="form-control" placeholder="Ex: 1 para permitir apenas 1 aporte por cliente" min="0" value="0">
+            <label>Limite de Aportes Ativos por Cliente (0 = Sem limite)</label>
+            <input type="number" id="plan-limit-user" class="form-control" placeholder="Ex: 5 para até cinco ciclos ativos ao mesmo tempo" min="0" value="0">
           </div>
 
           <div class="tax-notice-box" id="yield-preview-box">
@@ -298,6 +305,8 @@
           <div style="text-align: center; color: var(--text-muted); padding: 15px;">Nenhuma solicitação pendente.</div>
         </div>
       </div>
+
+      <div id="admin-tab-support" class="hidden"><div data-support-center="admin"></div></div>
 
       <div id="admin-tab-broadcast" class="hidden">
         <div class="admin-card">
@@ -426,9 +435,12 @@
       document.getElementById("admin-tab-withdraws").classList.add("hidden");
       document.getElementById("admin-tab-users").classList.add("hidden");
       document.getElementById("admin-tab-broadcast").classList.add("hidden");
+      document.getElementById("admin-tab-support").classList.add("hidden");
 
       document.getElementById(`admin-tab-${tabName}`).classList.remove("hidden");
-      event.currentTarget.classList.add("active");
+      const activeButton = [...document.querySelectorAll(".admin-tab-btn")].find(button => button.getAttribute("onclick")?.includes("switchAdminTab(\'"+tabName+"\')"));
+      activeButton?.classList.add("active");
+      if(tabName==='support') window.supportRefresh?.();
     };
 
     function loadAdminData() {
@@ -986,5 +998,6 @@
       }
     };
   </script>
+  <script type="module" src="/Js/support-center.js"></script>
 </body>
 </html>
