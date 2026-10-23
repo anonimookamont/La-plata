@@ -23,7 +23,13 @@ export async function requireUser(req) {
   try { return await auth.verifyIdToken(match[1], true); }
   catch (error) {
     const code = String(error.code || 'verification_error');
-    console.error('firebase_token_verification_failed', {code});
+    const message = String(error.message || '');
+    const reason = /audience|incorrect.*aud/i.test(message) ? 'audience_mismatch'
+      : /issuer|incorrect.*iss/i.test(message) ? 'issuer_mismatch'
+      : /signature/i.test(message) ? 'signature_invalid'
+      : /decode|decoding|JWT|three|segment/i.test(message) ? 'token_format_invalid'
+      : 'verification_failed';
+    console.error('firebase_token_verification_failed', {code, reason});
     const serverError = ['auth/invalid-credential', 'auth/insufficient-permission', 'app/invalid-credential', 'auth/internal-error'].includes(code);
     const expired = ['auth/id-token-expired', 'auth/id-token-revoked', 'auth/user-disabled'].includes(code);
     throw Object.assign(new Error(serverError ? 'Falha na configuração de autenticação do servidor.' : expired ? 'Sessão expirada ou encerrada. Saia e entre novamente.' : 'Sessão inválida. Saia e entre novamente.'), {status:serverError ? 503 : 401});
