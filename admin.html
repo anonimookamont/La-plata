@@ -291,7 +291,7 @@
         <div class="card-title"><i class="fa-solid fa-clock"></i> Solicitações de Resgate PENDENTES</div>
         
         <div class="tax-notice-box">
-          <i class="fa-solid fa-percent"></i> <b>Regras de Saque:</b> Saques padrão possuem 12% de taxa (72h). Clientes <b>VIP</b> possuem <b>7% de taxa e prazo de 24h</b>.
+          <i class="fa-solid fa-percent"></i> <b>Regras de Saque:</b> Copie a Chave PIX informada e faça o pagamento no aplicativo do seu banco antes de clicar em <b>Aprovar</b>.
         </div>
 
         <div id="withdraws-list-container">
@@ -655,57 +655,67 @@
       }
     };
 
+    // LISTAGEM DE SAQUES (Lendo tanto a coleção 'saques' quanto 'transactions')
     function loadWithdraws() {
-      const q = query(collection(db, "transactions"), where("type", "==", "saque"), where("status", "==", "pendente"));
-      
-      onSnapshot(q, (snapshot) => {
+      onSnapshot(collection(db, "saques"), (snapshotSaques) => {
         const container = document.getElementById("withdraws-list-container");
         container.innerHTML = "";
 
-        if (snapshot.empty) {
-          container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 15px;">Nenhuma solicitação pendente.</div>`;
+        if (snapshotSaques.empty) {
+          // Fallback para a coleção antiga de transações
+          const q = query(collection(db, "transactions"), where("type", "==", "saque"), where("status", "==", "pendente"));
+          getDocs(q).then(snapshotTrans => {
+            if (snapshotTrans.empty) {
+              container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 15px;">Nenhuma solicitação pendente.</div>`;
+              return;
+            }
+            renderWithdrawItems(snapshotTrans.docs, container, true);
+          });
           return;
         }
 
-        snapshot.forEach((docSnap) => {
-          const trans = docSnap.data();
-          const id = docSnap.id;
-          const gross = trans.amount || 0;
-          const isVip = trans.description.includes('[VIP 24h]');
-          const taxRate = isVip ? 0.07 : 0.12;
-          const tax = gross * taxRate;
-          const net = gross - tax;
-
-          container.innerHTML += `
-            <div class="user-card" style="${isVip ? 'border-color: #f59e0b; background: #0f0c05;' : ''}">
-              <div class="user-card-header">
-                <span class="user-balance-badge">$ ${gross.toFixed(2)}</span>
-                <span style="font-size: 0.75rem; color: ${isVip ? '#f59e0b' : '#eab308'}; font-weight: 700;">
-                  ${isVip ? '<i class="fa-solid fa-crown"></i> VIP (24h)' : 'PENDENTE (72h)'}
-                </span>
-              </div>
-              <div style="font-size:0.78rem; color:var(--text-muted); line-height: 1.4;">
-                <span>Taxa (${isVip ? '7% VIP' : '12%'}): <b style="color:#ef4444;">- $ ${tax.toFixed(2)}</b></span><br>
-                <span>Valor Líquido no PIX: <b style="color:#10b981; font-size:0.9rem;">$ ${net.toFixed(2)}</b></span><br>
-                <span>UID Cliente: ${trans.userId}</span>
-              </div>
-              <div class="user-actions" style="display:flex; gap:8px;">
-                <button class="btn btn-success" onclick="approveWithdraw('${id}')"><i class="fa-solid fa-check"></i> Aprovar ($ ${net.toFixed(2)})</button>
-                <button class="btn btn-danger" onclick="rejectWithdraw('${id}', '${trans.userId}', ${gross})"><i class="fa-solid fa-times"></i> Rejeitar</button>
-              </div>
-            </div>
-          `;
-        });
+        renderWithdrawItems(snapshotSaques.docs, container, false);
       });
     }
 
-    window.approveWithdraw = async (transId) => {
-      await updateDoc(doc(db, "transactions", transId), { status: "concluido" });
-      showModal("Saque APROVADO! Realize o pagamento do valor líquido via PIX.");
+    function renderWithdrawItems(docs, container, isOldCollection) {
+      container.innerHTML = "";
+      docs.forEach((docSnap) => {
+        const trans = docSnap.data();
+        const id = docSnap.id;
+        const gross = trans.valor || trans.amount || 0;
+        const chavePix = trans.chavePix || "Não informada";
+        const tipoChave = (trans.tipoChave || "PIX").toUpperCase();
+
+        container.innerHTML += `
+          <div class="user-card" style="border-color: #f59e0b; background: #0f0c05;">
+            <div class="user-card-header">
+              <span class="user-balance-badge">$ ${gross.toFixed(2)}</span>
+              <span style="font-size: 0.75rem; color: #f59e0b; font-weight: 700;">
+                PENDENTE
+              </span>
+            </div>
+            <div style="font-size:0.8rem; color:var(--text-main); line-height: 1.5; background: #1a1810; padding: 10px; border-radius: 8px; margin-top: 6px;">
+              <span>Tipo: <b>${tipoChave}</b></span><br>
+              <span>Chave PIX: <b style="color: var(--gold-primary); user-select: all;">${chavePix}</b></span><br>
+              <span style="font-size: 0.72rem; color: var(--text-muted);">UID: ${trans.userId}</span>
+            </div>
+            <div class="user-actions" style="display:flex; gap:8px; margin-top: 8px;">
+              <button class="btn btn-success" onclick="approveWithdraw('${id}', '${isOldCollection ? 'transactions' : 'saques'}')"><i class="fa-solid fa-check"></i> Aprovar ($ ${gross.toFixed(2)})</button>
+              <button class="btn btn-danger" onclick="rejectWithdraw('${id}', '${trans.userId}', ${gross}, '${isOldCollection ? 'transactions' : 'saques'}')"><i class="fa-solid fa-times"></i> Rejeitar & Estornar</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    window.approveWithdraw = async (transId, collectionName = 'saques') => {
+      await updateDoc(doc(db, collectionName, transId), { status: "concluido" });
+      showModal("Saque MARCADO COMO PAGO! Realize o PIX para a chave indicada.");
     };
 
-    window.rejectWithdraw = async (transId, userId, amount) => {
-      await updateDoc(doc(db, "transactions", transId), { status: "rejeitado" });
+    window.rejectWithdraw = async (transId, userId, amount, collectionName = 'saques') => {
+      await updateDoc(doc(db, collectionName, transId), { status: "rejeitado" });
       await updateDoc(doc(db, "users", userId), { balance: increment(amount) });
       showModal("Saque REJEITADO e valor integral estornado ao saldo do cliente!");
     };
