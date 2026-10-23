@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Leão La Plata">
+  <path fill="#d4af37" d="M50 4 60 10 72 9 78 20 89 25 88 38 96 49 89 60 89 73 77 79 71 91 59 90 50 98 41 90 29 91 23 79 11 73 11 60 4 49 12 38 11 25 22 20 28 9 40 10Z"/>
+  <path fill="#0a0a0c" d="M28 29Q23 18 31 19L41 28Q50 23 59 28L69 19Q77 18 72 29L74 45Q72 70 50 84 28 70 26 45Z"/>
+  <path fill="#d4af37" d="M33 33 39 36Q50 29 61 36L67 33 66 49 62 60 57 65 50 75 43 65 38 60 34 49Z"/>
+  <path fill="#0a0a0c" d="m35 41 10 3-2 5-6-2Zm30 0-10 3 2 5 6-2ZM43 54Q50 50 57 54L53 59H47Z"/>
+  <path d="M50 58v7m0 0q-7 5-12-1m12 1q7 5 12-1" fill="none" stroke="#0a0a0c" stroke-width="3" stroke-linecap="round"/>
+</svg>
