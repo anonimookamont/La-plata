@@ -13,14 +13,13 @@ function getFirebaseAdmin() {
 
     privateKey = privateKey.trim();
     
-    // Se a chave não contiver o cabeçalho PEM, tenta decodificar de Base64 automaticamente
-    if (!privateKey.includes('BEGIN PRIVATE KEY')) {
+    // Suporte automático para chave em Base64 ou texto normal
+    if (!privateKey.includes('-----BEGIN PRIVATE KEY-----')) {
       try {
         privateKey = Buffer.from(privateKey, 'base64').toString('utf8');
       } catch (e) {}
     }
 
-    // Limpeza profunda de aspas e quebras de linha
     privateKey = privateKey
       .replace(/^["']|["']$/g, '')
       .replace(/\\n/g, '\n')
@@ -115,4 +114,3 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: error.message });
   }
 }
-  
