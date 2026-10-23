@@ -710,7 +710,7 @@
           <h3 style="color: var(--gold-primary);"><i class="fa-solid fa-qrcode"></i> Aporte via PIX</h3>
           <div class="form-group" style="margin-bottom: 8px;">
             <label>Valor do Depósito (R$) - Mínimo: R$ 1,00</label>
-            <input type="number" id="pix-amount" class="form-control" placeholder="Ex: 1.00" value="1.00" min="1" step="0.01">
+            <input type="number" id="pix-amount" class="form-control" placeholder="Mínimo R$ 80,00" value="80.00" min="80" step="0.01">
           </div>
           <button class="btn btn-gold" onclick="handlePixDeposit()">
             <i class="fa-solid fa-bolt"></i> Gerar PIX (PushinPay)
@@ -723,7 +723,7 @@
           <h3 style="color: #d97706;"><i class="fa-solid fa-wallet"></i> Solicitar Resgate</h3>
           <div class="form-group" style="margin-bottom: 8px;">
             <label>Valor do Saque ($)</label>
-            <input type="number" id="withdraw-amount" class="form-control" placeholder="Ex: 10.00" min="1" step="0.01" oninput="calculateWithdrawFeePreview()">
+            <input type="number" id="withdraw-amount" class="form-control" placeholder="Mínimo R$ 120,00" min="120" step="0.01" oninput="calculateWithdrawFeePreview()">
           </div>
 
           <div class="form-group" style="margin-bottom: 8px;">
@@ -745,7 +745,7 @@
             <i class="fa-solid fa-paper-plane"></i> Pedir Saque
           </button>
           <div class="rule-notice" id="withdraw-fee-notice">
-            <i class="fa-solid fa-circle-info"></i> <span id="withdraw-rule-desc"><b>Taxa Fixo de Saque:</b> Taxa de <b>12%</b> sobre qualquer saque. Prazo de até 72h.</span>
+            <i class="fa-solid fa-circle-info"></i> <span id="withdraw-rule-desc"><b>Saque mínimo: R$ 120,00.</b> <b>Taxa Fixo de Saque:</b> Taxa de <b>12%</b> sobre qualquer saque. Prazo de até 72h.</span>
           </div>
         </div>
 
@@ -1637,7 +1637,7 @@
       });
     }
 
-    // INTEGRAÇÃO DA PUSHINPAY VIA VERCEL API (Depósito via PIX) - Mínimo R$ 1,00
+    // INTEGRAÇÃO DA PUSHINPAY VIA VERCEL API (Depósito via PIX) - Mínimo R$ 80,00
 
     let pixCheckInProgress = false;
     let lastPixCheckAt = 0;
@@ -1688,8 +1688,8 @@
 
       const inputAmount = parseFloat(document.getElementById("pix-amount").value);
       
-      if (!inputAmount || inputAmount < 1.00) {
-        return showCustomAlert("Atenção", "O valor mínimo para depósito é de R$ 1,00.", "fa-circle-exclamation");
+      if (!inputAmount || inputAmount < 80.00) {
+        return showCustomAlert("Atenção", "O valor mínimo para depósito é de R$ 80,00.", "fa-circle-exclamation");
       }
 
       const amount = inputAmount;
@@ -1766,7 +1766,7 @@
       const tipoChave = document.getElementById("withdraw-pix-type").value;
       const chavePix = document.getElementById("withdraw-pix-key").value.trim();
 
-      if (!amount || amount <= 0) return showCustomAlert("Atenção", "Informe um valor válido para o saque.", "fa-circle-exclamation");
+      if (!Number.isFinite(amount) || amount < 120) return showCustomAlert("Atenção", "O saque mínimo é de R$ 120,00.", "fa-circle-exclamation");
       if (!chavePix) return showCustomAlert("Atenção", "Informe a sua chave PIX para receber o valor.", "fa-circle-exclamation");
 
       const currentBalance = currentUserData.balance || 0;
