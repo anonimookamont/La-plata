@@ -3,24 +3,25 @@ import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 
 function getFirebaseAdmin() {
   if (!getApps().length) {
-    let rawKey = process.env.FIREBASE_PRIVATE_KEY || '';
-    
-    // Remove espaços vazios e aspas acidentais no início ou no fim
-    rawKey = rawKey.trim().replace(/^["']|["']$/g, '');
-    
-    // Converte '\n' literal em quebras de linha reais se necessário
-    const privateKey = rawKey.includes('\\n') 
-      ? rawKey.replace(/\\n/g, '\n') 
-      : rawKey;
+    let projectId = process.env.FIREBASE_PROJECT_ID;
+    let clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+    let privateKey = process.env.FIREBASE_PRIVATE_KEY;
 
-    if (!process.env.FIREBASE_PROJECT_ID || !process.env.FIREBASE_CLIENT_EMAIL || !privateKey) {
+    if (!projectId || !clientEmail || !privateKey) {
       throw new Error("As credenciais do Firebase Admin não estão configuradas corretamente nas variáveis de ambiente da Vercel.");
     }
 
+    // Limpeza profunda para evitar erros de DER/ASN.1 no OpenSSL
+    privateKey = privateKey.trim();
+    if ((privateKey.startsWith('"') && privateKey.endsWith('"')) || (privateKey.startsWith("'") && privateKey.endsWith("'"))) {
+      privateKey = privateKey.slice(1, -1);
+    }
+    privateKey = privateKey.replace(/\\n/g, '\n').replace(/\\\\n/g, '\n');
+
     initializeApp({
       credential: cert({
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        projectId: projectId.trim(),
+        clientEmail: clientEmail.trim(),
         privateKey: privateKey
       })
     });
@@ -47,7 +48,12 @@ export default async function handler(req, res) {
 
   try {
     const db = getFirebaseAdmin();
-    const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+    let body = req.body;
+    if (typeof body === 'string') {
+      try { body = JSON.parse(body); } catch(e) { body = {}; }
+    }
+    body = body || {};
+
     const { userId, valor, tipoChave, chavePix } = body;
 
     if (!userId || !valor || !chavePix || !tipoChave) {
@@ -73,13 +79,11 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Saldo insuficiente para realizar o saque.' });
     }
 
-    // Deduz o valor do saldo do utilizador no Firestore
     await userRef.update({
       balance: FieldValue.increment(-valorSaque),
       saldo: FieldValue.increment(-valorSaque)
     });
 
-    // Regista o pedido de saque na coleção 'saques'
     const saqueRef = await db.collection('saques').add({
       userId: userId,
       valor: valorSaque,
