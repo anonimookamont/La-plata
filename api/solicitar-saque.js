@@ -12,19 +12,25 @@ function getFirebaseAdmin() {
     }
 
     privateKey = privateKey.trim();
-    
-    // Suporte automático para chave em Base64 ou texto normal
-    if (!privateKey.includes('-----BEGIN PRIVATE KEY-----')) {
+
+    // Se estiver em Base64, decodifica para texto
+    if (!privateKey.includes('BEGIN PRIVATE KEY')) {
       try {
         privateKey = Buffer.from(privateKey, 'base64').toString('utf8');
       } catch (e) {}
     }
 
+    // Limpeza profunda de formatação e quebras de linha
     privateKey = privateKey
       .replace(/^["']|["']$/g, '')
       .replace(/\\n/g, '\n')
       .replace(/\\\\n/g, '\n')
       .replace(/\r\n/g, '\n');
+
+    // Validação estrita do formato PEM para o OpenSSL
+    if (!privateKey.includes('-----BEGIN PRIVATE KEY-----')) {
+      privateKey = `-----BEGIN PRIVATE KEY-----\n${privateKey}\n-----END PRIVATE KEY-----`;
+    }
 
     initializeApp({
       credential: cert({
