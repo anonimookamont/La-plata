@@ -36,7 +36,8 @@ export default async function handler(req, res) {
 
     const valorEmCentavos = Math.round(valorNumerico * 100);
 
-    const response = await fetch('https://api.pushinpay.com.br/api/v1/pix/cash-in', {
+    // Corrigido para a rota oficial da PushinPay: /api/v1/pix/cashIn
+    const response = await fetch('https://api.pushinpay.com.br/api/v1/pix/cashIn', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${pushinPayToken.trim()}`,
