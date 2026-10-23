@@ -1,12 +1,18 @@
+import { timingSafeEqual } from 'node:crypto';
 import { services, providerJson, fail } from './_firebase.js';
 import { FieldValue } from 'firebase-admin/firestore';
 export default async function handler(req,res) {
   if(req.method !== 'POST') return res.status(405).json({error:'Método não permitido'});
   try {
-    // Segredo configurado no painel da PushinPay como header customizado X-Webhook-Secret.
-    // Caso seu plano não permita header customizado, adapte para assinatura oficial antes de publicar.
+    // No painel PushinPay: Authorization = Bearer <segredo do webhook>.
+    // Também aceita o header customizado X-Webhook-Secret.
     const expected = process.env.PUSHINPAY_WEBHOOK_SECRET;
-    if(!expected || req.headers['x-webhook-secret'] !== expected) return res.status(401).json({error:'Webhook não autorizado'});
+    const authorization = req.headers.authorization;
+    const received = typeof authorization === 'string' && authorization.startsWith('Bearer ')
+      ? authorization.slice(7) : req.headers['x-webhook-secret'];
+    const expectedBytes = Buffer.from(expected || '');
+    const receivedBytes = Buffer.from(typeof received === 'string' ? received : '');
+    if(!expected || expectedBytes.length !== receivedBytes.length || !timingSafeEqual(expectedBytes, receivedBytes)) return res.status(401).json({error:'Webhook não autorizado'});
     const id = String(req.body?.id || '');
     if(!/^[a-zA-Z0-9-]{10,100}$/.test(id)) return res.status(400).json({error:'ID inválido'});
     const token = process.env.PUSHINPAY_TOKEN;
