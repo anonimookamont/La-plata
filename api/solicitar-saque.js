@@ -1,7 +1,6 @@
 import { initializeApp, getApps, cert } from 'firebase-admin/app';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 
-// Inicializa o Firebase Admin na Vercel
 if (!getApps().length) {
   initializeApp({
     credential: cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT))
@@ -11,7 +10,6 @@ if (!getApps().length) {
 const db = getFirestore();
 
 export default async function handler(req, res) {
-  // Configuração de cabeçalhos CORS
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -32,7 +30,6 @@ export default async function handler(req, res) {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
     const { userId, valor, tipoChave, chavePix } = body;
 
-    // Validações dos dados enviados
     if (!userId || !valor || !chavePix || !tipoChave) {
       return res.status(400).json({ error: 'Dados incompletos. Informe userId, valor, tipoChave e chavePix.' });
     }
@@ -52,23 +49,22 @@ export default async function handler(req, res) {
     const userData = userDoc.data();
     const saldoAtual = userData.saldo || 0;
 
-    // Verifica se o usuário tem saldo suficiente
     if (saldoAtual < valorSaque) {
       return res.status(400).json({ error: 'Saldo insuficiente para realizar o saque.' });
     }
 
-    // 1. Deduz o valor do saldo do usuário no Firestore
+    // Deduz o saldo do utilizador
     await userRef.update({
       saldo: FieldValue.increment(-valorSaque)
     });
 
-    // 2. Registra a solicitação de saque na coleção 'saques'
+    // Regista o pedido de saque
     const saqueRef = await db.collection('saques').add({
       userId: userId,
       valor: valorSaque,
-      tipoChave: tipoChave, // ex: 'cpf', 'email', 'telefone', 'aleatoria'
+      tipoChave: tipoChave,
       chavePix: chavePix,
-      status: 'pendente', // 'pendente', 'concluido', 'rejeitado'
+      status: 'pendente',
       criadoEm: new Date().toISOString()
     });
 
@@ -80,8 +76,7 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('Erro ao processar saque:', error);
+    console.error('Erro no saque:', error);
     return res.status(500).json({ error: error.message });
   }
 }
-  
