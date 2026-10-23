@@ -3,22 +3,20 @@ import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 
 function getFirebaseAdmin() {
   if (!getApps().length) {
-    const rawServiceAccount = process.env.FIREBASE_SERVICE_ACCOUNT;
-    if (!rawServiceAccount) {
-      throw new Error("Variável FIREBASE_SERVICE_ACCOUNT não configurada na Vercel.");
-    }
-    
-    let serviceAccount = typeof rawServiceAccount === 'string' 
-      ? JSON.parse(rawServiceAccount) 
-      : rawServiceAccount;
+    const privateKey = process.env.FIREBASE_PRIVATE_KEY 
+      ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n') 
+      : undefined;
 
-    // Corrige automaticamente a chave privada convertendo \n literais em quebras de linha reais
-    if (serviceAccount.private_key) {
-      serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
+    if (!process.env.FIREBASE_PROJECT_ID || !process.env.FIREBASE_CLIENT_EMAIL || !privateKey) {
+      throw new Error("As credenciais do Firebase Admin não estão configuradas corretamente nas variáveis de ambiente da Vercel.");
     }
 
     initializeApp({
-      credential: cert(serviceAccount)
+      credential: cert({
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        privateKey: privateKey
+      })
     });
   }
   return getFirestore();
@@ -59,7 +57,7 @@ export default async function handler(req, res) {
     const userDoc = await userRef.get();
 
     if (!userDoc.exists) {
-      return res.status(404).json({ error: 'Usuário não encontrado.' });
+      return res.status(404).json({ error: 'Utilizador não encontrado.' });
     }
 
     const userData = userDoc.data();
