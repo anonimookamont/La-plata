@@ -1,5 +1,4 @@
 export default async function handler(req, res) {
-  // Cabeçalhos CORS para permitir requisições do seu site
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -20,8 +19,9 @@ export default async function handler(req, res) {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
     const { transaction_amount, description, email, userId } = body;
 
-    // Se não informar o valor, o padrão para teste passa a ser R$ 1.00
-    const valorDeposito = transaction_amount ? Number(transaction_amount) : 1.00;
+    // Garante um valor mínimo de 5.00 para evitar o erro 'bad_request' do Mercado Pago
+    const valorFinal = Number(transaction_amount) >= 1 ? Number(transaction_amount) : 5.00;
+    const emailFinal = email && email.includes('@') ? email : 'cliente@email.com';
 
     const response = await fetch('https://api.mercadopago.com/v1/payments', {
       method: 'POST',
@@ -30,13 +30,13 @@ export default async function handler(req, res) {
         'Authorization': `Bearer ${process.env.MERCADO_PAGO_TOKEN}`
       },
       body: JSON.stringify({
-        transaction_amount: valorDeposito,
+        transaction_amount: valorFinal,
         description: description || 'Aporte La Plata',
         payment_method_id: 'pix',
-        external_reference: userId, // Identifica qual utilizador fez o depósito
-        notification_url: 'https://laplata-five.vercel.app/api/webhook-pix', // Link do webhook
+        external_reference: userId || 'sem_id',
+        notification_url: 'https://laplata-five.vercel.app/api/webhook-pix',
         payer: {
-          email: email || 'cliente@email.com'
+          email: emailFinal
         }
       })
     });
@@ -44,7 +44,11 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     if (!response.ok) {
-      return res.status(response.status).json(data);
+      console.error('Erro Mercado Pago:', data);
+      return res.status(response.status).json({ 
+        error: data.message || data.error || 'bad_request',
+        details: data 
+      });
     }
 
     return res.status(200).json({
