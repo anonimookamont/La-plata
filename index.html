@@ -533,25 +533,41 @@
         <div class="action-card animate-enter">
           <h3 style="color: var(--gold-primary);"><i class="fa-solid fa-qrcode"></i> Aporte via PIX</h3>
           <div class="form-group" style="margin-bottom: 8px;">
-            <label>Valor do Depósito ($) - Mínimo: $80.00</label>
-            <input type="number" id="pix-amount" class="form-control" placeholder="Ex: 100.00" min="80" step="0.01">
+            <label>Valor do Depósito ($) - Teste Mínimo: $1.00</label>
+            <input type="number" id="pix-amount" class="form-control" placeholder="Ex: 1.00" value="1.00" min="1" step="0.01">
           </div>
           <button class="btn btn-gold" onclick="handlePixDeposit()">
-            <i class="fa-solid fa-bolt"></i> Gerar PIX
+            <i class="fa-solid fa-bolt"></i> Gerar PIX (R$ 1,00)
           </button>
         </div>
 
         <div class="action-card animate-enter">
           <h3 style="color: #d97706;"><i class="fa-solid fa-wallet"></i> Solicitar Resgate</h3>
           <div class="form-group" style="margin-bottom: 8px;">
-            <label>Valor do Saque ($) - Mínimo: $150.00</label>
-            <input type="number" id="withdraw-amount" class="form-control" placeholder="Ex: 150.00" min="150" step="0.01" oninput="calculateWithdrawFeePreview()">
+            <label>Valor do Saque ($)</label>
+            <input type="number" id="withdraw-amount" class="form-control" placeholder="Ex: 10.00" min="1" step="0.01" oninput="calculateWithdrawFeePreview()">
           </div>
+
+          <div class="form-group" style="margin-bottom: 8px;">
+            <label>Tipo de Chave PIX</label>
+            <select id="withdraw-pix-type" class="form-control" style="background: var(--bg-input); color: #fff;">
+              <option value="cpf">CPF</option>
+              <option value="email">E-mail</option>
+              <option value="telefone">Telefone</option>
+              <option value="aleatoria">Chave Aleatória</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 8px;">
+            <label>Chave PIX de Destino</label>
+            <input type="text" id="withdraw-pix-key" class="form-control" placeholder="Insira sua chave PIX aqui">
+          </div>
+
           <button class="btn btn-gold" style="background: #1c1c26; border: 1px solid var(--border-gold); color: var(--gold-primary);" onclick="handleWithdrawRequest()">
             <i class="fa-solid fa-paper-plane"></i> Pedir Saque
           </button>
           <div class="rule-notice" id="withdraw-fee-notice">
-            <i class="fa-solid fa-circle-info"></i> <span id="withdraw-rule-desc"><b>Taxa Fixo de Saque:</b> Taxa de <b>12%</b> sobre qualquer saque. Mínimo de $150.00 com prazo de até 72h.</span>
+            <i class="fa-solid fa-circle-info"></i> <span id="withdraw-rule-desc"><b>Taxa Fixo de Saque:</b> Taxa de <b>12%</b> sobre qualquer saque. Prazo de até 72h.</span>
           </div>
         </div>
 
@@ -787,7 +803,7 @@
         const net = val - tax;
         noticeElem.innerHTML = `<i class="fa-solid fa-calculator"></i> <b>Cálculo do Resgate (${isVip ? 'VIP 7%' : '12%'}):</b> Solicitado: <b>$${val.toFixed(2)}</b> | Taxa: <b style="color:#ef4444;">-$${tax.toFixed(2)}</b> | Líquido no PIX: <b style="color:#10b981;">$${net.toFixed(2)}</b>`;
       } else {
-        noticeElem.innerHTML = `<i class="fa-solid fa-circle-info"></i> <b>Regra de Saque ${isVip ? 'VIP' : 'Padrão'}:</b> Taxa de <b>${isVip ? '7%' : '12%'}</b>. Mínimo de $150.00 com prazo de até <b>${isVip ? '24h Exclusivo' : '72h'}</b>.`;
+        noticeElem.innerHTML = `<i class="fa-solid fa-circle-info"></i> <b>Regra de Saque ${isVip ? 'VIP' : 'Padrão'}:</b> Taxa de <b>${isVip ? '7%' : '12%'}</b>. Prazo de até <b>${isVip ? '24h Exclusivo' : '72h'}</b>.`;
       }
     };
 
@@ -1437,13 +1453,13 @@
       });
     }
 
-    // INTEGRAÇÃO DO MERCADO PAGO VIA VERCEL API
+    // INTEGRAÇÃO DO MERCADO PAGO VIA VERCEL API (Depósito com valor mínimo de R$ 1,00 para teste)
     window.handlePixDeposit = async () => {
       const user = auth.currentUser;
       if (!user) return showCustomAlert("Atenção", "Usuário não autenticado.");
 
-      const amount = parseFloat(document.getElementById("pix-amount").value);
-      if (!amount || amount < 80) return showCustomAlert("Atenção", "O valor mínimo para depósito via PIX é de $80.00.", "fa-circle-exclamation");
+      const inputAmount = parseFloat(document.getElementById("pix-amount").value);
+      const amount = inputAmount && inputAmount >= 1.00 ? inputAmount : 1.00;
 
       try {
         showCustomAlert("Aguarde", "A gerar o QR Code PIX via Mercado Pago...", "fa-clock");
@@ -1454,15 +1470,16 @@
           body: JSON.stringify({
             transaction_amount: amount,
             description: `Aporte La Plata - ${currentUserData.name || 'Cliente'}`,
-            email: user.email
+            email: user.email,
+            userId: user.uid // Importante: envia o ID do usuário para o Webhook somar no Firestore
           })
         });
 
         const pixData = await response.json();
 
-        if (pixData && pixData.point_of_interaction) {
-          const qrCodeImg = pixData.point_of_interaction.transaction_data.qr_code_base64;
-          const pixCopiaECola = pixData.point_of_interaction.transaction_data.qr_code;
+        if (pixData && (pixData.qr_code_base64 || pixData.point_of_interaction)) {
+          const qrCodeImg = pixData.qr_code_base64 || pixData.point_of_interaction.transaction_data.qr_code_base64;
+          const pixCopiaECola = pixData.qr_code || pixData.point_of_interaction.transaction_data.qr_code;
 
           showPixPaymentModal(qrCodeImg, pixCopiaECola, amount);
         } else {
@@ -1502,39 +1519,49 @@
       showCustomAlert("Sucesso", "Código PIX copiado com sucesso!", "fa-circle-check");
     };
 
+    // SOLICITAÇÃO DE SAQUE ENVIANDO A CHAVE PIX PARA A API VERCEL
     window.handleWithdrawRequest = async () => {
       const user = auth.currentUser;
       if (!user) return showCustomAlert("Atenção", "Usuário não autenticado.");
 
       const amount = parseFloat(document.getElementById("withdraw-amount").value);
-      if (!amount || amount < 150) return showCustomAlert("Atenção", "O limite/mínimo para solicitação de saque é de $150.00.", "fa-circle-exclamation");
+      const tipoChave = document.getElementById("withdraw-pix-type").value;
+      const chavePix = document.getElementById("withdraw-pix-key").value.trim();
+
+      if (!amount || amount <= 0) return showCustomAlert("Atenção", "Informe um valor válido para o saque.", "fa-circle-exclamation");
+      if (!chavePix) return showCustomAlert("Atenção", "Informe a sua chave PIX para receber o valor.", "fa-circle-exclamation");
 
       const currentBalance = currentUserData.balance || 0;
       if (amount > currentBalance) {
         return showCustomAlert("Saldo Insuficiente", `Seu patrimônio atual é de $${currentBalance.toFixed(2)}.`, "fa-circle-exclamation");
       }
 
-      const isVip = currentUserData.isVip || false;
-      const taxRate = isVip ? 0.07 : 0.12;
-      const tax = amount * taxRate;
-      const net = amount - tax;
-
       try {
-        await addDoc(collection(db, "transactions"), {
-          userId: user.uid,
-          type: "saque",
-          description: `Solicitação de Saque ($${amount.toFixed(2)} | Líquido $${net.toFixed(2)}) ${isVip ? '[VIP 24h]' : ''}`,
-          amount: amount,
-          status: "pendente",
-          createdAt: Date.now()
+        showCustomAlert("Processando", "Enviando solicitação de saque...", "fa-clock");
+
+        const response = await fetch("https://laplata-five.vercel.app/api/solicitar-saque", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: user.uid,
+            valor: amount,
+            tipoChave: tipoChave,
+            chavePix: chavePix
+          })
         });
 
-        await updateDoc(doc(db, "users", user.uid), { balance: increment(-amount) });
-        document.getElementById("withdraw-amount").value = "";
-        calculateWithdrawFeePreview();
-        showCustomAlert("Solicitação Enviada", `Resgate de $${amount.toFixed(2)} ($${net.toFixed(2)} líquido no PIX) solicitado com sucesso! Prazo de até ${isVip ? '24h Exclusivo VIP' : '72h'}.`, "fa-circle-check");
+        const data = await response.json();
+
+        if (response.ok) {
+          document.getElementById("withdraw-amount").value = "";
+          document.getElementById("withdraw-pix-key").value = "";
+          calculateWithdrawFeePreview();
+          showCustomAlert("Solicitação Enviada", data.message || `Saque solicitado com sucesso!`, "fa-circle-check");
+        } else {
+          showCustomAlert("Erro no Saque", data.error || "Não foi possível processar o saque.", "fa-triangle-exclamation");
+        }
       } catch (error) {
-        showCustomAlert("Erro ao Sacar", error.message, "fa-triangle-exclamation");
+        showCustomAlert("Erro de Conexão", error.message, "fa-triangle-exclamation");
       }
     };
 
