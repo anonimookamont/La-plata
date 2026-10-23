@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lá Plata - Painel Administrativo</title>
+  <title>La Plata - Painel Administrativo</title>
   <!-- Google Fonts, FontAwesome e Chart.js -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -183,6 +183,11 @@
       background: rgba(212, 175, 55, 0.08); border: 1px solid var(--border-gold);
       border-radius: 10px; padding: 10px; font-size: 0.75rem; color: #f3e5ab; margin-bottom: 14px; line-height: 1.4;
     }
+
+    .vip-tag {
+      background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
+      color: #000; font-size: 0.6rem; font-weight: 800; padding: 2px 6px; border-radius: 4px;
+    }
   </style>
 </head>
 <body>
@@ -193,7 +198,7 @@
       <svg class="lion-svg-icon" viewBox="0 0 100 100">
         <path fill="#d4af37" d="M50 10 C30 10, 15 25, 15 45 C15 58, 22 68, 30 75 C32 65, 38 55, 45 52 C42 48, 40 42, 42 36 C45 28, 55 28, 58 36 C60 42, 58 48, 55 52 C62 55, 68 65, 70 75 C78 68, 85 58, 85 45 C85 25, 70 10, 50 10 Z"/>
       </svg>
-      <div class="brand-name">LÁ PLATA</div>
+      <div class="brand-name">LA PLATA</div>
       <span class="admin-badge">Painel de Controle Admin</span>
     </div>
 
@@ -262,6 +267,12 @@
             <input type="number" id="plan-return" class="form-control" placeholder="Ex: 150.00" step="0.01" oninput="calculateYieldPreview()">
           </div>
 
+          <!-- CAMPO LIMITE DE PLANOS POR PESSOA -->
+          <div class="form-group">
+            <label>Limite de Compras por Cliente (0 = Infinito)</label>
+            <input type="number" id="plan-limit-user" class="form-control" placeholder="Ex: 1 para permitir apenas 1 aporte por cliente" min="0" value="0">
+          </div>
+
           <div class="tax-notice-box" id="yield-preview-box">
             <b>Estimativa de Rendimento:</b><br>
             <span id="yield-preview-text">Preencha os dados acima para ver a projeção.</span>
@@ -277,10 +288,10 @@
       </div>
 
       <div id="admin-tab-withdraws" class="hidden">
-        <div class="card-title"><i class="fa-solid fa-clock"></i> Solicitações de Resgate PENDENTES (Com Taxa de 12%)</div>
+        <div class="card-title"><i class="fa-solid fa-clock"></i> Solicitações de Resgate PENDENTES</div>
         
         <div class="tax-notice-box">
-          <i class="fa-solid fa-percent"></i> <b>Regra de Saque Fixo:</b> Todos os saques possuem taxa administrativa de <b>12%</b> descontada automaticamente ao aprovar.
+          <i class="fa-solid fa-percent"></i> <b>Regras de Saque:</b> Saques padrão possuem 12% de taxa (72h). Clientes <b>VIP</b> possuem <b>7% de taxa e prazo de 24h</b>.
         </div>
 
         <div id="withdraws-list-container">
@@ -330,6 +341,14 @@
         <input type="text" id="edit-user-phone" class="form-control">
       </div>
 
+      <!-- OPÇÃO STATUS CLIENTE VIP -->
+      <div class="form-group" style="background: rgba(245, 158, 11, 0.1); padding: 10px; border-radius: 10px; border: 1px solid rgba(245, 158, 11, 0.3);">
+        <label style="color: #f59e0b; font-weight: 700; display:flex; align-items:center; gap:8px;">
+          <input type="checkbox" id="edit-user-vip" style="width: 18px; height: 18px;">
+          <i class="fa-solid fa-crown"></i> Tornar Cliente VIP (Saque 24h + 7% Taxa)
+        </label>
+      </div>
+
       <div class="form-group">
         <label>Código de Afiliado (Deste Cliente)</label>
         <input type="text" id="edit-user-refcode" class="form-control">
@@ -342,10 +361,10 @@
 
       <div class="form-group">
         <label>Comissão de Afiliado deste Cliente (%)</label>
-        <input type="number" id="edit-user-commission" class="form-control" placeholder="Ex: 5 (para 5%)" step="0.1">
+        <input type="number" id="edit-user-commission" class="form-control" placeholder="Ex: 5 (VIP padrão é 10%)" step="0.1">
       </div>
 
-      <button class="btn btn-gold" style="margin-bottom: 12px;" onclick="saveUserData()"><i class="fa-solid fa-check"></i> Salvar Dados & Comissão</button>
+      <button class="btn btn-gold" style="margin-bottom: 12px;" onclick="saveUserData()"><i class="fa-solid fa-check"></i> Salvar Dados & Status VIP</button>
       
       <button class="btn btn-danger" style="margin-bottom: 20px;" onclick="deleteUser()"><i class="fa-solid fa-user-minus"></i> Excluir Cliente Definitivamente</button>
 
@@ -374,7 +393,7 @@
   <script type="module">
     import { db } from "./Js/firebase-config.js";
     import { 
-      collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, query, where, getDocs, increment, getDoc, setDoc 
+      collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, query, where, getDocs, increment, getDoc 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const ADMIN_SECRET_PIN = "laplata123";
@@ -439,10 +458,12 @@
 
       users.forEach((u) => {
         const uid = u.id;
+        const isVip = u.isVip || false;
+
         container.innerHTML += `
           <div class="user-card">
             <div class="user-card-header">
-              <span class="user-name">${u.name || 'Sem Nome'}</span>
+              <span class="user-name">${u.name || 'Sem Nome'} ${isVip ? '<span class="vip-tag"><i class="fa-solid fa-crown"></i> VIP</span>' : ''}</span>
               <span class="user-balance-badge">$ ${(u.balance || 0).toFixed(2)}</span>
             </div>
 
@@ -451,7 +472,7 @@
               <span>Tel: <b>${u.phone || 'N/A'}</b></span>
               <span>Afiliado: <b>${u.refCode || 'N/A'}</b></span>
               <span>Padrinho: <b>${u.referredBy || 'Nenhum'}</b></span>
-              <span>Comissão: <b>${u.customCommission ?? 5}%</b></span>
+              <span>Comissão: <b>${u.customCommission ?? (isVip ? 10 : 5)}%</b></span>
             </div>
 
             <div class="balance-control-box">
@@ -535,6 +556,7 @@
       const days = parseInt(document.getElementById("plan-days").value);
       const frequency = document.getElementById("plan-frequency").value;
       const totalReturn = parseFloat(document.getElementById("plan-return").value);
+      const limitPerUser = parseInt(document.getElementById("plan-limit-user").value) || 0;
 
       if (!title || !price || !days || !totalReturn) {
         return showModal("Preencha todos os campos da carteira!");
@@ -544,8 +566,9 @@
         title,
         price,
         durationDays: days,
-        frequency, // 'diario', 'semanal', 'mensal'
+        frequency,
         totalReturn,
+        limitPerUser,
         updatedAt: Date.now()
       };
 
@@ -571,6 +594,7 @@
       document.getElementById("plan-price").value = "";
       document.getElementById("plan-days").value = "";
       document.getElementById("plan-return").value = "";
+      document.getElementById("plan-limit-user").value = "0";
       document.getElementById("plan-frequency").value = "diario";
       document.getElementById("yield-preview-text").innerText = "Preencha os dados acima para ver a projeção.";
     }
@@ -589,6 +613,7 @@
           const plan = docSnap.data();
           const id = docSnap.id;
           const freq = plan.frequency || 'diario';
+          const limit = plan.limitPerUser || 0;
 
           container.innerHTML += `
             <div class="user-card">
@@ -599,11 +624,11 @@
               <div class="user-details">
                 <span>Aporte: <b>$ ${(plan.price || 0).toFixed(2)}</b></span>
                 <span>Prazo: <b>${plan.durationDays} Dias</b></span>
-                <span>Frequência: <b>${freq}</b></span>
+                <span>Limite/Pessoa: <b>${limit === 0 ? 'Ilimitado' : limit}</b></span>
                 <span style="color:var(--gold-primary);">Retorno: <b>$ ${(plan.totalReturn || 0).toFixed(2)}</b></span>
               </div>
               <div style="display:flex; gap: 8px; margin-top: 4px;">
-                <button class="btn btn-gold" style="padding:6px; font-size:0.75rem;" onclick="editPlan('${id}', '${plan.title}', ${plan.price}, ${plan.durationDays}, '${freq}', ${plan.totalReturn})">Editar</button>
+                <button class="btn btn-gold" style="padding:6px; font-size:0.75rem;" onclick="editPlan('${id}', '${plan.title}', ${plan.price}, ${plan.durationDays}, '${freq}', ${plan.totalReturn}, ${limit})">Editar</button>
                 <button class="btn btn-danger" style="padding:6px; font-size:0.75rem;" onclick="deletePlan('${id}')">Excluir</button>
               </div>
             </div>
@@ -612,13 +637,14 @@
       });
     }
 
-    window.editPlan = (id, title, price, days, freq, totalReturn) => {
+    window.editPlan = (id, title, price, days, freq, totalReturn, limitPerUser) => {
       document.getElementById("edit-plan-id").value = id;
       document.getElementById("plan-title").value = title;
       document.getElementById("plan-price").value = price;
       document.getElementById("plan-days").value = days;
       document.getElementById("plan-frequency").value = freq;
       document.getElementById("plan-return").value = totalReturn;
+      document.getElementById("plan-limit-user").value = limitPerUser || 0;
       calculateYieldPreview();
     };
 
@@ -645,17 +671,21 @@
           const trans = docSnap.data();
           const id = docSnap.id;
           const gross = trans.amount || 0;
-          const tax = gross * 0.12;
+          const isVip = trans.description.includes('[VIP 24h]');
+          const taxRate = isVip ? 0.07 : 0.12;
+          const tax = gross * taxRate;
           const net = gross - tax;
 
           container.innerHTML += `
-            <div class="user-card">
+            <div class="user-card" style="${isVip ? 'border-color: #f59e0b; background: #0f0c05;' : ''}">
               <div class="user-card-header">
                 <span class="user-balance-badge">$ ${gross.toFixed(2)}</span>
-                <span style="font-size: 0.75rem; color: #eab308; font-weight: 700;">PENDENTE</span>
+                <span style="font-size: 0.75rem; color: ${isVip ? '#f59e0b' : '#eab308'}; font-weight: 700;">
+                  ${isVip ? '<i class="fa-solid fa-crown"></i> VIP (24h)' : 'PENDENTE (72h)'}
+                </span>
               </div>
               <div style="font-size:0.78rem; color:var(--text-muted); line-height: 1.4;">
-                <span>Taxa Administrativa (12%): <b style="color:#ef4444;">- $ ${tax.toFixed(2)}</b></span><br>
+                <span>Taxa (${isVip ? '7% VIP' : '12%'}): <b style="color:#ef4444;">- $ ${tax.toFixed(2)}</b></span><br>
                 <span>Valor Líquido no PIX: <b style="color:#10b981; font-size:0.9rem;">$ ${net.toFixed(2)}</b></span><br>
                 <span>UID Cliente: ${trans.userId}</span>
               </div>
@@ -671,7 +701,7 @@
 
     window.approveWithdraw = async (transId) => {
       await updateDoc(doc(db, "transactions", transId), { status: "concluido" });
-      showModal("Saque APROVADO! Lembre-se de transferir o valor líquido já com 12% descontados.");
+      showModal("Saque APROVADO! Realize o pagamento do valor líquido via PIX.");
     };
 
     window.rejectWithdraw = async (transId, userId, amount) => {
@@ -690,9 +720,10 @@
       document.getElementById("edit-user-name").value = userData.name || "";
       document.getElementById("edit-user-email").value = userData.email || "";
       document.getElementById("edit-user-phone").value = userData.phone || "";
+      document.getElementById("edit-user-vip").checked = userData.isVip || false;
       document.getElementById("edit-user-refcode").value = userData.refCode || "";
       document.getElementById("edit-user-referredby").value = userData.referredBy || "";
-      document.getElementById("edit-user-commission").value = userData.customCommission ?? 5;
+      document.getElementById("edit-user-commission").value = userData.customCommission ?? (userData.isVip ? 10 : 5);
 
       loadUserActivePlans(uid);
 
@@ -794,7 +825,8 @@
             if (!padrinhoSnap.empty) {
               const padrinhoDoc = padrinhoSnap.docs[0];
               const padrinhoUid = padrinhoDoc.id;
-              const commissionRate = clientData.customCommission ?? 5;
+              const padrinhoData = padrinhoDoc.data();
+              const commissionRate = clientData.customCommission ?? (padrinhoData.isVip ? 10 : 5);
               const commissionVal = investAmount * (commissionRate / 100);
 
               await updateDoc(doc(db, "users", padrinhoUid), { balance: increment(commissionVal) });
@@ -879,21 +911,23 @@
       const name = document.getElementById("edit-user-name").value.trim();
       const email = document.getElementById("edit-user-email").value.trim();
       const phone = document.getElementById("edit-user-phone").value.trim();
+      const isVip = document.getElementById("edit-user-vip").checked;
       const refCode = document.getElementById("edit-user-refcode").value.trim().toUpperCase();
       const referredBy = document.getElementById("edit-user-referredby").value.trim().toUpperCase();
-      const customCommission = parseFloat(document.getElementById("edit-user-commission").value) || 5;
+      const customCommission = parseFloat(document.getElementById("edit-user-commission").value) || (isVip ? 10 : 5);
 
       try {
         await updateDoc(doc(db, "users", uid), { 
           name, 
           email, 
           phone, 
+          isVip,
           refCode,
           referredBy: referredBy || null,
           customCommission: customCommission
         });
 
-        showModal("Dados, Padrinho e Comissão atualizados com sucesso!");
+        showModal("Dados e Status VIP atualizados com sucesso!");
         closeUserModal();
       } catch (err) {
         showModal("Erro ao atualizar dados: " + err.message);
