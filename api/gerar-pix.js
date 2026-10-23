@@ -11,18 +11,23 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  if (req.method !== 'POST') {
+  if (req.method !== 'POST' && req.method !== 'GET') {
     return res.status(405).json({ error: 'Método não permitido' });
   }
 
   try {
-    let body = req.body;
+    let body = req.body || {};
     if (typeof body === 'string') {
       try { body = JSON.parse(body); } catch(e) { body = {}; }
     }
-    body = body || {};
+    const query = req.query || {};
 
-    const rawValor = body.valor !== undefined ? body.valor : (body.amount !== undefined ? body.amount : body.value);
+    // Captura o valor independentemente do nome do campo usado no front-end
+    const rawValor = body.valor !== undefined ? body.valor : 
+                    (body.amount !== undefined ? body.amount : 
+                    (body.value !== undefined ? body.value : 
+                    (query.valor || query.amount || query.value)));
+
     const valorNumerico = Number(rawValor);
 
     if (isNaN(valorNumerico) || valorNumerico <= 0) {
