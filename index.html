@@ -27,7 +27,6 @@
       --nav-height: 68px;
     }
 
-    /* TEMA VIP - ATIVADO DINAMICAMENTE QUANDO USER FOR VIP */
     body.theme-vip {
       --bg-dark: #050508;
       --bg-card: #0f0f18;
@@ -58,7 +57,6 @@
 
     .hidden { display: none !important; }
 
-    /* ANIMAÇÃO DE ENTRADA SUAVE */
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(14px); }
       to { opacity: 1; transform: translateY(0); }
@@ -68,7 +66,6 @@
       animation: fadeInUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    /* AUTH / LOGIN SCREEN */
     .auth-banner {
       width: 100%;
       height: 140px;
@@ -171,7 +168,6 @@
     .auth-switch-text { text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-top: 16px; margin-bottom: 30px; }
     .auth-switch-link { color: var(--gold-primary); font-weight: 700; cursor: pointer; text-decoration: none; }
 
-    /* HEADER & DASHBOARD */
     .app-header {
       padding: 18px 20px 14px 20px;
       display: flex;
@@ -213,7 +209,6 @@
       letter-spacing: 0.5px;
     }
 
-    /* SELETOR DE ABAS SUPERIORES ESTILO PÍLULA */
     .pill-tabs-nav {
       display: flex;
       background: #14141c;
@@ -242,7 +237,6 @@
       box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
     }
 
-    /* TABS SYSTEM */
     .tab-content { padding: 20px; display: none !important; }
     .tab-content.active { display: block !important; }
 
@@ -399,7 +393,6 @@
     .modal-title { font-size: 1rem; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
     .modal-message { font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 18px; }
 
-    /* MENU INFERIOR */
     .bottom-nav {
       position: fixed; bottom: 0; width: 100%; max-width: 480px; height: var(--nav-height);
       background: #0d0d12; border-top: 1px solid #1c1c26; display: none; justify-space: space-around;
@@ -961,7 +954,6 @@
           const photoURL = data.photoURL || "";
           const isVip = data.isVip || false;
 
-          // ATIVAÇÃO DO TEMA E INDICADORES VIP
           if (isVip) {
             document.body.classList.add("theme-vip");
             document.getElementById("vip-badge-tag").classList.remove("hidden");
@@ -1010,7 +1002,7 @@
           }
 
           loadAffiliateData(refCode, uid);
-          renderAdminPlansList(); // Atualiza botões de limite com dados da conta
+          renderAdminPlansList();
         }
       });
     }
@@ -1070,7 +1062,7 @@
           cachedMyPlansList.push(docSnap.data());
         });
         renderUserMyPlans();
-        renderAdminPlansList(); // Atualiza contador de limites por plano
+        renderAdminPlansList();
       });
     }
 
@@ -1396,10 +1388,9 @@
         const durationDays = plan.durationDays || 30;
         const totalReturn = plan.totalReturn || (price * 1.30);
         const freq = plan.frequency || 'diario';
-        const limitPerUser = plan.limitPerUser || 0; // 0 = Sem limite
+        const limitPerUser = plan.limitPerUser || 0;
         const profit = totalReturn - price;
 
-        // Contar quantas vezes o usuário atual comprou este plano
         const currentCount = cachedMyPlansList.filter(p => p.planId === planId || p.description.includes(plan.title)).length;
         const isLimitReached = limitPerUser > 0 && currentCount >= limitPerUser;
 
@@ -1446,6 +1437,7 @@
       });
     }
 
+    // INTEGRAÇÃO DO MERCADO PAGO VIA VERCEL API
     window.handlePixDeposit = async () => {
       const user = auth.currentUser;
       if (!user) return showCustomAlert("Atenção", "Usuário não autenticado.");
@@ -1454,21 +1446,60 @@
       if (!amount || amount < 80) return showCustomAlert("Atenção", "O valor mínimo para depósito via PIX é de $80.00.", "fa-circle-exclamation");
 
       try {
-        await addDoc(collection(db, "transactions"), {
-          userId: user.uid,
-          type: "deposito_pix",
-          description: `Aporte via PIX ($${amount.toFixed(2)})`,
-          amount: amount,
-          status: "concluido",
-          createdAt: Date.now()
+        showCustomAlert("Aguarde", "A gerar o QR Code PIX via Mercado Pago...", "fa-clock");
+
+        const response = await fetch("https://laplata-five.vercel.app/api/gerar-pix", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            transaction_amount: amount,
+            description: `Aporte La Plata - ${currentUserData.name || 'Cliente'}`,
+            email: user.email
+          })
         });
 
-        await updateDoc(doc(db, "users", user.uid), { balance: increment(amount) });
-        document.getElementById("pix-amount").value = "";
-        showCustomAlert("Aporte Concluído", `Aporte PIX de $${amount.toFixed(2)} efetuado com sucesso!`, "fa-circle-check");
+        const pixData = await response.json();
+
+        if (pixData && pixData.point_of_interaction) {
+          const qrCodeImg = pixData.point_of_interaction.transaction_data.qr_code_base64;
+          const pixCopiaECola = pixData.point_of_interaction.transaction_data.qr_code;
+
+          showPixPaymentModal(qrCodeImg, pixCopiaECola, amount);
+        } else {
+          showCustomAlert("Erro PIX", pixData.error || "Não foi possível gerar a cobrança no Mercado Pago.");
+        }
       } catch (error) {
-        showCustomAlert("Erro PIX", error.message, "fa-triangle-exclamation");
+        showCustomAlert("Erro Mercado Pago", error.message, "fa-triangle-exclamation");
       }
+    };
+
+    window.showPixPaymentModal = (qrCodeBase64, pixCopiaECola, amount) => {
+      const modalHTML = `
+        <div style="text-align: center;">
+          <h3 style="color: var(--gold-primary); margin-bottom: 8px;">Aporte PIX de $${amount.toFixed(2)}</h3>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">Escaneie o QR Code abaixo ou copie a chave para pagar no aplicativo do seu banco:</p>
+          
+          <img src="data:image/jpeg;base64,${qrCodeBase64}" style="width: 180px; height: 180px; border-radius: 12px; border: 2px solid var(--border-gold); margin-bottom: 12px;">
+          
+          <div style="margin-bottom: 12px;">
+            <input type="text" id="pix-copy-input" value="${pixCopiaECola}" class="form-control" readonly style="font-size: 0.7rem; text-align: center;">
+          </div>
+
+          <button class="btn btn-gold" onclick="copyPixCode()"><i class="fa-solid fa-copy"></i> Copiar Código PIX</button>
+        </div>
+      `;
+
+      document.getElementById("modal-alert-title").innerText = "Pagamento Mercado Pago";
+      document.getElementById("modal-alert-msg").innerHTML = modalHTML;
+      document.getElementById("modal-alert-icon").innerHTML = `<i class="fa-solid fa-qrcode"></i>`;
+      document.getElementById("custom-alert-modal").classList.remove("hidden");
+    };
+
+    window.copyPixCode = () => {
+      const input = document.getElementById("pix-copy-input");
+      input.select();
+      document.execCommand("copy");
+      showCustomAlert("Sucesso", "Código PIX copiado com sucesso!", "fa-circle-check");
     };
 
     window.handleWithdrawRequest = async () => {
