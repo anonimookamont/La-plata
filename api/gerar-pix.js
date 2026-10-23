@@ -20,6 +20,9 @@ export default async function handler(req, res) {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
     const { transaction_amount, description, email, userId } = body;
 
+    // Se não informar o valor, o padrão para teste passa a ser R$ 1.00
+    const valorDeposito = transaction_amount ? Number(transaction_amount) : 1.00;
+
     const response = await fetch('https://api.mercadopago.com/v1/payments', {
       method: 'POST',
       headers: {
@@ -27,10 +30,10 @@ export default async function handler(req, res) {
         'Authorization': `Bearer ${process.env.MERCADO_PAGO_TOKEN}`
       },
       body: JSON.stringify({
-        transaction_amount: Number(transaction_amount),
+        transaction_amount: valorDeposito,
         description: description || 'Aporte La Plata',
         payment_method_id: 'pix',
-        external_reference: userId, // Identifica qual utilizador fez o pagamento
+        external_reference: userId, // Identifica qual utilizador fez o depósito
         notification_url: 'https://laplata-five.vercel.app/api/webhook-pix', // Link do webhook
         payer: {
           email: email || 'cliente@email.com'
