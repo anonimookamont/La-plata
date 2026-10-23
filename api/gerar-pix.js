@@ -22,11 +22,16 @@ export default async function handler(req, res) {
     }
     body = body || {};
 
-    const rawValor = body.valor !== undefined ? body.valor : (body.amount !== undefined ? body.amount : body.value);
+    // Aceita qualquer nome de campo que venha do front-end (incluindo o antigo do Mercado Pago)
+    const rawValor = body.valor !== undefined ? body.valor : 
+                    (body.amount !== undefined ? body.amount : 
+                    (body.value !== undefined ? body.value : 
+                    (body.transaction_amount !== undefined ? body.transaction_amount : 0)));
+
     const valorNumerico = Number(rawValor);
 
     if (isNaN(valorNumerico) || valorNumerico <= 0) {
-      return res.status(400).json({ error: 'Valor inválido para depósito.' });
+      return res.status(400).json({ error: 'Valor inválido para depósito.', recebido: rawValor });
     }
 
     const pushinPayToken = process.env.PUSHINPAY_TOKEN;
@@ -36,7 +41,6 @@ export default async function handler(req, res) {
 
     const valorEmCentavos = Math.round(valorNumerico * 100);
 
-    // Rota oficial corrigida para cashIn (com I maiúsculo)
     const response = await fetch('https://api.pushinpay.com.br/api/v1/pix/cashIn', {
       method: 'POST',
       headers: {
