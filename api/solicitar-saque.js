@@ -11,12 +11,12 @@ function getFirebaseAdmin() {
       throw new Error("As credenciais do Firebase Admin não estão configuradas corretamente nas variáveis de ambiente da Vercel.");
     }
 
-    // Limpeza profunda para evitar erros de DER/ASN.1 no OpenSSL
-    privateKey = privateKey.trim();
-    if ((privateKey.startsWith('"') && privateKey.endsWith('"')) || (privateKey.startsWith("'") && privateKey.endsWith("'"))) {
-      privateKey = privateKey.slice(1, -1);
-    }
-    privateKey = privateKey.replace(/\\n/g, '\n').replace(/\\\\n/g, '\n');
+    // Limpeza profunda de carateres de controlo, aspas e retornos de carro (\r)
+    privateKey = privateKey
+      .trim()
+      .replace(/^["']|["']$/g, '')
+      .replace(/\r\n/g, '\n')
+      .replace(/\\n/g, '\n');
 
     initializeApp({
       credential: cert({
