@@ -1,13 +1,28 @@
 import { initializeApp, getApps, cert } from 'firebase-admin/app';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 
-if (!getApps().length) {
-  initializeApp({
-    credential: cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT))
-  });
-}
+function getFirebaseAdmin() {
+  if (!getApps().length) {
+    const rawServiceAccount = process.env.FIREBASE_SERVICE_ACCOUNT;
+    if (!rawServiceAccount) {
+      throw new Error("Variável FIREBASE_SERVICE_ACCOUNT não configurada na Vercel.");
+    }
+    
+    let serviceAccount = typeof rawServiceAccount === 'string' 
+      ? JSON.parse(rawServiceAccount) 
+      : rawServiceAccount;
 
-const db = getFirestore();
+    // Corrige automaticamente a chave privada convertendo \n literais em quebras de linha reais
+    if (serviceAccount.private_key) {
+      serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
+    }
+
+    initializeApp({
+      credential: cert(serviceAccount)
+    });
+  }
+  return getFirestore();
+}
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -27,6 +42,7 @@ export default async function handler(req, res) {
   }
 
   try {
+    const db = getFirebaseAdmin();
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
     const { userId, valor, tipoChave, chavePix } = body;
 
@@ -47,24 +63,26 @@ export default async function handler(req, res) {
     }
 
     const userData = userDoc.data();
-    const saldoAtual = userData.saldo || 0;
+    const saldoAtual = userData.balance || userData.saldo || 0;
 
     if (saldoAtual < valorSaque) {
       return res.status(400).json({ error: 'Saldo insuficiente para realizar o saque.' });
     }
 
-    // Deduz o saldo do utilizador
+    // Deduz o valor do saldo do utilizador no Firestore
     await userRef.update({
+      balance: FieldValue.increment(-valorSaque),
       saldo: FieldValue.increment(-valorSaque)
     });
 
-    // Regista o pedido de saque
+    // Regista o pedido de saque na coleção 'saques'
     const saqueRef = await db.collection('saques').add({
       userId: userId,
       valor: valorSaque,
       tipoChave: tipoChave,
       chavePix: chavePix,
       status: 'pendente',
+      createdAt: Date.now(),
       criadoEm: new Date().toISOString()
     });
 
@@ -76,7 +94,7 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('Erro no saque:', error);
+    console.error('Erro ao processar saque:', error);
     return res.status(500).json({ error: error.message });
   }
 }
