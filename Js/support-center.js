@@ -1,5 +1,5 @@
 import {auth} from './firebase-config.js';
-import {onAuthStateChanged,signInWithEmailAndPassword,sendEmailVerification} from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+import {onAuthStateChanged,signInWithEmailAndPassword,sendEmailVerification,sendPasswordResetEmail} from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
 
 const labels={aberto:'Aberto',em_atendimento:'Em atendimento',aguardando_cliente:'Aguardando cliente',resolvido:'Resolvido'};
 const categoryLabels={deposito:'Depósito Pix',saque:'Saque',planos:'Planos e aportes',conta:'Minha conta',outro:'Outro assunto'};
@@ -13,7 +13,7 @@ if(root) {
   root.innerHTML=`
     <div class="support-heading"><div><h2>${admin?'Central de atendimento':'Como podemos ajudar?'}</h2><p>${admin?'Acompanhe protocolos, responda clientes e organize os chamados.':'Abra um chamado e acompanhe a resposta da equipe por aqui.'}</p></div><button type="button" class="support-secondary" data-support="refresh">Atualizar</button></div>
     <p class="support-feedback" role="status" aria-live="polite" data-support="feedback"></p>
-    ${admin?`<section class="support-login"><h3>Acesso da equipe de atendimento</h3><p>Use uma conta Firebase autorizada. A chave do painel não concede acesso aos chamados.</p><form data-support="login"><label for="${prefix}-email">E-mail de acesso ao site</label><input id="${prefix}-email" name="email" type="email" autocomplete="username" required class="form-control"><label for="${prefix}-password">Senha da conta</label><input id="${prefix}-password" name="password" type="password" autocomplete="current-password" required class="form-control"><button class="btn btn-gold">Entrar no atendimento</button></form><p data-support="identity"></p><button type="button" class="support-secondary" data-support="verify">Enviar verificação do meu e-mail</button></section>`
+    ${admin?`<section class="support-login"><h3>Acesso da equipe de atendimento</h3><p>Use o e-mail autorizado e a senha da sua conta no site. Se ainda não tem conta, cadastre esse e-mail na página inicial.</p><form data-support="login"><label for="${prefix}-email">E-mail de acesso ao site</label><input id="${prefix}-email" name="email" type="email" autocomplete="username" required class="form-control"><label for="${prefix}-password">Senha da conta</label><input id="${prefix}-password" name="password" type="password" autocomplete="current-password" required class="form-control"><button class="btn btn-gold">Entrar no atendimento</button></form><button type="button" class="support-secondary" data-support="reset-password">Esqueci minha senha</button><p data-support="identity"></p><button type="button" class="support-secondary" data-support="verify">Enviar verificação do meu e-mail</button></section>`
     :`<button type="button" class="btn btn-gold" data-support="new">Abrir novo chamado</button><form class="support-new hidden" data-support="create"><label for="${prefix}-subject">Assunto</label><input class="form-control" id="${prefix}-subject" name="subject" minlength="3" maxlength="120" required placeholder="Resuma o que aconteceu"><div class="support-form-row"><div><label for="${prefix}-category">Categoria</label><select class="form-control" id="${prefix}-category" name="category"><option value="deposito">Depósito Pix</option><option value="saque">Saque</option><option value="planos">Planos e aportes</option><option value="conta">Minha conta</option><option value="outro">Outro assunto</option></select></div><div><label for="${prefix}-priority">Prioridade</label><select class="form-control" id="${prefix}-priority" name="priority"><option value="normal">Normal</option><option value="alta">Alta</option></select></div></div><label for="${prefix}-reference">ID da transação ou referência (opcional)</label><input class="form-control" id="${prefix}-reference" name="reference" maxlength="120" placeholder="Ajuda a localizar seu depósito ou aporte"><label for="${prefix}-message">O que aconteceu?</label><textarea class="form-control" id="${prefix}-message" name="message" rows="5" minlength="5" maxlength="4000" required placeholder="Conte o problema, a data e o que você esperava que acontecesse."></textarea><p class="support-tip">Não envie senhas, tokens, chaves privadas ou dados completos do cartão.</p><button class="btn btn-gold">Enviar para o atendimento</button></form>`}
     <div class="support-stats" data-support="stats"></div>
     <div class="support-toolbar"><label for="${prefix}-filter">Status<select id="${prefix}-filter" class="form-control" data-support="filter"><option value="">Todos</option>${Object.entries(labels).map(([k,v])=>'<option value="'+k+'">'+v+'</option>').join('')}</select></label><label for="${prefix}-search">Buscar<input id="${prefix}-search" class="form-control" data-support="search" placeholder="Assunto ou protocolo"></label></div>
@@ -78,7 +78,7 @@ if(root) {
   async function act(operation) {
     if(busy)return;busy=true;root.querySelectorAll('button').forEach(b=>b.disabled=true);
     try {await operation();}
-    catch(e){feedback(e.message);}
+    catch(e){feedback(['auth/invalid-credential','auth/wrong-password','auth/user-not-found'].includes(e.code)?'E-mail ou senha incorretos. Use Esqueci minha senha para recuperar seu acesso.':e.message);}
     finally {busy=false;root.querySelectorAll('button').forEach(b=>b.disabled=false);}
   }
   by('refresh').addEventListener('click',()=>act(async()=>{await refresh();feedback('Atendimento atualizado.');}));
@@ -95,6 +95,12 @@ if(root) {
       const form=new FormData(by('login'));await signInWithEmailAndPassword(auth,String(form.get('email')),String(form.get('password')));
       by('login').reset();await refresh();feedback('Acesso ao atendimento confirmado.');
     });});
+    by('reset-password').addEventListener('click',()=>act(async()=>{
+      const input=by('login').elements.namedItem('email');
+      if(!input.value.trim()||!input.reportValidity())throw new Error('Preencha seu e-mail de acesso primeiro.');
+      await sendPasswordResetEmail(auth,input.value.trim());
+      feedback('Se houver uma conta com esse e-mail, você receberá um link para redefinir a senha. Confira também o spam.');
+    }));
     by('verify').addEventListener('click',()=>act(async()=>{
       if(!auth.currentUser)throw new Error('Entre com seu e-mail e senha primeiro.');
       await sendEmailVerification(auth.currentUser);feedback('Verificação enviada para seu e-mail. Após confirmar, entre novamente.');
