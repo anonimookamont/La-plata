@@ -572,6 +572,9 @@
       *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
     }
   </style>
+  <link rel="icon" type="image/svg+xml" href="/assets/lion.svg">
+  <link rel="stylesheet" href="/assets/support.css">
+  <style>.bottom-nav .nav-item{width:calc(100% / 7)}.bottom-nav .nav-item span{font-size:.51rem}.bottom-nav .nav-item i{font-size:1rem}@media(max-width:360px){.bottom-nav{width:calc(100% - 12px);padding:3px}.bottom-nav .nav-item span{font-size:.46rem}}</style>
 </head>
 <body>
 
@@ -589,9 +592,13 @@
     <!-- TELA DE AUTENTICAÇÃO -->
     <div id="auth-section" class="auth-container">
       <div class="auth-banner">
-        <svg class="lion-svg-icon" viewBox="0 0 100 100">
-          <path fill="#d4af37" d="M50 10 C30 10, 15 25, 15 45 C15 58, 22 68, 30 75 C32 65, 38 55, 45 52 C42 48, 40 42, 42 36 C45 28, 55 28, 58 36 C60 42, 58 48, 55 52 C62 55, 68 65, 70 75 C78 68, 85 58, 85 45 C85 25, 70 10, 50 10 Z M50 22 C55 22, 58 26, 56 31 C54 36, 46 36, 44 31 C42 26, 45 22, 50 22 Z M50 85 C40 85, 32 80, 28 72 C35 68, 42 62, 50 62 C58 62, 65 68, 72 72 C68 80, 60 85, 50 85 Z"/>
-        </svg>
+        <svg  class="lion-svg-icon"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Leão La Plata">
+  <path fill="#d4af37" d="M50 4 60 10 72 9 78 20 89 25 88 38 96 49 89 60 89 73 77 79 71 91 59 90 50 98 41 90 29 91 23 79 11 73 11 60 4 49 12 38 11 25 22 20 28 9 40 10Z"/>
+  <path fill="#0a0a0c" d="M28 29Q23 18 31 19L41 28Q50 23 59 28L69 19Q77 18 72 29L74 45Q72 70 50 84 28 70 26 45Z"/>
+  <path fill="#d4af37" d="M33 33 39 36Q50 29 61 36L67 33 66 49 62 60 57 65 50 75 43 65 38 60 34 49Z"/>
+  <path fill="#0a0a0c" d="m35 41 10 3-2 5-6-2Zm30 0-10 3 2 5 6-2ZM43 54Q50 50 57 54L53 59H47Z"/>
+  <path d="M50 58v7m0 0q-7 5-12-1m12 1q7 5 12-1" fill="none" stroke="#0a0a0c" stroke-width="3" stroke-linecap="round"/>
+</svg>
         <span class="brand-name">LA PLATA</span>
         <span class="brand-sub">INVESTIMENTOS</span>
       </div>
@@ -668,9 +675,13 @@
           </div>
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 0.9rem; font-weight: 700; color: var(--gold-primary); display: flex; align-items: center; gap: 6px;">
-          <svg style="width: 18px; height: 18px;" viewBox="0 0 100 100">
-            <path fill="#d4af37" d="M50 10 C30 10, 15 25, 15 45 C15 58, 22 68, 30 75 C32 65, 38 55, 45 52 C42 48, 40 42, 42 36 C45 28, 55 28, 58 36 C60 42, 58 48, 55 52 C62 55, 68 65, 70 75 C78 68, 85 58, 85 45 C85 25, 70 10, 50 10 Z"/>
-          </svg>
+          <svg  style="width: 18px; height: 18px;"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Leão La Plata">
+  <path fill="#d4af37" d="M50 4 60 10 72 9 78 20 89 25 88 38 96 49 89 60 89 73 77 79 71 91 59 90 50 98 41 90 29 91 23 79 11 73 11 60 4 49 12 38 11 25 22 20 28 9 40 10Z"/>
+  <path fill="#0a0a0c" d="M28 29Q23 18 31 19L41 28Q50 23 59 28L69 19Q77 18 72 29L74 45Q72 70 50 84 28 70 26 45Z"/>
+  <path fill="#d4af37" d="M33 33 39 36Q50 29 61 36L67 33 66 49 62 60 57 65 50 75 43 65 38 60 34 49Z"/>
+  <path fill="#0a0a0c" d="m35 41 10 3-2 5-6-2Zm30 0-10 3 2 5 6-2ZM43 54Q50 50 57 54L53 59H47Z"/>
+  <path d="M50 58v7m0 0q-7 5-12-1m12 1q7 5 12-1" fill="none" stroke="#0a0a0c" stroke-width="3" stroke-linecap="round"/>
+</svg>
           LA PLATA
         </div>
       </div>
@@ -870,6 +881,8 @@
         </button>
       </div>
 
+      <div id="tab-support" class="tab-content"><div data-support-center="client"></div></div>
+
       <nav class="bottom-nav">
         <div class="nav-item active" onclick="switchTab('home')">
           <i class="fa-solid fa-house"></i>
@@ -891,6 +904,7 @@
           <i class="fa-solid fa-bell"></i>
           <span>Avisos</span>
         </div>
+        <div class="nav-item" onclick="switchTab('support')"><i class="fa-solid fa-headset"></i><span>Suporte</span></div>
         <div class="nav-item" onclick="switchTab('profile')">
           <i class="fa-solid fa-user"></i>
           <span>Perfil</span>
@@ -903,6 +917,7 @@
 
   <script type="module">
     import { auth, db } from "./Js/firebase-config.js";
+    import { activePlanCount } from "./Js/plan-capacity.js";
     import { 
       signInWithEmailAndPassword, 
       createUserWithEmailAndPassword, 
@@ -997,7 +1012,8 @@
         targetTab.style.setProperty('display', 'block', 'important');
       }
 
-      const tabsOrder = ['home', 'myplans', 'affiliates', 'history', 'notifications', 'profile'];
+      const tabsOrder = ['home', 'myplans', 'affiliates', 'history', 'notifications', 'support', 'profile'];
+      if (tabName === 'support') window.supportRefresh?.();
       const activeNavIndex = tabsOrder.indexOf(tabName);
       if (activeNavIndex !== -1) {
         document.querySelectorAll('.nav-item')[activeNavIndex].classList.add('active');
@@ -1575,7 +1591,7 @@
         const limitPerUser = plan.limitPerUser || 0;
         const profit = totalReturn - price;
 
-        const currentCount = cachedMyPlansList.filter(p => p.planId === planId || p.description.includes(plan.title)).length;
+        const currentCount = activePlanCount(cachedMyPlansList, plan);
         const isLimitReached = limitPerUser > 0 && currentCount >= limitPerUser;
 
         let detailBadge = "";
@@ -1610,10 +1626,10 @@
 
             <div style="font-size:0.75rem; color:var(--gold-primary); font-weight:600; text-align:center; background:rgba(212,175,55,0.08); padding:6px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
               <span><i class="fa-solid fa-chart-line"></i> ${detailBadge}</span>
-              ${limitPerUser > 0 ? `<span style="font-size:0.65rem; color:var(--text-muted);">Limite: ${currentCount}/${limitPerUser}</span>` : ''}
+              ${limitPerUser > 0 ? `<span style="font-size:0.65rem; color:var(--text-muted);">Ativos: ${currentCount}/${limitPerUser} · Vagas: ${Math.max(0, limitPerUser-currentCount)}</span>` : ''}
             </div>
 
-            <button class="btn btn-gold" ${isLimitReached ? 'disabled' : ''} onclick="buyPlan('${planId}', '${plan.title}', ${price}, ${durationDays}, ${totalReturn}, '${freq}', ${limitPerUser}, ${currentCount})">
+            <button class="btn btn-gold" ${isLimitReached ? 'disabled' : ''} onclick="buyPlan('${planId}')">
               ${isLimitReached ? '<i class="fa-solid fa-lock"></i> Limite de Aportes Atingido' : 'Investir Agora'}
             </button>
           </div>
@@ -1787,44 +1803,37 @@
       }
     };
 
-    window.buyPlan = async (planId, planTitle, planPrice, durationDays, totalReturn, frequency = 'diario', limitPerUser = 0, currentCount = 0) => {
+    const pendingPurchases = new Set();
+    window.buyPlan = async (planId) => {
       const user = auth.currentUser;
-      if (!user) return showCustomAlert("Atenção", "Usuário não autenticado.");
-
-      if (limitPerUser > 0 && currentCount >= limitPerUser) {
-        return showCustomAlert("Limite Atingido", `Você já atingiu o limite máximo de ${limitPerUser} aquisições para esta carteira.`, "fa-circle-exclamation");
-      }
-
-      const currentBalance = currentUserData.balance || 0;
-      if (planPrice > currentBalance) {
-        return showCustomAlert("Saldo Insuficiente", `Aporte necessário de $${planPrice.toFixed(2)} para esta carteira.`, "fa-circle-exclamation");
-      }
-
-      const now = Date.now();
-      const endDate = now + (durationDays * 24 * 60 * 60 * 1000);
-
+      if (!user) return showCustomAlert("Atenção","Usuário não autenticado.");
+      if (pendingPurchases.has(planId)) return;
+      pendingPurchases.add(planId);
+      const key = "laplata.purchase."+user.uid+"."+planId;
       try {
-        await addDoc(collection(db, "transactions"), {
-          userId: user.uid,
-          planId: planId,
-          type: "produto_adquirido",
-          description: `Aplicação: ${planTitle} (${frequency.toUpperCase()})`,
-          amount: planPrice,
-          totalReturn: totalReturn,
-          frequency: frequency,
-          startDate: now,
-          endDate: endDate,
-          status: "ativo",
-          createdAt: now
+        let requestId = sessionStorage.getItem(key);
+        if (!requestId) {requestId = crypto.randomUUID();sessionStorage.setItem(key,requestId);}
+        const response = await fetch("/api/adquirir-plano",{
+          method:"POST",headers:{"Content-Type":"application/json",Authorization:"Bearer "+await user.getIdToken()},
+          body:JSON.stringify({planId,requestId})
         });
-
-        await updateDoc(doc(db, "users", user.uid), { balance: increment(-planPrice) });
-
-        showCustomAlert("Investimento Efetuado", `Sua aplicação em "${planTitle}" está ativa no formato ${frequency.toUpperCase()}.`, "fa-circle-check");
-      } catch (error) {
-        showCustomAlert("Erro na Aplicação", error.message, "fa-triangle-exclamation");
-      }
+        const data = await response.json();
+        if (!response.ok) {
+          if(response.status>=400&&response.status<500)sessionStorage.removeItem(key);
+          throw new Error(data.error||"Não foi possível realizar o aporte.");
+        }
+        sessionStorage.removeItem(key);
+        showCustomAlert("Aporte confirmado","Seu aporte está ativo. A vaga será liberada ao encerrar o ciclo.","fa-circle-check");
+      } catch(error) {showCustomAlert("Aporte",error.message,"fa-triangle-exclamation");}
+      finally {pendingPurchases.delete(planId);}
     };
+
+    setInterval(() => {
+      if(auth.currentUser && document.visibilityState === "visible") {
+        renderUserMyPlans();
+        renderAdminPlansList();
+      }
+    },30000);
 
     function loadTransactions(uid) {
       const q = query(collection(db, "transactions"), where("userId", "==", uid));
@@ -1925,5 +1934,6 @@
       btnLogout.addEventListener("click", () => signOut(auth));
     }
   </script>
+  <script type="module" src="/Js/support-center.js"></script>
 </body>
 </html>
