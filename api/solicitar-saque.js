@@ -4,6 +4,7 @@ export default async function handler(req,res) {
   try {
     const user=await requireUser(req);
     const amount=Number(req.body?.valor);
+    if(Number.isFinite(amount)&&amount<120) return res.status(400).json({error:'O saque mínimo é de R$ 120,00.'});
     const key=String(req.body?.chavePix || '').trim();
     const type=String(req.body?.tipoChave || '');
     if(!Number.isFinite(amount)||amount<=0||Math.round(amount*100)!==amount*100||key.length<3||key.length>150||!['cpf','cnpj','email','phone','evp','national_registration','telefone','aleatoria'].includes(type)) return res.status(400).json({error:'Dados de saque inválidos'});
