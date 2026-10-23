@@ -14,6 +14,9 @@ export default async function handler(req,res) {
     const receivedBytes = Buffer.from(typeof received === 'string' ? received : '');
     if(!expected || expectedBytes.length !== receivedBytes.length || !timingSafeEqual(expectedBytes, receivedBytes)) return res.status(401).json({error:'Webhook não autorizado'});
     const id = String(req.body?.id || '');
+    // O painel envia um POST de verificação sem transação. Autenticar acima,
+    // confirmar somente o recebimento e nunca consultar o provedor ou creditar.
+    if (!id) return res.status(200).json({received:true,credited:false,ignored:'missing_transaction_id'});
     if(!/^[a-zA-Z0-9-]{10,100}$/.test(id)) return res.status(400).json({error:'ID inválido'});
     const token = process.env.PUSHINPAY_TOKEN;
     const base = process.env.PUSHINPAY_API_BASE || 'https://api-sandbox.pushinpay.com.br/api';
