@@ -539,6 +539,8 @@
           <button class="btn btn-gold" onclick="handlePixDeposit()">
             <i class="fa-solid fa-bolt"></i> Gerar PIX (PushinPay)
           </button>
+          <button class="btn btn-gold" style="margin-top:10px;" onclick="checkPixDeposits()">Já paguei — conferir depósito</button>
+          <p id="pix-check-status" role="status" aria-live="polite" style="font-size:0.8rem;margin-top:8px;color:var(--text-muted);">O saldo e os avisos serão atualizados após a confirmação do pagamento.</p>
         </div>
 
         <div class="action-card animate-enter">
@@ -954,6 +956,7 @@
         loadUserActivePlans(user.uid);
         loadNotifications(user.uid);
         loadAdminPlans();
+        checkPixDeposits(true);
       } else {
         authSection.classList.remove("hidden");
         dashboardSection.classList.add("hidden");
@@ -1454,6 +1457,50 @@
     }
 
     // INTEGRAÇÃO DA PUSHINPAY VIA VERCEL API (Depósito via PIX) - Mínimo R$ 1,00
+
+    let pixCheckInProgress = false;
+    let lastPixCheckAt = 0;
+    window.checkPixDeposits = async (silent = false) => {
+      const user = auth.currentUser;
+      if (!user || pixCheckInProgress) return;
+      const status = document.getElementById("pix-check-status");
+      if (silent && Date.now() - lastPixCheckAt < 60000) return;
+      pixCheckInProgress = true;
+      lastPixCheckAt = Date.now();
+      if (status) status.textContent = "Consultando confirmação do Pix...";
+      try {
+        const response = await fetch("/api/consultar-depositos",{
+          method:"POST",headers:{"Content-Type":"application/json","Authorization":`Bearer ${await user.getIdToken()}`},body:"{}"
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Não foi possível conferir o depósito.");
+        if (auth.currentUser?.uid !== user.uid) return;
+        if (Number.isFinite(result.balance)) {
+          currentUserData.balance = result.balance;
+          document.getElementById("user-balance").innerText = `$ ${result.balance.toFixed(2)}`;
+        }
+        if (result.rateLimited) {
+          if (status) status.textContent = `Aguarde ${result.retryAfterSeconds} segundos para conferir novamente.`;
+          if (!silent) showCustomAlert("Conferência do Pix", `Aguarde ${result.retryAfterSeconds} segundos para uma nova consulta. Pagamentos confirmados também aparecem em Avisos.`);
+        } else if (result.credited || result.receipts) {
+          if (status) status.textContent = "Pagamento confirmado. Confira seu saldo, Extrato e Avisos.";
+          showCustomAlert("Depósito confirmado","Pagamento confirmado. Seu saldo foi atualizado e o comprovante está em Extrato e Avisos.","fa-circle-check");
+        } else {
+          const message = result.failed ? "A confirmação não pôde ser consultada agora. Tente novamente em um minuto."
+            : result.pending ? "Aguardando confirmação da PushinPay. Se já pagou, confira novamente em um minuto. Não é necessário pagar de novo."
+            : "Não há depósitos pendentes de confirmação.";
+          if (status) status.textContent = message;
+          if (!silent) showCustomAlert("Conferência do Pix",message);
+        }
+      } catch(error) {
+        if (status) status.textContent = "Não foi possível conferir o depósito agora.";
+        if (!silent) showCustomAlert("Conferência do Pix",error.message,"fa-triangle-exclamation");
+      } finally {pixCheckInProgress = false;}
+    };
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible" && auth.currentUser) checkPixDeposits(true);
+    });
+
     window.handlePixDeposit = async () => {
       const user = auth.currentUser;
       if (!user) return showCustomAlert("Atenção", "Usuário não autenticado.");
@@ -1511,6 +1558,8 @@
           </div>
 
           <button class="btn btn-gold" onclick="copyPixCode()"><i class="fa-solid fa-copy"></i> Copiar Código PIX</button>
+          <button class="btn btn-gold" style="margin-top:10px;" onclick="checkPixDeposits()">Já paguei — conferir depósito</button>
+          <p style="font-size:0.8rem;margin-top:10px;">A confirmação aparecerá no saldo, Extrato e Avisos. Não pague o mesmo depósito novamente.</p>
         </div>
       `;
 
