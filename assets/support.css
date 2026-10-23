@@ -1,0 +1,48 @@
+/* Atendimento La Plata: mesma paleta do aplicativo. */
+[data-support-center]{color:var(--text-main);font-size:.85rem;line-height:1.6}
+.support-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px}
+.support-heading h2{font-size:1.2rem;line-height:1.4;margin:0 0 6px;color:var(--gold-primary)}
+.support-heading p,.support-tip,.support-login p{color:var(--text-muted);font-size:.75rem}
+.support-secondary{border:1px solid var(--border-gold);color:var(--gold-primary);background:rgba(212,175,55,.04);border-radius:10px;padding:10px 12px;min-height:42px;cursor:pointer;font:inherit;font-size:.75rem}
+.support-feedback{margin:10px 0;overflow-wrap:anywhere;color:var(--gold-light,var(--gold-primary))}
+.support-feedback:empty{display:none}
+.support-new,.support-login,.support-detail{background:var(--bg-card);border:1px solid var(--bg-card-border);padding:18px;border-radius:18px;margin-top:16px}
+[data-support-center] label{display:block;margin:14px 0 6px;font-size:.75rem}
+[data-support-center] textarea{resize:vertical;line-height:1.7}
+[data-support-center] .btn{margin-top:14px}
+.support-form-row,.support-toolbar{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.support-form-row>div,.support-toolbar>label{min-width:0}
+.support-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
+.support-stat{border:1px solid var(--bg-card-border);border-radius:14px;padding:14px;background:var(--bg-card);display:flex;flex-direction:column;gap:3px}
+.support-stat strong{font-size:1.5rem;color:var(--gold-primary)}
+.support-stat span{font-size:.7rem;color:var(--text-muted)}
+.support-toolbar{margin-bottom:14px}
+.support-toolbar input,.support-toolbar select{margin-top:7px}
+.support-ticket-list{display:flex;flex-direction:column;gap:10px}
+.support-ticket{display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:6px;background:var(--bg-card);border:1px solid var(--bg-card-border);border-radius:14px;padding:14px;color:var(--text-main);cursor:pointer;width:100%;font:inherit;overflow-wrap:anywhere}
+.support-ticket.selected{border-color:var(--gold-primary);background:rgba(212,175,55,.05)}
+.support-protocol,.support-meta{color:var(--text-muted);font-size:.68rem;overflow-wrap:anywhere}
+.support-ticket strong{font-size:.83rem}
+.support-state{display:inline-block;border:1px solid var(--border-gold);border-radius:20px;padding:3px 9px;color:var(--gold-primary);font-size:.65rem;white-space:nowrap}
+.support-state[data-status="resolvido"]{background:rgba(212,175,55,.1)}
+.support-detail-heading{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.support-detail-heading h3{font-size:1rem;overflow-wrap:anywhere;line-height:1.5}
+.support-detail-heading>div{min-width:0}
+.support-detail-heading p{font-size:.66rem;color:var(--text-muted);margin-bottom:6px}
+.support-detail>.support-meta{margin-top:10px}
+.support-messages{max-height:430px;overflow-y:auto;overscroll-behavior:contain;margin:18px 0;display:flex;flex-direction:column;gap:12px;padding-right:4px}
+.support-message{padding:12px 14px;border:1px solid var(--bg-card-border);border-radius:14px;background:var(--bg-input);max-width:95%;align-self:flex-start;overflow-wrap:anywhere}
+.support-message-admin{border-color:var(--border-gold);align-self:flex-end;background:rgba(212,175,55,.05)}
+.support-message-sistema{align-self:center;background:transparent;font-size:.7rem;border-style:dashed}
+.support-message p{white-space:pre-wrap;margin:7px 0;line-height:1.7}
+.support-message small{color:var(--gold-primary);font-size:.65rem;font-weight:700}
+.support-message time{color:var(--text-muted);font-size:.6rem}
+.support-internal{border-style:dashed}
+.support-status-actions{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;margin-top:15px}
+.support-status-actions>label{min-width:160px;flex:1}
+.support-note-check{display:flex!important;align-items:center;gap:8px}
+.support-empty{padding:20px;color:var(--text-muted);text-align:center}
+.support-login form{display:grid;gap:8px}
+.support-login h3{font-size:.95rem}
+@media(min-width:900px){.admin-container:has(#admin-tab-support:not(.hidden)){max-width:1100px}[data-support-center="admin"] .support-workspace{display:grid;grid-template-columns:300px minmax(0,1fr);gap:20px;align-items:start}[data-support-center="admin"] .support-detail{margin-top:0}}
+@media(max-width:360px){.support-heading{flex-wrap:wrap}.support-form-row,.support-toolbar{grid-template-columns:1fr}.support-detail-heading{flex-direction:column}}
