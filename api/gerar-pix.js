@@ -16,9 +16,15 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { valor, userId } = req.body;
+    // Trata o corpo da requisição independentemente de como o front-end o envia
+    const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+    
+    // Aceita 'valor', 'amount' ou 'value' enviados pelo front-end
+    const rawValor = body.valor || body.amount || body.value;
+    const userId = body.userId;
 
-    if (!valor || valor <= 0) {
+    const valorNumerico = Number(rawValor);
+    if (!rawValor || isNaN(valorNumerico) || valorNumerico <= 0) {
       return res.status(400).json({ error: 'Valor inválido para depósito.' });
     }
 
@@ -27,9 +33,8 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Token da PushinPay não configurado na Vercel.' });
     }
 
-    // O valor na PushinPay normalmente é enviado em centavos (ex: R$ 10,00 = 1000)
-    // Se o seu painel enviar em reais, ajuste conforme a documentação deles.
-    const valorEmCentavos = Math.round(Number(valor) * 100);
+    // Converte o valor para centavos exigidos pela PushinPay
+    const valorEmCentavos = Math.round(valorNumerico * 100);
 
     const response = await fetch('https://api.pushinpay.com.br/api/v1/pix/cash-in', {
       method: 'POST',
@@ -39,23 +44,21 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        value: valorEmCentavos,
-        webhook_url: "" // Insira o seu webhook se necessário
+        value: valorEmCentavos
       })
     });
 
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || 'Erro ao gerar PIX na PushinPay.');
+      throw new Error(data.message || JSON.stringify(data) || 'Erro ao gerar PIX na PushinPay.');
     }
 
-    // Retorna os dados do PIX para o front-end (QR Code e copia e cola)
     return res.status(200).json({
       success: true,
       idTransacao: data.id || data.transaction_id,
-      qrCode: data.qr_code_base64 || data.qr_code,
-      copiaECola: data.qr_code || data.emv
+      qrCode: data.qr_code_base64 || data.qr_code || data.emv,
+      copiaECola: data.qr_code || data.emv || data.qr_code_base64
     });
 
   } catch (error) {
