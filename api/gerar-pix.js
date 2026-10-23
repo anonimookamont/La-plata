@@ -1,4 +1,5 @@
 export default async function handler(req, res) {
+  // Cabeçalhos CORS para permitir requisições do site
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -18,18 +19,21 @@ export default async function handler(req, res) {
   try {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
     const { transaction_amount, description, email } = body || {};
-
-    const accessToken = process.env.MERCADO_PAGO_TOKEN;
+    
+    // Procura o token limpo de espaços
+    const rawToken = process.env.MERCADO_PAGO_TOKEN || '';
+    const accessToken = rawToken.trim();
 
     if (!accessToken) {
-      return res.status(500).json({ error: 'Token do Mercado Pago não configurado na Vercel.' });
+      return res.status(500).json({ error: 'Token do Mercado Pago ausente nas variáveis da Vercel.' });
     }
 
-    const mpResponse = await fetch('https://api.mercadopago.com/v1/payments', {
+    const response = await fetch('https://api.mercadopago.com/v1/payments', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${accessToken.trim()}`,
-        'Content-Type': 'application/json'
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+        'X-Idempotency-Key': `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
       },
       body: JSON.stringify({
         transaction_amount: Number(transaction_amount),
@@ -41,10 +45,13 @@ export default async function handler(req, res) {
       })
     });
 
-    const data = await mpResponse.json();
+    const data = await response.json();
 
-    if (!mpResponse.ok) {
-      return res.status(mpResponse.status).json({ error: data.message || 'Erro no Mercado Pago' });
+    if (!response.ok) {
+      return res.status(response.status).json({ 
+        error: data.message || 'Erro de autorização no Mercado Pago.',
+        details: data
+      });
     }
 
     return res.status(200).json(data);
