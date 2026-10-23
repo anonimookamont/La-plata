@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -19,15 +21,18 @@ export default async function handler(req, res) {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
     const { transaction_amount, description, email, userId } = body;
 
-    // Garante um valor mínimo de 5.00 para evitar o erro 'bad_request' do Mercado Pago
     const valorFinal = Number(transaction_amount) >= 1 ? Number(transaction_amount) : 5.00;
     const emailFinal = email && email.includes('@') ? email : 'cliente@email.com';
+
+    // Gera a chave de idempotência única exigida pelo Mercado Pago
+    const idempotencyKey = crypto.randomUUID();
 
     const response = await fetch('https://api.mercadopago.com/v1/payments', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.MERCADO_PAGO_TOKEN}`
+        'Authorization': `Bearer ${process.env.MERCADO_PAGO_TOKEN}`,
+        'X-Idempotency-Key': idempotencyKey
       },
       body: JSON.stringify({
         transaction_amount: valorFinal,
