@@ -14,8 +14,20 @@ export function services() {
 export async function requireUser(req) {
   const match = /^Bearer (.+)$/.exec(req.headers.authorization || '');
   if (!match) throw Object.assign(new Error('Autenticação necessária'), { status: 401 });
-  try { return await services().auth.verifyIdToken(match[1], true); }
-  catch { throw Object.assign(new Error('Sessão inválida'), { status: 401 }); }
+  let auth;
+  try { auth = services().auth; }
+  catch (error) {
+    console.error('firebase_admin_init_failed', {code: String(error.code || 'initialization_error')});
+    throw Object.assign(new Error('Configuração do servidor Firebase inválida. Contate o administrador.'), {status:503});
+  }
+  try { return await auth.verifyIdToken(match[1], true); }
+  catch (error) {
+    const code = String(error.code || 'verification_error');
+    console.error('firebase_token_verification_failed', {code});
+    const serverError = ['auth/invalid-credential', 'auth/insufficient-permission', 'app/invalid-credential', 'auth/internal-error'].includes(code);
+    const expired = ['auth/id-token-expired', 'auth/id-token-revoked', 'auth/user-disabled'].includes(code);
+    throw Object.assign(new Error(serverError ? 'Falha na configuração de autenticação do servidor.' : expired ? 'Sessão expirada ou encerrada. Saia e entre novamente.' : 'Sessão inválida. Saia e entre novamente.'), {status:serverError ? 503 : 401});
+  }
 }
 export async function providerJson(url, options) {
   const response = await fetch(url, { ...options, signal: AbortSignal.timeout(15000) });
