@@ -5,7 +5,7 @@ export default async function handler(req, res) {
     const user = await requireUser(req);
     const amount = Number(req.body?.valor);
     const cents = Math.round(amount * 100);
-    if (!Number.isFinite(amount) || amount < 1 || !Number.isSafeInteger(cents) || Math.abs(amount * 100 - cents) > 1e-7) return res.status(400).json({error:'Valor inválido (mínimo R$ 1,00, duas casas decimais)'});
+    if (!Number.isFinite(amount) || amount < 80 || !Number.isSafeInteger(cents) || Math.abs(amount * 100 - cents) > 1e-7) return res.status(400).json({error:'Valor inválido (mínimo R$ 80,00, duas casas decimais)'});
     const token = process.env.PUSHINPAY_TOKEN;
     if (!token) throw new Error('PUSHINPAY_TOKEN ausente');
     const base = process.env.PUSHINPAY_API_BASE || 'https://api-sandbox.pushinpay.com.br/api';
