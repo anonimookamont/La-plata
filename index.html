@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lá Plata - Investimentos</title>
+  <title>La Plata - Investimentos</title>
   <!-- Google Fonts, FontAwesome & Chart.js -->
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   
@@ -27,6 +27,15 @@
       --nav-height: 68px;
     }
 
+    /* TEMA VIP - ATIVADO DINAMICAMENTE QUANDO USER FOR VIP */
+    body.theme-vip {
+      --bg-dark: #050508;
+      --bg-card: #0f0f18;
+      --bg-card-border: #322610;
+      --gold-primary: #f59e0b;
+      --border-gold: rgba(245, 158, 11, 0.5);
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
     body { background-color: #000000; color: var(--text-main); min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; }
     
@@ -40,6 +49,7 @@
       border-left: 1px solid #1a1a22;
       border-right: 1px solid #1a1a22;
       overflow-x: hidden;
+      transition: background-color 0.4s ease;
     }
 
     .app-viewport.logged-in {
@@ -48,16 +58,10 @@
 
     .hidden { display: none !important; }
 
-    /* ANIMAÇÃO DE ENTRADA SUAVE (FADE-IN & SLIDE UP) */
+    /* ANIMAÇÃO DE ENTRADA SUAVE */
     @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(14px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .animate-enter {
@@ -131,25 +135,11 @@
     .form-control:focus { outline: none; border-color: var(--gold-primary); box-shadow: 0 0 10px rgba(212, 175, 55, 0.15); }
     
     .toggle-password {
-      position: absolute;
-      right: 14px;
-      color: var(--text-muted);
-      cursor: pointer;
-      font-size: 1rem;
+      position: absolute; right: 14px; color: var(--text-muted); cursor: pointer; font-size: 1rem;
     }
 
     .ref-toggle-btn {
-      color: var(--gold-primary);
-      font-size: 0.8rem;
-      font-weight: 600;
-      background: none;
-      border: none;
-      padding: 0;
-      cursor: pointer;
-      margin-bottom: 10px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      color: var(--gold-primary); font-size: 0.8rem; font-weight: 600; background: none; border: none; padding: 0; cursor: pointer; margin-bottom: 10px; display: inline-flex; align-items: center; gap: 6px;
     }
 
     .btn {
@@ -171,21 +161,15 @@
       color: #000000;
       box-shadow: 0 4px 15px rgba(212, 175, 55, 0.25);
     }
-    .btn-gold:active { transform: scale(0.98); }
+    .btn-gold:disabled {
+      background: #2a2a35 !important;
+      color: #666 !important;
+      box-shadow: none !important;
+      cursor: not-allowed;
+    }
 
-    .auth-switch-text {
-      text-align: center;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-top: 16px;
-      margin-bottom: 30px;
-    }
-    .auth-switch-link {
-      color: var(--gold-primary);
-      font-weight: 700;
-      cursor: pointer;
-      text-decoration: none;
-    }
+    .auth-switch-text { text-align: center; font-size: 0.8rem; color: var(--text-muted); margin-top: 16px; margin-bottom: 30px; }
+    .auth-switch-link { color: var(--gold-primary); font-weight: 700; cursor: pointer; text-decoration: none; }
 
     /* HEADER & DASHBOARD */
     .app-header {
@@ -217,9 +201,19 @@
     .avatar img { width: 100%; height: 100%; object-fit: cover; }
 
     .greeting { font-size: 0.7rem; color: var(--text-muted); }
-    .user-name-title { font-size: 0.9rem; font-weight: 700; color: var(--text-main); }
+    .user-name-title { font-size: 0.9rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 6px; }
 
-    /* SELETOR DE ABAS SUPERIORES ESTILO PÍLULA (CORES DOURADAS DO SITE) */
+    .vip-badge {
+      background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
+      color: #000;
+      font-size: 0.55rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    /* SELETOR DE ABAS SUPERIORES ESTILO PÍLULA */
     .pill-tabs-nav {
       display: flex;
       background: #14141c;
@@ -262,6 +256,11 @@
       overflow: hidden;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
+    body.theme-vip .balance-card {
+      background: linear-gradient(135deg, #201300 0%, #090600 100%);
+      border-color: #f59e0b;
+    }
+
     .balance-title { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
     .balance-value { font-size: 2rem; font-weight: 800; color: #ffffff; margin: 6px 0 2px 0; }
     .balance-growth { font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; margin-top: 4px; color: var(--gold-primary); }
@@ -300,7 +299,6 @@
       gap: 12px;
       transition: transform 0.2s ease;
     }
-    .plan-card:active { transform: scale(0.99); }
     .plan-header { display: flex; justify-content: space-between; align-items: center; }
     .plan-title { font-size: 1rem; font-weight: 700; color: #fff; }
     .plan-duration { font-size: 0.7rem; background: rgba(212, 175, 55, 0.12); color: var(--gold-primary); padding: 3px 8px; border-radius: 20px; font-weight: 600; border: 1px solid rgba(212, 175, 55, 0.2); }
@@ -407,9 +405,7 @@
       background: #0d0d12; border-top: 1px solid #1c1c26; display: none; justify-space: space-around;
       align-items: center; z-index: 100;
     }
-    .logged-in .bottom-nav {
-      display: flex !important;
-    }
+    .logged-in .bottom-nav { display: flex !important; }
     .nav-item {
       display: flex; flex-direction: column; align-items: center; gap: 3px;
       color: var(--text-muted); text-decoration: none; font-size: 0.55rem; font-weight: 600;
@@ -438,7 +434,7 @@
         <svg class="lion-svg-icon" viewBox="0 0 100 100">
           <path fill="#d4af37" d="M50 10 C30 10, 15 25, 15 45 C15 58, 22 68, 30 75 C32 65, 38 55, 45 52 C42 48, 40 42, 42 36 C45 28, 55 28, 58 36 C60 42, 58 48, 55 52 C62 55, 68 65, 70 75 C78 68, 85 58, 85 45 C85 25, 70 10, 50 10 Z M50 22 C55 22, 58 26, 56 31 C54 36, 46 36, 44 31 C42 26, 45 22, 50 22 Z M50 85 C40 85, 32 80, 28 72 C35 68, 42 62, 50 62 C58 62, 65 68, 72 72 C68 80, 60 85, 50 85 Z"/>
         </svg>
-        <span class="brand-name">LÁ PLATA</span>
+        <span class="brand-name">LA PLATA</span>
         <span class="brand-sub">INVESTIMENTOS</span>
       </div>
 
@@ -507,14 +503,17 @@
           </div>
           <div>
             <div class="greeting">Olá, bem-vindo!</div>
-            <div class="user-name-title" id="user-name">Investidor</div>
+            <div class="user-name-title">
+              <span id="user-name">Investidor</span>
+              <span id="vip-badge-tag" class="vip-badge hidden"><i class="fa-solid fa-crown"></i> VIP</span>
+            </div>
           </div>
         </div>
         <div style="font-family: 'Cinzel', serif; font-size: 0.9rem; font-weight: 700; color: var(--gold-primary); display: flex; align-items: center; gap: 6px;">
           <svg style="width: 18px; height: 18px;" viewBox="0 0 100 100">
             <path fill="#d4af37" d="M50 10 C30 10, 15 25, 15 45 C15 58, 22 68, 30 75 C32 65, 38 55, 45 52 C42 48, 40 42, 42 36 C45 28, 55 28, 58 36 C60 42, 58 48, 55 52 C62 55, 68 65, 70 75 C78 68, 85 58, 85 45 C85 25, 70 10, 50 10 Z"/>
           </svg>
-          LÁ PLATA
+          LA PLATA
         </div>
       </div>
 
@@ -559,13 +558,12 @@
             <i class="fa-solid fa-paper-plane"></i> Pedir Saque
           </button>
           <div class="rule-notice" id="withdraw-fee-notice">
-            <i class="fa-solid fa-circle-info"></i> <b>Taxa Fixo de Saque:</b> É cobrada taxa administrativa de <b>12%</b> sobre qualquer saque. Mínimo de $150.00 com prazo de até 72h.
+            <i class="fa-solid fa-circle-info"></i> <span id="withdraw-rule-desc"><b>Taxa Fixo de Saque:</b> Taxa de <b>12%</b> sobre qualquer saque. Mínimo de $150.00 com prazo de até 72h.</span>
           </div>
         </div>
 
         <div class="section-header"><i class="fa-solid fa-cubes"></i> Carteiras Recomendadas</div>
         
-        <!-- SELETOR DE FREQUÊNCIA DOS PLANOS DOURADO -->
         <div class="pill-tabs-nav animate-enter">
           <button class="pill-tab-btn active" id="btn-home-freq-diario" onclick="filterHomePlansByFreq('diario')">Diários</button>
           <button class="pill-tab-btn" id="btn-home-freq-semanal" onclick="filterHomePlansByFreq('semanal')">Semanais</button>
@@ -577,11 +575,10 @@
         </div>
       </div>
 
-      <!-- ABA 2: MEUS PLANOS (ATIVOS X TERMINADOS) -->
+      <!-- ABA 2: MEUS PLANOS -->
       <div id="tab-myplans" class="tab-content">
         <div class="section-header"><i class="fa-solid fa-chart-pie"></i> Meus Investimentos</div>
         
-        <!-- SELETOR ATIVOS vs TERMINADOS -->
         <div class="pill-tabs-nav animate-enter">
           <button class="pill-tab-btn active" id="btn-myplans-ativos" onclick="switchMyPlansTab('ativos')">Planos Ativos</button>
           <button class="pill-tab-btn" id="btn-myplans-terminados" onclick="switchMyPlansTab('terminados')">Planos Terminados</button>
@@ -598,7 +595,7 @@
         
         <div class="affiliate-box animate-enter">
           <h4 style="font-size: 0.9rem; color: var(--gold-primary); margin-bottom: 4px;">Comissão Automática sobre Planos</h4>
-          <p style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.4;">Compartilhe seu link exclusivo. Quando um indicado concluir um investimento, a porcentagem de comissão configurada é creditada direto no seu saldo!</p>
+          <p style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.4;" id="affiliate-desc-text">Compartilhe seu link exclusivo. Quando um indicado concluir um investimento, a porcentagem de comissão configurada é creditada direto no seu saldo!</p>
           
           <div class="affiliate-link-container">
             <input type="text" id="my-ref-link" class="affiliate-link-input" readonly placeholder="Gerando seu link...">
@@ -742,7 +739,7 @@
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     let isSignUp = true;
-    let currentUserData = { balance: 0, refCode: "", referredBy: null };
+    let currentUserData = { balance: 0, refCode: "", referredBy: null, isVip: false };
     let yieldCartesianChartInstance = null;
     let affiliateChartInstance = null;
     let currentHomePlansFreq = "diario";
@@ -764,16 +761,10 @@
     window.maskPhone = (input) => {
       let value = input.value.replace(/\D/g, "");
       if (value.length > 11) value = value.slice(0, 11);
-      
-      if (value.length > 6) {
-        input.value = `(${value.slice(0, 2)}) ${value.slice(2, 7)}-${value.slice(7)}`;
-      } else if (value.length > 2) {
-        input.value = `(${value.slice(0, 2)}) ${value.slice(2)}`;
-      } else if (value.length > 0) {
-        input.value = `(${value}`;
-      } else {
-        input.value = "";
-      }
+      if (value.length > 6) input.value = `(${value.slice(0, 2)}) ${value.slice(2, 7)}-${value.slice(7)}`;
+      else if (value.length > 2) input.value = `(${value.slice(0, 2)}) ${value.slice(2)}`;
+      else if (value.length > 0) input.value = `(${value}`;
+      else input.value = "";
     };
 
     window.togglePasswordVisibility = () => {
@@ -789,20 +780,21 @@
     };
 
     window.toggleRefInput = () => {
-      const refGroup = document.getElementById("ref-group");
-      refGroup.classList.toggle("hidden");
+      document.getElementById("ref-group").classList.toggle("hidden");
     };
 
     window.calculateWithdrawFeePreview = () => {
       const val = parseFloat(document.getElementById("withdraw-amount").value) || 0;
       const noticeElem = document.getElementById("withdraw-fee-notice");
+      const isVip = currentUserData.isVip || false;
+      const taxRate = isVip ? 0.07 : 0.12;
 
       if (val > 0) {
-        const tax = val * 0.12;
+        const tax = val * taxRate;
         const net = val - tax;
-        noticeElem.innerHTML = `<i class="fa-solid fa-calculator"></i> <b>Cálculo do Resgate:</b> Solicitado: <b>$${val.toFixed(2)}</b> | Taxa (12%): <b style="color:#ef4444;">-$${tax.toFixed(2)}</b> | Você recebe no PIX: <b style="color:#10b981;">$${net.toFixed(2)}</b>`;
+        noticeElem.innerHTML = `<i class="fa-solid fa-calculator"></i> <b>Cálculo do Resgate (${isVip ? 'VIP 7%' : '12%'}):</b> Solicitado: <b>$${val.toFixed(2)}</b> | Taxa: <b style="color:#ef4444;">-$${tax.toFixed(2)}</b> | Líquido no PIX: <b style="color:#10b981;">$${net.toFixed(2)}</b>`;
       } else {
-        noticeElem.innerHTML = `<i class="fa-solid fa-circle-info"></i> <b>Taxa Fixo de Saque:</b> É cobrada taxa administrativa de <b>12%</b> sobre qualquer saque. Mínimo de $150.00 com prazo de até 72h.`;
+        noticeElem.innerHTML = `<i class="fa-solid fa-circle-info"></i> <b>Regra de Saque ${isVip ? 'VIP' : 'Padrão'}:</b> Taxa de <b>${isVip ? '7%' : '12%'}</b>. Mínimo de $150.00 com prazo de até <b>${isVip ? '24h Exclusivo' : '72h'}</b>.`;
       }
     };
 
@@ -816,8 +808,7 @@
     });
 
     window.switchTab = (tabName) => {
-      const allTabs = document.querySelectorAll('.tab-content');
-      allTabs.forEach(el => {
+      document.querySelectorAll('.tab-content').forEach(el => {
         el.classList.remove('active');
         el.style.setProperty('display', 'none', 'important');
       });
@@ -828,14 +819,6 @@
       if (targetTab) {
         targetTab.classList.add('active');
         targetTab.style.setProperty('display', 'block', 'important');
-        
-        // Re-aplica animação de entrada em todos os filhos
-        const animatedElems = targetTab.querySelectorAll('.animate-enter');
-        animatedElems.forEach(el => {
-          el.style.animation = 'none';
-          el.offsetHeight; // Triggers reflow
-          el.style.animation = null;
-        });
       }
 
       const tabsOrder = ['home', 'myplans', 'affiliates', 'history', 'notifications', 'profile'];
@@ -845,52 +828,43 @@
       }
     };
 
-    // FILTRO DE CARTEIRAS RECOMENDADAS NA ABA INÍCIO
     window.filterHomePlansByFreq = (freq) => {
       currentHomePlansFreq = freq;
       document.getElementById('btn-home-freq-diario').classList.remove('active');
       document.getElementById('btn-home-freq-semanal').classList.remove('active');
       document.getElementById('btn-home-freq-mensal').classList.remove('active');
-
       document.getElementById(`btn-home-freq-${freq}`).classList.add('active');
       renderAdminPlansList();
     };
 
-    // FILTRO DOS MEUS PLANOS (ATIVOS X TERMINADOS)
     window.switchMyPlansTab = (mode) => {
       currentMyPlansFilter = mode;
       document.getElementById('btn-myplans-ativos').classList.remove('active');
       document.getElementById('btn-myplans-terminados').classList.remove('active');
-
       document.getElementById(`btn-myplans-${mode}`).classList.add('active');
       renderUserMyPlans();
     };
 
     const btnToggleMode = document.getElementById("btn-toggle-mode");
-    const nameGroup = document.getElementById("name-group");
-    const phoneGroup = document.getElementById("phone-group");
-    const refToggleContainer = document.getElementById("ref-toggle-container");
-    const refGroup = document.getElementById("ref-group");
-
     if (btnToggleMode) {
       btnToggleMode.addEventListener("click", () => {
         isSignUp = !isSignUp;
         if (isSignUp) {
           document.getElementById("auth-main-title").innerText = "Criar conta";
           document.getElementById("auth-main-subtitle").innerText = "Comece a investir na plataforma em minutos";
-          nameGroup.classList.remove("hidden");
-          phoneGroup.classList.remove("hidden");
-          refToggleContainer.classList.remove("hidden");
+          document.getElementById("name-group").classList.remove("hidden");
+          document.getElementById("phone-group").classList.remove("hidden");
+          document.getElementById("ref-toggle-container").classList.remove("hidden");
           document.getElementById("btn-submit-label").innerText = "Criar conta";
           document.getElementById("auth-switch-msg").innerText = "Já tem conta?";
           btnToggleMode.innerText = "Entrar";
         } else {
           document.getElementById("auth-main-title").innerText = "Entrar";
           document.getElementById("auth-main-subtitle").innerText = "Acesse sua conta para gerenciar seus investimentos";
-          nameGroup.classList.add("hidden");
-          phoneGroup.classList.add("hidden");
-          refToggleContainer.classList.add("hidden");
-          refGroup.classList.add("hidden");
+          document.getElementById("name-group").classList.add("hidden");
+          document.getElementById("phone-group").classList.add("hidden");
+          document.getElementById("ref-toggle-container").classList.add("hidden");
+          document.getElementById("ref-group").classList.add("hidden");
           document.getElementById("btn-submit-label").innerText = "Entrar";
           document.getElementById("auth-switch-msg").innerText = "Ainda não tem conta?";
           btnToggleMode.innerText = "Criar conta";
@@ -908,8 +882,7 @@
         const refInput = document.getElementById("auth-ref").value.trim().toUpperCase();
 
         if (!emailInput || !passwordInput) {
-          showCustomAlert("Atenção", "Preencha o e-mail e a senha.", "fa-circle-exclamation");
-          return;
+          return showCustomAlert("Atenção", "Preencha o e-mail e a senha.", "fa-circle-exclamation");
         }
 
         try {
@@ -930,13 +903,14 @@
               refCode: generatedRefCode,
               referredBy: refInput || null,
               customCommission: 5,
+              isVip: false,
               createdAt: Date.now()
             }, { merge: true });
 
             await addDoc(collection(db, "transactions"), {
               userId: res.user.uid,
               type: "notificacao",
-              description: "Bem-vindo à LÁ PLATA INVESTIMENTOS! Sua conta foi criada com sucesso.",
+              description: "Bem-vindo à LA PLATA INVESTIMENTOS! Sua conta foi criada com sucesso.",
               amount: 0.00,
               status: "concluido",
               createdAt: Date.now()
@@ -985,6 +959,16 @@
           currentUserData = data;
           const name = data.name || "Investidor";
           const photoURL = data.photoURL || "";
+          const isVip = data.isVip || false;
+
+          // ATIVAÇÃO DO TEMA E INDICADORES VIP
+          if (isVip) {
+            document.body.classList.add("theme-vip");
+            document.getElementById("vip-badge-tag").classList.remove("hidden");
+          } else {
+            document.body.classList.remove("theme-vip");
+            document.getElementById("vip-badge-tag").classList.add("hidden");
+          }
           
           let refCode = data.refCode;
           if (!refCode) {
@@ -997,6 +981,8 @@
           document.getElementById("profile-phone").value = data.phone || "Não informado";
           document.getElementById("profile-refcode").value = refCode;
           document.getElementById("user-balance").innerText = `$ ${(data.balance || 0).toFixed(2)}`;
+
+          calculateWithdrawFeePreview();
 
           const referrerInput = document.getElementById("profile-referrer-input");
           if (data.referredBy) {
@@ -1024,6 +1010,7 @@
           }
 
           loadAffiliateData(refCode, uid);
+          renderAdminPlansList(); // Atualiza botões de limite com dados da conta
         }
       });
     }
@@ -1048,9 +1035,7 @@
       }
 
       try {
-        await updateDoc(doc(db, "users", user.uid), {
-          referredBy: refCodeInput
-        });
+        await updateDoc(doc(db, "users", user.uid), { referredBy: refCodeInput });
         showCustomAlert("Sucesso", "Padrinho vinculado com sucesso!", "fa-circle-check");
       } catch (err) {
         showCustomAlert("Erro", err.message);
@@ -1085,6 +1070,7 @@
           cachedMyPlansList.push(docSnap.data());
         });
         renderUserMyPlans();
+        renderAdminPlansList(); // Atualiza contador de limites por plano
       });
     }
 
@@ -1141,7 +1127,7 @@
             </div>
           </div>
 
-          <div style="font-size:0.7rem; color:var(--text-muted); display:flex; justify-content:space-between;">
+          <div style="font-size:0.7rem; color:var(--text-muted); display:flex; justify-space-between;">
             <span>Modo: <b style="color:var(--gold-primary);">${freqText}</b></span>
             <span>Término: <b>${new Date(endDate).toLocaleDateString('pt-BR')}</b></span>
           </div>
@@ -1159,7 +1145,6 @@
 
         container.appendChild(cardElem);
 
-        // Animação gradual de preenchimento da barra de progresso
         setTimeout(() => {
           const fillBar = document.getElementById(`bar-fill-${count}`);
           if (fillBar) fillBar.style.width = `${progressPercent}%`;
@@ -1182,10 +1167,7 @@
         if (!user) return;
 
         try {
-          await setDoc(doc(db, "users", user.uid), { 
-            photoURL: base64Image 
-          }, { merge: true });
-
+          await setDoc(doc(db, "users", user.uid), { photoURL: base64Image }, { merge: true });
           showCustomAlert("Sucesso", "Foto de perfil atualizada!", "fa-circle-check");
         } catch (error) {
           showCustomAlert("Erro", "Erro ao salvar foto: " + error.message, "fa-circle-exclamation");
@@ -1215,7 +1197,7 @@
             referralsListElem.innerHTML += `
               <div class="data-card animate-enter">
                 <div class="data-info">
-                  <span class="data-title">${refUser.name}</span>
+                  <span class="data-title">${refUser.name} ${refUser.isVip ? '<span class="vip-badge">VIP</span>' : ''}</span>
                   <span class="data-sub">Cadastrado em: ${date}</span>
                 </div>
                 <span class="badge badge-ativo">Ativo</span>
@@ -1238,7 +1220,6 @@
           });
 
           document.getElementById("affiliate-earnings-total").innerText = `$ ${totalEarnings.toFixed(2)}`;
-          
           const commGrowth = totalEarnings > 0 ? 100 : 0;
           document.getElementById("affiliate-growth-label").innerText = `+${commGrowth.toFixed(1)}% de ganhos acumulados`;
 
@@ -1247,7 +1228,6 @@
       });
     }
 
-    // GRÁFICO DE COMISSÕES COM ANIMAÇÃO DOURADA
     function renderAffiliateCommissionChart(commissions) {
       const ctx = document.getElementById("affiliateCommissionCartesianChart").getContext("2d");
       const sorted = [...commissions].sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0));
@@ -1288,10 +1268,7 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          animation: {
-            duration: 1200,
-            easing: 'easeInOutQuart'
-          },
+          animation: { duration: 1200, easing: 'easeInOutQuart' },
           plugins: { legend: { display: false } },
           scales: {
             x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#8e8ea0', font: { size: 9 } } },
@@ -1301,7 +1278,6 @@
       });
     }
 
-    // GRÁFICO PRINCIPAL DE PATRIMÔNIO COM ANIMAÇÃO FLUIDA DE DESENHO
     function renderUserCartesianChart(transactions) {
       const ctx = document.getElementById("userYieldCartesianChart").getContext("2d");
       const sorted = [...transactions].sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0));
@@ -1364,10 +1340,7 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          animation: {
-            duration: 1200,
-            easing: 'easeInOutQuart'
-          },
+          animation: { duration: 1200, easing: 'easeInOutQuart' },
           plugins: { legend: { display: false } },
           scales: {
             x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#8e8ea0', font: { size: 9 } } },
@@ -1423,7 +1396,12 @@
         const durationDays = plan.durationDays || 30;
         const totalReturn = plan.totalReturn || (price * 1.30);
         const freq = plan.frequency || 'diario';
+        const limitPerUser = plan.limitPerUser || 0; // 0 = Sem limite
         const profit = totalReturn - price;
+
+        // Contar quantas vezes o usuário atual comprou este plano
+        const currentCount = cachedMyPlansList.filter(p => p.planId === planId || p.description.includes(plan.title)).length;
+        const isLimitReached = limitPerUser > 0 && currentCount >= limitPerUser;
 
         let detailBadge = "";
         if (freq === 'diario') {
@@ -1455,11 +1433,14 @@
               </div>
             </div>
 
-            <div style="font-size:0.75rem; color:var(--gold-primary); font-weight:600; text-align:center; background:rgba(212,175,55,0.08); padding:6px; border-radius:8px;">
-              <i class="fa-solid fa-chart-line"></i> ${detailBadge}
+            <div style="font-size:0.75rem; color:var(--gold-primary); font-weight:600; text-align:center; background:rgba(212,175,55,0.08); padding:6px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
+              <span><i class="fa-solid fa-chart-line"></i> ${detailBadge}</span>
+              ${limitPerUser > 0 ? `<span style="font-size:0.65rem; color:var(--text-muted);">Limite: ${currentCount}/${limitPerUser}</span>` : ''}
             </div>
 
-            <button class="btn btn-gold" onclick="buyPlan('${planId}', '${plan.title}', ${price}, ${durationDays}, ${totalReturn}, '${freq}')">Investir Agora</button>
+            <button class="btn btn-gold" ${isLimitReached ? 'disabled' : ''} onclick="buyPlan('${planId}', '${plan.title}', ${price}, ${durationDays}, ${totalReturn}, '${freq}', ${limitPerUser}, ${currentCount})">
+              ${isLimitReached ? '<i class="fa-solid fa-lock"></i> Limite de Aportes Atingido' : 'Investir Agora'}
+            </button>
           </div>
         `;
       });
@@ -1502,14 +1483,16 @@
         return showCustomAlert("Saldo Insuficiente", `Seu patrimônio atual é de $${currentBalance.toFixed(2)}.`, "fa-circle-exclamation");
       }
 
-      const tax = amount * 0.12;
+      const isVip = currentUserData.isVip || false;
+      const taxRate = isVip ? 0.07 : 0.12;
+      const tax = amount * taxRate;
       const net = amount - tax;
 
       try {
         await addDoc(collection(db, "transactions"), {
           userId: user.uid,
           type: "saque",
-          description: `Solicitação de Saque ($${amount.toFixed(2)} | Líquido $${net.toFixed(2)})`,
+          description: `Solicitação de Saque ($${amount.toFixed(2)} | Líquido $${net.toFixed(2)}) ${isVip ? '[VIP 24h]' : ''}`,
           amount: amount,
           status: "pendente",
           createdAt: Date.now()
@@ -1518,15 +1501,19 @@
         await updateDoc(doc(db, "users", user.uid), { balance: increment(-amount) });
         document.getElementById("withdraw-amount").value = "";
         calculateWithdrawFeePreview();
-        showCustomAlert("Solicitação Enviada", `Resgate de $${amount.toFixed(2)} ($${net.toFixed(2)} líquido no PIX) solicitado com sucesso! Prazo de até 72h.`, "fa-circle-check");
+        showCustomAlert("Solicitação Enviada", `Resgate de $${amount.toFixed(2)} ($${net.toFixed(2)} líquido no PIX) solicitado com sucesso! Prazo de até ${isVip ? '24h Exclusivo VIP' : '72h'}.`, "fa-circle-check");
       } catch (error) {
         showCustomAlert("Erro ao Sacar", error.message, "fa-triangle-exclamation");
       }
     };
 
-    window.buyPlan = async (planId, planTitle, planPrice, durationDays, totalReturn, frequency = 'diario') => {
+    window.buyPlan = async (planId, planTitle, planPrice, durationDays, totalReturn, frequency = 'diario', limitPerUser = 0, currentCount = 0) => {
       const user = auth.currentUser;
       if (!user) return showCustomAlert("Atenção", "Usuário não autenticado.");
+
+      if (limitPerUser > 0 && currentCount >= limitPerUser) {
+        return showCustomAlert("Limite Atingido", `Você já atingiu o limite máximo de ${limitPerUser} aquisições para esta carteira.`, "fa-circle-exclamation");
+      }
 
       const currentBalance = currentUserData.balance || 0;
       if (planPrice > currentBalance) {
@@ -1539,6 +1526,7 @@
       try {
         await addDoc(collection(db, "transactions"), {
           userId: user.uid,
+          planId: planId,
           type: "produto_adquirido",
           description: `Aplicação: ${planTitle} (${frequency.toUpperCase()})`,
           amount: planPrice,
