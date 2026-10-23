@@ -11,27 +11,22 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  if (req.method !== 'POST' && req.method !== 'GET') {
+  if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Método não permitido' });
   }
 
   try {
-    let body = req.body || {};
+    let body = req.body;
     if (typeof body === 'string') {
       try { body = JSON.parse(body); } catch(e) { body = {}; }
     }
-    const query = req.query || {};
+    body = body || {};
 
-    // Captura o valor independentemente do nome do campo usado no front-end
-    const rawValor = body.valor !== undefined ? body.valor : 
-                    (body.amount !== undefined ? body.amount : 
-                    (body.value !== undefined ? body.value : 
-                    (query.valor || query.amount || query.value)));
-
+    const rawValor = body.valor !== undefined ? body.valor : (body.amount !== undefined ? body.amount : body.value);
     const valorNumerico = Number(rawValor);
 
     if (isNaN(valorNumerico) || valorNumerico <= 0) {
-      return res.status(400).json({ error: 'Valor inválido para depósito.', recebido: rawValor });
+      return res.status(400).json({ error: 'Valor inválido para depósito.' });
     }
 
     const pushinPayToken = process.env.PUSHINPAY_TOKEN;
@@ -56,7 +51,7 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || JSON.stringify(data) || 'Erro ao gerar PIX na PushinPay.');
+      throw new Error(data.message || data.error || 'Erro ao gerar PIX na PushinPay.');
     }
 
     return res.status(200).json({
